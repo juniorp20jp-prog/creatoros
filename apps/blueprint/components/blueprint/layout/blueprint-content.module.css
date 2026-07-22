@@ -1,0 +1,16 @@
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.contentInner {
+  width: min(100%, var(--content-max-width));
+  margin: 0 auto;
+  padding: var(--space-8);
+}
+
+@media (max-width: 700px) {
+  .contentInner {
+    padding: var(--space-5);
+  }
+}

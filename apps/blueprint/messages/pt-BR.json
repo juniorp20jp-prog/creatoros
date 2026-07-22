@@ -1,0 +1,543 @@
+{
+  "navigation": {
+    "platform": "Plataforma",
+    "missionControl": "Mission Control",
+    "myChannel": "Meu canal",
+    "competitors": "Concorrentes",
+    "aiStrategy": "Estratégia de IA",
+    "viralIdeas": "Ideias virais",
+    "analytics": "Análises",
+    "settings": "Configurações"
+  },
+  "dashboard": {
+    "commandCenter": "Centro de comando",
+    "title": "Mission Control",
+    "viewActivity": "Ver atividade",
+    "connectYouTube": "Conectar YouTube",
+    "heroLabel": "Seu sistema operacional de crescimento",
+    "headline": "Transforme seus dados do YouTube em decisões de crescimento.",
+    "description": "O CreatorOS analisa seu canal, estuda seus concorrentes e transforma dados em uma estratégia clara para alcançar seus objetivos.",
+    "createMission": "Criar minha missão",
+    "explorePlatform": "Explorar plataforma",
+    "activeMission": "Missão ativa",
+    "notConfigured": "Não configurada",
+    "progress": "Progresso",
+    "probability": "Probabilidade",
+    "estimatedDate": "Data estimada",
+    "channelConnected": "Canal conectado",
+    "notConnected": "Não conectado",
+    "connectToStart": "Conecte o YouTube para começar",
+    "growthMission": "Missão de crescimento",
+    "defineGoalDate": "Defina sua meta e a data desejada",
+    "analysisStatus": "Status da análise",
+    "pending": "Pendente",
+    "noProcessedData": "Ainda não há dados processados",
+    "aiEngine": "Motor de IA",
+    "ready": "Preparado",
+    "readyForStrategy": "Pronto para gerar sua estratégia",
+    "guidedSetup": "Configuração guiada",
+    "nextActions": "Próximas ações",
+    "completedCount": "0 de 3 concluídas",
+    "connectChannel": "Conectar canal",
+    "connectChannelDescription": "Conecte seu canal do YouTube e comece a importar métricas.",
+    "defineMission": "Definir missão",
+    "defineMissionDescription": "Selecione seu objetivo de crescimento e a data em que deseja alcançá-lo.",
+    "analyzeCompetitor": "Analisar concorrente",
+    "analyzeCompetitorDescription": "Estude um canal de referência e descubra seus padrões de sucesso.",
+    "start": "Começar",
+    "currentPlan": "Plano atual",
+    "developmentEnvironment": "Ambiente de desenvolvimento"
+  },
+  "blueprint": {
+    "header": {
+      "eyebrow": "Centro de operações",
+      "title": "CreatorOS Blueprint",
+      "description": "Controle, arquitetura e evolução de toda a plataforma.",
+      "projectLabel": "Projeto",
+      "projectValue": "Em desenvolvimento",
+      "versionLabel": "Versão",
+      "buildLabel": "Último build",
+      "buildValue": "Aprovado",
+      "languageLabel": "Idioma ativo"
+    },
+    "navigation": {
+      "ariaLabel": "Navegação do Blueprint",
+      "label": "Espaço de trabalho",
+      "overview": "Visão geral",
+      "creatorIntelligence": "Inteligência do criador",
+      "youtubeAnalyzer": "YouTube Analyzer",
+      "vision": "Visão",
+      "architecture": "Arquitetura",
+      "roadmap": "Roadmap",
+      "engines": "Motores de IA",
+      "decisions": "Decisões",
+      "research": "Pesquisa",
+      "footerTitle": "CreatorOS Blueprint",
+      "footerDetail": "Centro de operações ativo"
+    },
+    "creatorDecisions": {
+      "metadata": { "title": "Decisões | CreatorOS Blueprint", "description": "Ações priorizadas, mensuráveis e sustentadas por evidências geradas pelo CreatorOS." },
+      "header": {
+        "eyebrow": "Centro de Decisões V1", "title": "Decisões para colocar em prática agora",
+        "description": "O CreatorOS organizou as evidências disponíveis em ações priorizadas, com raciocínio transparente e resultados mensuráveis.",
+        "backToDashboard": "Voltar ao Dashboard", "activeCount": "{count} decisões ativas geradas",
+        "demoNotice": "Dados de demonstração — não representam um criador nem um canal real",
+        "scenarioLabel": "Cenário de demonstração", "scenarioHelp": "Selecione um cenário", "loading": "Gerando decisões…",
+        "channel": "Canal", "period": "Período da análise", "generated": "Gerado", "sample": "Amostra efetiva", "quality": "Qualidade dos dados"
+      },
+      "scenarios": {
+        "complete": { "label": "Dados completos", "description": "Uma amostra completa de oito vídeos que produz várias decisões sustentadas." },
+        "partial": { "label": "Dados parciais", "description": "Uma amostra válida com métricas opcionais ausentes e evidências parciais." },
+        "insufficient": { "label": "Evidências insuficientes", "description": "Uma amostra de dois vídeos que não permite sustentar uma decisão." },
+        "no-decisions": { "label": "Sem decisões sustentadas", "description": "Uma amostra válida e estável em que nenhuma regra reúne evidências suficientes." },
+        "invalid": { "label": "Entrada inválida", "description": "Dados analíticos inválidos demonstram o estado de erro controlado." }
+      },
+      "common": { "notAvailable": "Indisponível", "none": "Nenhuma" },
+      "quality": { "complete": "Completa", "partial": "Parcial", "limited": "Limitada", "unavailable": "Indisponível" },
+      "states": {
+        "loading": "Gerando decisões sustentadas por evidências…",
+        "emptyEyebrow": "Análise concluída", "emptyTitle": "Nenhuma decisão sustentada foi detectada",
+        "emptyDescription": "As evidências disponíveis não acionaram nenhuma regra de decisão. Isso não significa que não existam oportunidades ou problemas; o CreatorOS mantém o resultado vazio em vez de inventar uma ação.",
+        "insufficientEyebrow": "Limite das evidências", "insufficientTitle": "Não há evidências suficientes para propor uma decisão confiável",
+        "insufficientDescription": "A análise foi concluída, mas a amostra ou as métricas disponíveis não sustentam as comparações necessárias. Uma análise válida mais ampla pode habilitar mais regras.",
+        "validationEyebrow": "Validação da entrada", "validationTitle": "A análise não pôde gerar decisões",
+        "validationDescription": "O CreatorOS rejeitou uma entrada analítica inválida e não apresentou decisões sem sustentação.",
+        "errorEyebrow": "Erro controlado", "errorTitle": "Não foi possível concluir o Centro de Decisões",
+        "errorDescription": "O problema foi tratado com segurança. Nenhum detalhe interno ou decisão incompleta é exibido.",
+        "filteredTitle": "Nenhuma decisão corresponde a estes filtros", "filteredDescription": "Altere a prioridade ou a categoria para voltar ao resultado completo e ordenado do motor.", "retry": "Tentar novamente"
+      },
+      "summary": {
+        "eyebrow": "Resumo das decisões", "title": "O que merece atenção primeiro", "total": "Decisões ativas",
+        "high": "Prioridade alta", "medium": "Prioridade média", "low": "Prioridade baixa",
+        "highestAction": "Ação de maior prioridade", "confidence": "Distribuição da confiança",
+        "confidenceDistribution": "{high} alta · {medium} média · {low} baixa"
+      },
+      "filters": {
+        "title": "Filtrar decisões", "description": "Os filtros preservam a ordem de prioridade calculada pelo motor.",
+        "priority": "Prioridade", "category": "Categoria", "allPriorities": "Todas as prioridades", "allCategories": "Todas as categorias",
+        "apply": "Aplicar filtros", "reset": "Limpar filtros"
+      },
+      "list": {
+        "eyebrow": "Decisões priorizadas", "title": "Fila de ações",
+        "description": "As ações recomendadas mantêm a ordem estável produzida pelo Motor de Decisões.",
+        "showing": "Exibindo {visible} de {total} decisões", "ruleLabel": "Regra de decisão", "createdLabel": "Criada"
+      },
+      "sections": {
+        "detected": "O que detectamos", "why": "Por que isso importa", "action": "Ação recomendada", "impact": "Impacto esperado",
+        "metrics": "Métricas a acompanhar", "evidence": "Evidências de suporte", "confidence": "Confiança", "alternatives": "Alternativas",
+        "details": "Revisar evidências, confiança e alternativas", "baseline": "Linha de base observada",
+        "target": "Direção da medição", "source": "Referência da fonte"
+      },
+      "priorities": { "high": "Alta", "medium": "Média", "low": "Baixa" },
+      "categories": {
+        "content-packaging": "Apresentação do conteúdo", "audience-retention": "Retenção da audiência", "publishing": "Publicação",
+        "content-strategy": "Estratégia de conteúdo", "growth": "Crescimento"
+      },
+      "confidence": {
+        "label": "Confiança", "values": { "high": "Alta", "medium": "Média", "low": "Baixa" },
+        "high": "A confiança é alta ({score}) com base na disponibilidade, no tamanho da amostra, na consistência, na atualidade e no desvio; ela não implica certeza.",
+        "medium": "A confiança é média ({score}) com base na disponibilidade, no tamanho da amostra, na consistência, na atualidade e no desvio; ela não implica certeza.",
+        "low": "A confiança é baixa ({score}) porque os dados de suporte são limitados; ela não implica certeza."
+      },
+      "evidence": {
+        "coefficientOfVariation": "Variação do intervalo de publicação", "averageIntervalDays": "Intervalo médio de publicação",
+        "medianIntervalDays": "Mediana do intervalo de publicação", "intervalCount": "Intervalos medidos",
+        "topVideoShare": "Parcela de alcance do conteúdo principal", "topThreeShare": "Parcela de alcance dos três principais", "sampleSize": "Tamanho da amostra",
+        "exceptionalVideoCount": "Conteúdos excepcionais", "maximumMedianRatio": "Relação máxima com a mediana do criador",
+        "channelMetricMedian": "Mediana disponível do criador", "matchingVideoCount": "Conteúdos correspondentes",
+        "eligibleVideoCount": "Conteúdos elegíveis", "earlierMedianIntervalDays": "Mediana do intervalo anterior",
+        "recentMedianIntervalDays": "Mediana do intervalo recente", "relativeDifference": "Diferença relativa",
+        "durationMedianSeconds": "Mediana de duração", "shorterGroupSize": "Amostra de conteúdos mais curtos", "longerGroupSize": "Amostra de conteúdos mais longos",
+        "shorterMedianViews": "Mediana de alcance dos conteúdos curtos", "longerMedianViews": "Mediana de alcance dos conteúdos longos",
+        "qualifyingTermCount": "Quantidade de padrões recorrentes", "maximumVideoShare": "Parcela máxima do padrão recorrente"
+      },
+      "metrics": {
+        "clickThroughPerformance": "Desempenho de cliques", "audienceRetention": "Retenção da audiência",
+        "contentReach": "Alcance em relação à linha de base do criador", "publishingIntervalVariation": "Variação do intervalo de publicação",
+        "followUpReach": "Alcance da continuação em relação à mediana"
+      },
+      "targets": {
+        "directions": { "increase": "Aumentar", "decrease": "Reduzir", "maintain": "Manter" },
+        "comparisons": { "creator-baseline": "em relação à linha de base", "source-median": "em relação à mediana da fonte", "current-value": "em relação ao valor atual" }
+      },
+      "alternatives": { "action": "Ação alternativa", "discardedBecause": "Por que é secundária", "reconsiderWhen": "Quando reconsiderar" },
+      "rules": {
+        "lowClickThrough": {
+          "title": "Testar a apresentação dos conteúdos com desempenho de cliques abaixo da linha de base",
+          "summary": "Um grupo medido apresenta desempenho de cliques abaixo da mediana do próprio criador.",
+          "observation": "Foi observado desempenho de cliques abaixo da linha de base na amostra fornecida.",
+          "interpretation": "A apresentação pode limitar a conversão de impressões elegíveis; a evidência é relativa a este criador, não a uma referência universal.",
+          "action": "Faça um teste controlado de título ou miniatura no conteúdo relacionado e compare o desempenho com a mediana atual do criador.",
+          "impact": "Uma apresentação melhor deve aumentar o desempenho de cliques se ela for o fator limitante.",
+          "alternatives": { "monitor": { "action": "Manter a apresentação atual e coletar uma amostra maior.", "reason": "A amostra atual já atende ao contrato mínimo de evidência.", "condition": "Reconsiderar se o teste controlado não puder isolar uma mudança de apresentação." } }
+        },
+        "strongReachWeakRetention": {
+          "title": "Alinhar a abertura à promessa do conteúdo de alto alcance",
+          "summary": "O conteúdo que alcançou audiência acima da linha de base também mostrou retenção inferior.",
+          "observation": "Os sinais de alcance e retenção coincidem nos mesmos conteúdos.",
+          "interpretation": "A apresentação atraiu atenção inicial, mas a experiência pode não ter sustentado a promessa.",
+          "action": "No próximo conteúdo relacionado, teste uma abertura que apresente cedo o resultado prometido e meça a retenção diante da mediana atual.",
+          "impact": "Uma correspondência melhor entre promessa e abertura deve melhorar a continuidade inicial sem perder alcance.",
+          "alternatives": { "packaging": { "action": "Alterar somente o título ou a apresentação visual.", "reason": "O alcance já está acima da linha de base nos mesmos conteúdos.", "condition": "Reconsiderar se o alcance ficar abaixo da linha de base na próxima amostra." } }
+        },
+        "publishingInconsistency": {
+          "title": "Adotar uma cadência baseada na mediana observada do criador",
+          "summary": "Os intervalos de publicação variam de forma relevante durante o período analisado.",
+          "observation": "A variação entre os intervalos supera o limite analítico documentado.",
+          "interpretation": "Uma cadência irregular pode dificultar o planejamento e as expectativas recorrentes da audiência.",
+          "action": "Planeje as próximas três datas em torno da mediana observada e compare a variação com a linha de base atual.",
+          "impact": "Uma cadência mais repetível deve reduzir a variação e melhorar a previsibilidade operacional.",
+          "alternatives": { "lowerFrequency": { "action": "Usar uma cadência menos frequente, mas explicitamente programada.", "reason": "As evidências sustentam reduzir a variação, não uma frequência universal específica.", "condition": "Reconsiderar se o intervalo mediano atual não for sustentável." } }
+        },
+        "highPerformingPattern": {
+          "title": "Validar uma continuação do padrão de alto desempenho observado",
+          "summary": "Um sinal de alcance excepcional coincide com um padrão de conteúdo determinístico e recorrente.",
+          "observation": "Termos recorrentes aparecem em conteúdos que também superam a linha de base de alcance.",
+          "interpretation": "A coincidência sustenta testar uma continuação relacionada; não prova que os termos causaram o desempenho.",
+          "action": "Publique uma continuação claramente relacionada e compare seu alcance com a mediana atual antes de expandir para uma série.",
+          "impact": "Uma continuação controlada pode confirmar se o padrão observado continua útil para planejar conteúdo.",
+          "alternatives": { "series": { "action": "Comprometer-se imediatamente com uma série de vários conteúdos.", "reason": "Uma coincidência observada não prova causalidade repetível.", "condition": "Reconsiderar quando uma continuação também superar a linha de base." } }
+        }
+      }
+    },
+    "dashboard": {
+      "hero": {
+        "eyebrow": "Sistema operacional do produto",
+        "title": "Uma visão para conduzir todo o CreatorOS.",
+        "description": "Priorize o trabalho, acompanhe a plataforma e acesse cada capacidade a partir de uma base criada para crescer.",
+        "projectLabel": "Status do projeto",
+        "projectValue": "Desenvolvimento ativo",
+        "versionLabel": "Versão do Blueprint",
+        "buildLabel": "Status do build",
+        "buildValue": "Validado"
+      },
+      "metricsAriaLabel": "Indicadores operacionais do CreatorOS",
+      "metrics": {
+        "projectStatus": { "label": "Status do projeto", "value": "Ativo", "detail": "Sprint em andamento" },
+        "currentSprint": { "label": "Sprint atual", "value": "Sprint 2", "detail": "Base do Dashboard" },
+        "nextTasks": { "label": "Próximas tarefas", "value": "3", "detail": "Prioridades definidas" },
+        "recentActivity": { "label": "Atividade recente", "value": "3", "detail": "Eventos registrados" },
+        "aiEngines": { "label": "Motores de IA", "value": "0 / 6", "detail": "Infraestrutura preparada" },
+        "implementedModules": { "label": "Módulos ativos", "value": "1 / 15", "detail": "Dashboard Geral" }
+      },
+      "tasks": {
+        "eyebrow": "Execução",
+        "title": "Próximas tarefas",
+        "count": "3 prioridades",
+        "items": {
+          "dashboardFoundation": { "title": "Consolidar a base do Dashboard", "detail": "Completar a superfície operacional e seus principais estados." },
+          "moduleRegistry": { "title": "Preparar o registro de módulos", "detail": "Definir identidades, categorias e rotas estáveis." },
+          "navigationContract": { "title": "Conectar a navegação modular", "detail": "Ativar destinos quando cada módulo estiver disponível." }
+        }
+      },
+      "statuses": { "inProgress": "Em andamento", "next": "Próximo" },
+      "progress": {
+        "eyebrow": "Evolução",
+        "title": "Progresso geral",
+        "description": "A base técnica está operacional. O próximo avanço será conectar capacidades funcionais reais.",
+        "ariaLabel": "Progresso geral do CreatorOS",
+        "foundation": "Fundação",
+        "commercial": "Produto comercial"
+      },
+      "activity": {
+        "title": "Atividade recente",
+        "updated": "Atualizado hoje",
+        "items": {
+          "buildValidated": { "title": "Build do Blueprint validado", "time": "Hoje" },
+          "architectureApproved": { "title": "Arquitetura do Dashboard aprovada", "time": "Hoje" },
+          "sprintStarted": { "title": "Sprint 2 iniciado", "time": "Hoje" }
+        }
+      },
+      "modules": {
+        "eyebrow": "Plataforma modular",
+        "title": "Centro de módulos",
+        "description": "Cada capacidade será integrada por um contrato estável sem alterar a estrutura principal do Dashboard.",
+        "statuses": { "planned": "Planejado", "available": "Disponível" },
+        "categories": {
+          "intelligence": "Inteligência",
+          "analysis": "Análise",
+          "creation": "Criação",
+          "operations": "Planejamento e operações",
+          "system": "Conta e sistema"
+        }
+      }
+    },
+    "modules": {
+      "aiBrain": { "name": "AI Brain", "description": "Coordena o raciocínio e as recomendações de toda a plataforma." },
+      "creatorIntelligence": { "name": "Inteligência do criador", "description": "Transforma a análise técnica em uma explicação executiva priorizada e baseada em evidências." },
+      "youtubeAnalyzer": { "name": "YouTube Analyzer", "description": "Transforma dados do canal em sinais e oportunidades acionáveis." },
+      "competitorAnalyzer": { "name": "Competitor Analyzer", "description": "Identifica padrões, vantagens e espaços competitivos." },
+      "viralContentLab": { "name": "Viral Content Lab", "description": "Explora conceitos com potencial de alcance e relevância." },
+      "scriptGenerator": { "name": "Script Generator", "description": "Transforma estratégias de conteúdo em roteiros estruturados." },
+      "thumbnailStudio": { "name": "Thumbnail Studio", "description": "Cria e avalia conceitos visuais para thumbnails." },
+      "seoEngine": { "name": "SEO Engine", "description": "Otimiza temas, metadados e posicionamento de conteúdo." },
+      "promptStudio": { "name": "Prompt Studio", "description": "Gerencia instruções reutilizáveis para os motores de IA." },
+      "contentPlanner": { "name": "Content Planner", "description": "Transforma prioridades estratégicas em planos de publicação." },
+      "researchCenter": { "name": "Research Center", "description": "Centraliza pesquisas, evidências e conhecimento de mercado." },
+      "automationCenter": { "name": "Automation Center", "description": "Orquestra processos repetíveis e integrações operacionais." },
+      "analytics": { "name": "Analytics", "description": "Mede desempenho, tendências e impacto das decisões." },
+      "creatorProfile": { "name": "Creator Profile", "description": "Reúne contexto, objetivos e preferências do criador." },
+      "settings": { "name": "Settings", "description": "Gerencia configurações, conexões e preferências do sistema." }
+    },
+    "youtubeAnalyzer": {
+      "metadata": {
+        "title": "YouTube Analyzer",
+        "description": "Análise determinística de dados normalizados de canais e vídeos do YouTube."
+      },
+      "header": {
+        "eyebrow": "YouTube Intelligence Engine V1",
+        "title": "Inteligência do canal baseada em evidências.",
+        "description": "Explore métricas, desempenho relativo, sinais e qualidade de dados produzidos pelo motor real do CreatorOS.",
+        "backToDashboard": "Voltar ao Dashboard",
+        "viewIntelligence": "Ver resumo de inteligência",
+        "scenarioLabel": "Cenário de demonstração",
+        "scenarioHelp": "Selecione um cenário",
+        "channelLabel": "Canal",
+        "periodLabel": "Período da análise",
+        "statusLabel": "Status da execução",
+        "demoDataNotice": "Dados locais de demonstração — não representam um canal real"
+      },
+      "scenarios": {
+        "complete": { "label": "Dados completos", "description": "Oito vídeos com todas as métricas compatíveis e evidências para a maioria dos sinais." },
+        "partial": { "label": "Dados parciais", "description": "Vídeos válidos com métricas opcionais incompletas, exclusões e avisos de qualidade." },
+        "insufficient": { "label": "Amostra insuficiente", "description": "Dois vídeos válidos que limitam quais sinais podem ser avaliados." },
+        "invalid": { "label": "Entrada inválida", "description": "Um identificador duplicado e um CTR fora da faixa acionam a validação real." }
+      },
+      "states": {
+        "success": "Análise completa",
+        "partial-data": "Dados parciais",
+        "insufficient-sample": "Amostra insuficiente",
+        "validation-error": "Erro de validação",
+        "unexpected-error": "Erro inesperado",
+        "empty": "Sem análise",
+        "loading": "Carregando análise…",
+        "validationTitle": "O conjunto de dados não passou na validação",
+        "validationDescription": "O cenário selecionado contém valores intencionalmente inválidos. Nenhum resultado parcial foi apresentado como válido.",
+        "unexpectedTitle": "Não foi possível concluir a análise",
+        "unexpectedDescription": "Um problema inesperado foi tratado com segurança. Nenhum detalhe interno ou resultado incompleto é exibido.",
+        "emptyTitle": "Selecione um cenário de demonstração válido",
+        "emptyDescription": "Escolha um dos conjuntos de dados disponíveis para executar o YouTube Intelligence Engine.",
+        "recoverHint": "Selecione outro cenário acima para continuar sem recarregar o aplicativo.",
+        "retry": "Tentar novamente"
+      },
+      "overview": {
+        "eyebrow": "Visão geral da análise",
+        "title": "Retrato medido do canal",
+        "description": "Cada valor vem da saída do motor. Valores ausentes permanecem explicitamente indisponíveis.",
+        "notAvailable": "Indisponível",
+        "metrics": {
+          "analyzedVideos": { "label": "Vídeos incluídos", "detail": "Amostra efetiva da análise" },
+          "totalViews": { "label": "Visualizações totais", "detail": "Nos vídeos incluídos" },
+          "averageViews": { "label": "Média de visualizações", "detail": "Média aritmética" },
+          "medianViews": { "label": "Mediana de visualizações", "detail": "Referência relativa principal" },
+          "averagePublicationInterval": { "label": "Intervalo médio", "detail": "Entre publicações consecutivas" },
+          "engagement": { "label": "Engajamento ponderado", "detail": "Interações disponíveis sobre views elegíveis" },
+          "subscribersGained": { "label": "Inscritos ganhos", "detail": "Impacto por vídeo, não crescimento histórico" },
+          "viewConcentration": { "label": "Concentração dos três principais", "detail": "Proporção das views incluídas" }
+        }
+      },
+      "publishing": {
+        "eyebrow": "Informações de publicação",
+        "title": "Ritmo de publicação",
+        "description": "Intervalos UTC e variabilidade calculados a partir das datas de publicação incluídas.",
+        "includedVideos": "Publicações incluídas",
+        "averageInterval": "Intervalo médio",
+        "medianInterval": "Intervalo mediano",
+        "variability": "Variabilidade do intervalo",
+        "detected": "Sinal detectado",
+        "notDetected": "Avaliado — não detectado",
+        "notEvaluated": "Não avaliado",
+        "consistencySignal": "Inconsistência de publicação",
+        "frequencyChangeSignal": "Mudança de frequência"
+      },
+      "videos": {
+        "eyebrow": "Desempenho por vídeo",
+        "title": "Desempenho relativo dos vídeos",
+        "description": "Métricas originais e derivadas retornadas pelo motor, comparadas com esta amostra do canal.",
+        "tableLabel": "Resultados de desempenho dos vídeos do YouTube",
+        "titleColumn": "Vídeo",
+        "date": "Publicado",
+        "duration": "Duração",
+        "views": "Visualizações",
+        "classification": "Classificação",
+        "engagement": "Engajamento",
+        "ctr": "CTR",
+        "retention": "Percentual assistido",
+        "subscribers": "Inscritos ganhos",
+        "medianComparison": "Views / mediana"
+      },
+      "classifications": {
+        "below-median": "Abaixo da mediana",
+        "near-median": "Próximo da mediana",
+        "above-median": "Acima da mediana",
+        "exceptional": "Excepcional"
+      },
+      "signals": {
+        "eyebrow": "Sinais detectados",
+        "title": "Evidências da amostra",
+        "description": "Observações neutras geradas por regras determinísticas, sem explicações de IA ou recomendações.",
+        "empty": "Nenhum sinal atendeu aos requisitos de evidência nesta amostra.",
+        "impactLabel": "Impacto",
+        "confidenceLabel": "Confiança",
+        "evidenceLabel": "Evidência numérica",
+        "sampleLabel": "Amostra efetiva",
+        "videoIdsLabel": "IDs dos vídeos relacionados",
+        "termsLabel": "Termos recorrentes",
+        "impact": { "low": "Impacto baixo", "medium": "Impacto médio", "high": "Impacto alto" },
+        "confidence": { "low": "Baixa", "medium": "Média", "high": "Alta" },
+        "items": {
+          "publication-inconsistency": { "name": "Publicação inconsistente", "description": "Os intervalos observados entre publicações consecutivas variam além do limite de evidência configurado." },
+          "view-concentration": { "name": "Concentração de visualizações", "description": "Um pequeno grupo de vídeos incluídos concentra uma grande proporção das visualizações medidas." },
+          "above-median-performance": { "name": "Desempenho relativo excepcional", "description": "Um ou mais vídeos superam claramente a mediana da amostra do canal." },
+          "relative-high-ctr": { "name": "CTR relativamente alto", "description": "Os vídeos relacionados têm CTR acima da mediana dos vídeos em que essa métrica está disponível." },
+          "relative-low-ctr": { "name": "CTR relativamente baixo", "description": "Os vídeos relacionados têm CTR abaixo da mediana dos vídeos em que essa métrica está disponível." },
+          "relative-high-retention": { "name": "Retenção relativamente alta", "description": "Os vídeos relacionados superam a mediana disponível do percentual médio assistido." },
+          "relative-low-retention": { "name": "Retenção relativamente baixa", "description": "Os vídeos relacionados ficam abaixo da mediana disponível do percentual médio assistido." },
+          "relative-high-engagement": { "name": "Engajamento relativamente alto", "description": "As taxas de interação elegíveis superam a mediana de engajamento desta amostra." },
+          "relative-low-engagement": { "name": "Engajamento relativamente baixo", "description": "As taxas de interação elegíveis ficam abaixo da mediana de engajamento desta amostra." },
+          "publication-frequency-change": { "name": "Mudança de frequência de publicação", "description": "Os intervalos recentes diferem de forma relevante dos intervalos anteriores no período enviado." },
+          "duration-performance-association": { "name": "Associação entre duração e desempenho", "description": "Os grupos de duração mostram medianas de views diferentes nesta amostra, sem implicar causalidade." },
+          "recurring-title-terms": { "name": "Termos recorrentes nos títulos", "description": "As palavras normalizadas listadas aparecem em vários títulos; elas não são temas semânticos." }
+        }
+      },
+      "evidence": {
+        "coefficientOfVariation": "Coeficiente de variação",
+        "averageIntervalDays": "Intervalo médio",
+        "medianIntervalDays": "Intervalo mediano",
+        "intervalCount": "Intervalos",
+        "topVideoShare": "Proporção do principal vídeo",
+        "topThreeShare": "Proporção dos três principais",
+        "sampleSize": "Tamanho da amostra",
+        "exceptionalVideoCount": "Vídeos excepcionais",
+        "maximumMedianRatio": "Relação máxima com a mediana",
+        "channelMetricMedian": "Mediana da métrica disponível",
+        "matchingVideoCount": "Vídeos correspondentes",
+        "eligibleVideoCount": "Vídeos elegíveis",
+        "earlierMedianIntervalDays": "Mediana dos intervalos anteriores",
+        "recentMedianIntervalDays": "Mediana dos intervalos recentes",
+        "relativeDifference": "Diferença relativa",
+        "durationMedianSeconds": "Duração mediana",
+        "shorterGroupSize": "Grupo mais curto",
+        "longerGroupSize": "Grupo mais longo",
+        "shorterMedianViews": "Mediana de views do grupo curto",
+        "longerMedianViews": "Mediana de views do grupo longo",
+        "qualifyingTermCount": "Termos qualificados",
+        "maximumVideoShare": "Presença máxima nos títulos"
+      },
+      "quality": {
+        "eyebrow": "Qualidade dos dados",
+        "title": "O que esta análise pode e não pode sustentar",
+        "description": "Disponibilidade, exclusões, avisos e sinais não avaliados permanecem visíveis junto ao resultado.",
+        "inputVideos": "Vídeos recebidos",
+        "effectiveVideos": "Vídeos incluídos",
+        "excludedVideos": "Vídeos excluídos",
+        "completeFields": "Campos totalmente disponíveis",
+        "partialFields": "Campos parcialmente disponíveis",
+        "absentFields": "Campos ausentes",
+        "warnings": "Avisos",
+        "limitations": "Limitações do motor",
+        "unevaluated": "Sinais não avaliados",
+        "none": "Nenhum",
+        "requiredVideos": "Necessários",
+        "availableVideos": "Disponíveis",
+        "excludedReason": "Fora do período solicitado inclusivo",
+        "reasons": {
+          "insufficient-sample": "O tamanho mínimo da amostra não foi alcançado.",
+          "metric-unavailable": "A métrica necessária não está disponível.",
+          "insufficient-variation": "Os valores disponíveis não sustentam esta comparação.",
+          "no-qualifying-evidence": "A regra foi avaliada, mas não atingiu o limite de evidência."
+        },
+        "warningLabels": {
+          "videos-outside-requested-period": "Vídeos válidos fora do período solicitado foram excluídos.",
+          "partial-engagement-components": "Algumas taxas de engajamento usam apenas o componente de interação disponível."
+        },
+        "limitationLabels": {
+          "historical-channel-growth-unavailable-without-subscriber-history": "O crescimento histórico não está disponível sem histórico de inscritos.",
+          "no-external-benchmarks-or-causal-inferences": "Nenhum benchmark externo ou conclusão causal é utilizado.",
+          "title-term-analysis-is-lexical-and-not-topic-detection": "A análise de títulos detecta palavras recorrentes, não temas semânticos.",
+          "small-sample-reduces-signal-confidence": "Uma amostra pequena reduz a confiança dos sinais."
+        },
+        "fieldLabels": {
+          "channel.id": "ID do canal",
+          "channel.name": "Nome do canal",
+          "channel.subscribers": "Inscritos atuais",
+          "channel.createdAt": "Data de criação do canal",
+          "channel.totalViews": "Views totais do canal",
+          "channel.totalVideos": "Total de vídeos do canal",
+          "channel.languageOrMarket": "Idioma ou mercado do canal",
+          "context.analysisDate": "Data da análise",
+          "context.period": "Período solicitado",
+          "videos.id": "IDs dos vídeos",
+          "videos.title": "Títulos dos vídeos",
+          "videos.publishedAt": "Datas de publicação",
+          "videos.durationSeconds": "Duração dos vídeos",
+          "videos.views": "Views dos vídeos",
+          "videos.likes": "Curtidas",
+          "videos.comments": "Comentários",
+          "videos.impressions": "Impressões",
+          "videos.ctr": "CTR",
+          "videos.averageViewDurationSeconds": "Duração média da visualização",
+          "videos.averagePercentageViewed": "Percentual médio assistido",
+          "videos.subscribersGained": "Inscritos ganhos"
+        }
+      },
+      "limitations": {
+        "title": "Limitações permanentes da análise",
+        "items": [
+          "Os resultados são relativos à amostra enviada do próprio canal.",
+          "Uma associação observada não implica causalidade.",
+          "Nenhum benchmark universal ou de concorrentes foi utilizado.",
+          "A confiança depende da quantidade, disponibilidade e consistência dos dados.",
+          "Os dados de demonstração não representam um canal real."
+        ]
+      }
+    },
+    "creatorIntelligence": {
+      "metadata": { "title": "Inteligência do criador", "description": "Interpretação executiva determinística da análise de canal do CreatorOS." },
+      "header": { "eyebrow": "Creator Intelligence Workspace V1", "title": "Entenda o que aconteceu e as evidências que sustentam a leitura.", "description": "O CreatorOS organiza os achados analíticos mais importantes em um briefing claro, priorizado e rastreável.", "backToDashboard": "Voltar ao Dashboard", "viewTechnicalAnalysis": "Ver análise técnica", "scenarioLabel": "Cenário de demonstração", "scenarioHelp": "Selecione um cenário", "channelLabel": "Canal", "periodLabel": "Período da análise", "statusLabel": "Estado da inteligência", "demoDataNotice": "Dados locais de demonstração — nenhum canal real é representado" },
+      "common": { "notAvailable": "Não disponível", "none": "Nenhum" },
+      "states": {
+        "success": "Inteligência completa", "partial-data": "Inteligência parcial", "insufficient-sample": "Inteligência limitada", "validation-error": "Erro de validação", "unexpected-error": "Erro inesperado", "empty": "Sem inteligência", "loading": "Construindo o briefing de inteligência…",
+        "validationTitle": "A entrada analítica não passou na validação", "validationDescription": "O CreatorOS não interpretou dados inválidos nem apresentou um resultado incompleto como confiável.", "unexpectedTitle": "Não foi possível concluir o briefing de inteligência", "unexpectedDescription": "O problema foi tratado com segurança. Nenhum detalhe interno ou conclusão sem respaldo é exibido.", "emptyTitle": "Selecione um cenário de demonstração válido", "emptyDescription": "Escolha um conjunto disponível para executar o motor analítico e o intérprete determinístico.", "noInsightsLabel": "Sem achados respaldados", "noInsightsTitle": "Não há evidência suficiente para produzir achados confiáveis", "noInsightsDescription": "O CreatorOS mantém o resultado vazio em vez de criar achados que a evidência analítica não sustenta.", "recoverHint": "Selecione outro cenário acima para continuar.", "retry": "Tentar novamente",
+        "failures": { "invalid-analytics-result": "O resultado analítico é inválido.", "incompatible-input": "O resultado analítico é incompatível com este intérprete.", "unexpected-error": "Não foi possível concluir a interpretação de inteligência.", "insufficient-information": "Não há informação suficiente para construir um briefing de inteligência." }
+      },
+      "brief": {
+        "eyebrow": "Resumo executivo", "title": "O que importa nesta análise", "statusLabel": "Leitura geral", "viewEvidence": "Revisar evidências",
+        "statuses": { "healthy": "Leitura completa", "attention": "Requer atenção", "limited": "Leitura limitada", "unknown": "Não determinada" },
+        "headlines": { "healthy": "As evidências de {channelName} permitem uma leitura completa do período medido.", "attention": "A análise de {channelName} contém achados que merecem uma revisão mais detalhada.", "limited": "A amostra de {sampleSize} vídeos limita o que o CreatorOS pode concluir sobre {channelName}.", "unknown": "O CreatorOS não conseguiu determinar uma leitura geral para {channelName}." },
+        "summary": { "sample": "A análise recebeu {inputVideoCount} vídeos, incluiu {includedVideoCount} e excluiu {excludedVideoCount}.", "noSupportedInsights": "Nenhum sinal da amostra de {sampleSize} vídeos cumpriu os requisitos para um achado confiável." }
+      },
+      "confidence": { "label": "Confiança da evidência", "values": { "low": "Baixa", "medium": "Média", "high": "Alta", "notEvaluated": "Não avaliada" }, "explanation": "A confiança reflete a quantidade e a qualidade das evidências disponíveis, não a probabilidade de sucesso futuro." },
+      "insights": {
+        "priorityEyebrow": "Inteligência prioritária", "priorityTitle": "Achados para revisar primeiro", "additionalEyebrow": "Inteligência adicional", "additionalTitle": "Padrões e achados complementares", "description": "Cada achado vem de uma regra determinística e permanece ligado às evidências de origem.", "priorityLabel": "Prioridade", "sampleLabel": "Amostra efetiva", "limitationLabel": "Limitação da interpretação", "expandEvidence": "Expandir evidências e rastreabilidade", "sourceSignalsLabel": "Sinais de origem", "relatedVideosLabel": "IDs dos vídeos relacionados",
+        "categories": { "opportunity": "Oportunidade", "risk": "Risco", "pattern": "Padrão", "finding": "Achado", "data-quality": "Qualidade dos dados" }, "priorities": { "high": "Alta", "medium": "Média", "low": "Baixa" }, "limitations": { "low-confidence": "O achado utiliza evidências de baixa confiança.", "partial-data": "Algumas métricas opcionais estão incompletas ou indisponíveis.", "insufficient-sample": "A amostra é pequena demais para uma interpretação ampla." },
+        "codes": {
+          "publication-inconsistency": { "title": "A cadência de publicação varia de forma relevante", "description": "Os intervalos medidos entre publicações mostram uma variação sustentada pela amostra do canal." },
+          "view-concentration": { "title": "As visualizações estão concentradas em poucos vídeos", "description": "Um grupo reduzido de vídeos incluídos representa grande parte das visualizações medidas." },
+          "above-median-performance": { "title": "Há desempenhos relativos excepcionais", "description": "{exceptionalVideoCount} vídeos incluídos superam claramente a mediana desta amostra." },
+          "relative-high-ctr": { "title": "Alguns vídeos apresentam CTR relativamente alto", "description": "Os CTRs relacionados estão acima da mediana dos vídeos em que a métrica está disponível." },
+          "relative-low-ctr": { "title": "Alguns vídeos apresentam CTR relativamente baixo", "description": "Os CTRs relacionados estão abaixo da mediana dos vídeos em que a métrica está disponível." },
+          "relative-high-retention": { "title": "Alguns vídeos apresentam retenção relativamente alta", "description": "Os percentuais médios assistidos relacionados estão acima da mediana disponível." },
+          "relative-low-retention": { "title": "Alguns vídeos apresentam retenção relativamente baixa", "description": "Os percentuais médios assistidos relacionados estão abaixo da mediana disponível." },
+          "relative-high-engagement": { "title": "Alguns vídeos apresentam engajamento relativamente alto", "description": "As taxas de interação elegíveis estão acima da mediana de engajamento desta amostra." },
+          "relative-low-engagement": { "title": "Alguns vídeos apresentam engajamento relativamente baixo", "description": "As taxas de interação elegíveis estão abaixo da mediana de engajamento desta amostra." },
+          "publication-frequency-change": { "title": "A frequência de publicação mudou durante o período", "description": "Os intervalos recentes diferem de forma relevante dos intervalos anteriores do período enviado." },
+          "duration-performance-association": { "title": "Os grupos de duração mostram desempenhos relativos diferentes", "description": "Os grupos de duração têm medianas de visualizações diferentes nesta amostra; isso não estabelece causalidade." },
+          "recurring-title-terms": { "title": "Termos lexicais recorrentes aparecem nos títulos", "description": "Palavras normalizadas se repetem em vários títulos; este é um padrão lexical, não uma análise semântica." }
+        },
+        "dataQuality": { "complete": { "title": "O conjunto analítico está completo", "description": "Todas as métricas compatíveis estão disponíveis para a amostra efetiva." }, "partial": { "title": "Dados ausentes limitam parte da interpretação", "description": "Há {missingFieldCount} campos parciais ou ausentes e {unevaluatedSignalCount} sinais não avaliados." }, "limited": { "title": "A amostra é insuficiente para uma interpretação ampla", "description": "Apenas {sampleSize} vídeos estão disponíveis; o CreatorOS prioriza essa limitação." } }
+      },
+      "evidence": { "eyebrow": "Evidências verificáveis", "title": "Os números por trás dos achados", "description": "Estes valores são preservados do resultado analítico público e apenas formatados para apresentação.",
+        "labels": { "inputVideoCount": "Vídeos recebidos", "effectiveVideoCount": "Vídeos efetivos", "excludedVideoCount": "Vídeos excluídos", "missingFieldCount": "Campos parciais ou ausentes", "unevaluatedSignalCount": "Sinais não avaliados", "coefficientOfVariation": "Coeficiente de variação", "averageIntervalDays": "Intervalo médio", "medianIntervalDays": "Intervalo mediano", "intervalCount": "Intervalos", "topVideoShare": "Participação do principal vídeo", "topThreeShare": "Participação dos três principais", "sampleSize": "Tamanho da amostra", "exceptionalVideoCount": "Vídeos excepcionais", "maximumMedianRatio": "Razão máxima sobre a mediana", "channelMetricMedian": "Mediana da métrica disponível", "matchingVideoCount": "Vídeos correspondentes", "eligibleVideoCount": "Vídeos elegíveis", "earlierMedianIntervalDays": "Intervalo mediano anterior", "recentMedianIntervalDays": "Intervalo mediano recente", "relativeDifference": "Diferença relativa", "durationMedianSeconds": "Duração mediana", "shorterGroupSize": "Grupo mais curto", "longerGroupSize": "Grupo mais longo", "shorterMedianViews": "Mediana de views do grupo curto", "longerMedianViews": "Mediana de views do grupo longo", "qualifyingTermCount": "Termos qualificados", "maximumVideoShare": "Participação máxima nos títulos" }
+      },
+      "context": { "eyebrow": "Contexto da análise", "title": "Escopo desta leitura", "description": "Período, amostra, cenário e métricas disponíveis usados para produzir este briefing.", "channel": "Canal", "scenario": "Cenário ativo", "startDate": "Início do período", "endDate": "Fim do período", "receivedVideos": "Vídeos recebidos", "includedVideos": "Vídeos incluídos", "excludedVideos": "Vídeos excluídos", "effectiveSample": "Amostra efetiva", "generatedAt": "Análise gerada", "availableMetrics": "Principais métricas disponíveis" },
+      "quality": {
+        "eyebrow": "Qualidade da inteligência", "title": "O que as evidências podem sustentar", "description": "Informações ausentes, avisos, exclusões e sinais não avaliados permanecem visíveis.", "overallStatus": "Qualidade geral", "sampleSize": "Tamanho da amostra", "insufficientMetrics": "Campos parciais ou ausentes", "unevaluatedSignals": "Sinais não avaliados", "completeFields": "Campos totalmente disponíveis", "partialFields": "Campos parcialmente disponíveis", "absentFields": "Campos ausentes", "warnings": "Avisos", "exclusions": "Exclusões", "exclusionReason": "Fora do período solicitado", "sampleComparison": "{available} disponíveis / {required} necessários",
+        "statuses": { "complete": "Completa", "partial": "Parcial", "limited": "Limitada" }, "reasonLabels": { "insufficient-sample": "O tamanho mínimo da amostra não foi atingido.", "metric-unavailable": "A métrica necessária não está disponível.", "insufficient-variation": "Os valores não permitem esta comparação.", "no-qualifying-evidence": "O limite de evidência não foi atingido." }, "warningLabels": { "videos-outside-requested-period": "Vídeos válidos fora do período solicitado foram excluídos.", "partial-engagement-components": "Algumas taxas de engajamento usam apenas o componente disponível." },
+        "fieldLabels": { "channel.id": "ID do canal", "channel.name": "Nome do canal", "channel.subscribers": "Inscritos atuais", "channel.createdAt": "Data de criação do canal", "channel.totalViews": "Views totais do canal", "channel.totalVideos": "Total de vídeos", "channel.languageOrMarket": "Idioma ou mercado", "context.analysisDate": "Data da análise", "context.period": "Período solicitado", "videos.id": "IDs dos vídeos", "videos.title": "Títulos dos vídeos", "videos.publishedAt": "Datas de publicação", "videos.durationSeconds": "Duração dos vídeos", "videos.views": "Views dos vídeos", "videos.likes": "Curtidas", "videos.comments": "Comentários", "videos.impressions": "Impressões", "videos.ctr": "CTR", "videos.averageViewDurationSeconds": "Duração média da visualização", "videos.averagePercentageViewed": "Percentual médio assistido", "videos.subscribersGained": "Inscritos ganhos" }
+      },
+      "limitations": { "eyebrow": "Interpretação honesta", "title": "Limitações a considerar", "description": "O CreatorOS não esconde limites analíticos para tornar um briefing mais convincente.", "codes": { "insufficient-sample": "A amostra de {sampleSize} vídeos é pequena demais para várias regras determinísticas.", "partial-data": "Há {missingFieldCount} campos compatíveis parciais ou ausentes.", "historical-channel-growth-unavailable-without-subscriber-history": "O crescimento histórico não está disponível sem histórico de inscritos.", "no-external-benchmarks-or-causal-inferences": "Nenhum benchmark externo ou conclusão causal é utilizado.", "title-term-analysis-is-lexical-and-not-topic-detection": "A análise de títulos detecta palavras recorrentes, não temas semânticos.", "small-sample-reduces-signal-confidence": "Uma amostra pequena reduz a confiança dos sinais." } },
+      "nextStep": { "eyebrow": "Próximo passo", "title": "De achados a ações priorizadas", "description": "O CreatorOS usará estes achados para construir ações baseadas em evidências em uma capacidade futura.", "availability": "Recomendações não estão disponíveis nesta versão" }
+    }
+  }
+}

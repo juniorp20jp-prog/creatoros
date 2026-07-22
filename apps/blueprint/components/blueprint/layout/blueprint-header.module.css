@@ -1,0 +1,118 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  min-height: 6.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-8);
+  background: rgba(7, 11, 20, 0.88);
+  border-bottom: 1px solid var(--color-border-subtle);
+  backdrop-filter: blur(1rem);
+}
+
+.eyebrow {
+  color: var(--color-brand-300);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin-top: var(--space-1);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+}
+
+.description {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.actions > div {
+  min-height: 3.25rem;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.actions dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.actions dd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.actions .projectState {
+  background: var(--color-success-soft);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.projectState dd,
+.buildStatus {
+  color: var(--color-success);
+}
+
+.statusDot {
+  width: 0.45rem;
+  height: 0.45rem;
+  background: var(--color-success);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 0.2rem var(--color-success-soft);
+}
+
+.localeBadge dd {
+  text-transform: uppercase;
+}
+
+@media (max-width: 1250px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 700px) {
+  .header {
+    position: static;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: var(--space-5);
+  }
+
+  .actions {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 430px) {
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
