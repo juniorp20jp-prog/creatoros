@@ -1,7 +1,14 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 
 import type { Locale } from "../../../i18n/config";
 import type { getDictionary } from "../../../i18n/dictionaries";
+
+import { hqNavigation } from "../navigation/hq";
+import { platformNavigation } from "../navigation/platform";
+import { Sidebar } from "../navigation/Sidebar";
 
 import styles from "../../../app/[locale]/page.module.css";
 
@@ -18,90 +25,52 @@ export function CreatorShell({
   dictionary,
   locale,
 }: CreatorShellProps) {
-  const navigation = [
-    {
-      id: "mission-control",
-      label: dictionary.navigation.missionControl,
-    },
-    {
-      id: "my-channel",
-      label: dictionary.navigation.myChannel,
-    },
-    {
-      id: "competitors",
-      label: dictionary.navigation.competitors,
-    },
-    {
-      id: "ai-strategy",
-      label: dictionary.navigation.aiStrategy,
-    },
-    {
-      id: "viral-ideas",
-      label: dictionary.navigation.viralIdeas,
-    },
-    {
-      id: "analytics",
-      label: dictionary.navigation.analytics,
-    },
-    {
-      id: "settings",
-      label: dictionary.navigation.settings,
-    },
-  ];
+  const pathname = usePathname();
+
+  const hqBasePath = `/${locale}/hq`;
+
+  const isHq =
+    pathname === hqBasePath ||
+    pathname.startsWith(`${hqBasePath}/`);
+
+  const navigation = isHq
+    ? hqNavigation
+    : platformNavigation;
 
   return (
     <main className={styles.appShell}>
       <aside className={styles.sidebar}>
-        <div className={styles.brand}>
-          <div className={styles.brandMark}>C</div>
-
-          <div>
-            <p className={styles.brandName}>CreatorOS</p>
-
-            <p className={styles.brandSubtitle}>
-              Growth Intelligence
-            </p>
-          </div>
-        </div>
-
-        <nav
-          aria-label={dictionary.navigation.platform}
-          className={styles.navigation}
-        >
-          <p className={styles.navigationLabel}>
-            {dictionary.navigation.platform}
-          </p>
-
-          {navigation.map((item, index) => (
-            <button
-              aria-current={index === 0 ? "page" : undefined}
-              className={`${styles.navItem} ${
-                index === 0 ? styles.navItemActive : ""
-              }`}
-              key={item.id}
-              type="button"
-            >
-              <span
-                aria-hidden="true"
-                className={styles.navDot}
-              />
-
-              {item.label}
-            </button>
-          ))}
-        </nav>
+        <Sidebar
+          items={navigation}
+          locale={locale}
+          sectionLabel={
+            isHq
+              ? "INTELIGENCIA ESTRATÉGICA"
+              : dictionary.navigation.platform
+          }
+          subtitle={
+            isHq
+              ? "Strategic Intelligence"
+              : "Growth Intelligence"
+          }
+          title={isHq ? "CreatorOS HQ" : "CreatorOS"}
+        />
 
         <div className={styles.sidebarFooter}>
           <p className={styles.planLabel}>
-            {dictionary.dashboard.currentPlan}
+            {isHq
+              ? "Estado del proyecto"
+              : dictionary.dashboard.currentPlan}
           </p>
 
           <strong className={styles.planName}>
-            CreatorOS MVP
+            {isHq ? "Sprint 9" : "CreatorOS MVP"}
           </strong>
 
           <span className={styles.planDetail}>
-            {dictionary.dashboard.developmentEnvironment}
+            {isHq
+              ? "HQ en implementación"
+              : dictionary.dashboard.developmentEnvironment}
           </span>
 
           <span className={styles.planDetail}>

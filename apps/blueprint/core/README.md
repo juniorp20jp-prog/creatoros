@@ -13,6 +13,7 @@ core/
   interfaces/   Public engine and AI provider contracts
   intelligence/ Pure interpreters that turn engine output into explainable domain results
   pipeline/     Reusable sequential AI pipeline
+  persistence/  Storage-agnostic analysis-run records and repositories
   providers/    AI provider registration and lookup
   services/     Execution context, runtime, and result factories
   types/        Cross-cutting execution contracts
@@ -91,6 +92,13 @@ boundary so engine contracts remain vendor-neutral.
 Own cross-cutting execution behavior: clocks, identifier generation, context
 creation, result metadata, and runtime orchestration. Engines must not duplicate
 these concerns.
+
+### Persistence
+
+Defines the versioned, storage-safe `CreatorAnalysisRunRecord`, mapping and
+validation boundaries, and an asynchronous repository contract. The initial
+in-memory repository uses defensive copies and exists only for deterministic
+tests and architecture validation. Core does not select or connect a database.
 
 ## Creator Intelligence Engine
 

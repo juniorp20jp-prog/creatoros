@@ -101,6 +101,15 @@
   border-radius: 999px;
 }
 
+.navIcon {
+  display: inline-grid;
+  width: 22px;
+  min-width: 22px;
+  place-items: center;
+  color: currentColor;
+  font-size: 0.9rem;
+  line-height: 1;
+}
 .sidebarFooter {
   margin-top: auto;
   padding: 18px;

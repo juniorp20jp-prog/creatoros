@@ -4,6 +4,7 @@ export * from "./engines";
 export * from "./interfaces";
 export * from "./intelligence";
 export * from "./pipeline";
+export * from "./persistence";
 export * from "./providers";
 export * from "./services";
 export * from "./types";

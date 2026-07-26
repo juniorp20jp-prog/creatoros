@@ -1,5 +1,5 @@
 import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
+import { Button, Card } from "@repo/ui";
 import styles from "./page.module.css";
 
 type Props = Omit<ImageProps, "src"> & {
@@ -37,7 +37,17 @@ export default function Home() {
           </li>
           <li>Save and see your changes instantly.</li>
         </ol>
+<Card
+  title="CreatorOS UI"
+  subtitle="Primer Card compartido"
+>
+  <p>
+    Este componente proviene del paquete compartido
+    <strong> @repo/ui</strong>.
+  </p>
 
+  <Button>Botón dentro del Card</Button>
+</Card>
         <div className={styles.ctas}>
           <a
             className={styles.primary}
