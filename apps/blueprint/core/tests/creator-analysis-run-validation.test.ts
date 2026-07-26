@@ -26,8 +26,11 @@ test("unsupported future schema versions are rejected explicitly", async () => {
 });
 
 test("missing required fields are rejected", async () => {
-  const { id: _id, ...record } = await validRecord();
-  const result = parseCreatorAnalysisRunRecord(record);
+  const record = await validRecord();
+  const withoutId = Object.fromEntries(
+    Object.entries(record).filter(([key]) => key !== "id"),
+  );
+  const result = parseCreatorAnalysisRunRecord(withoutId);
   assert.equal(result.status, "invalid");
   if (result.status === "invalid") {
     assert.ok(result.error.issues.some((entry) => entry.path === "record.id"));

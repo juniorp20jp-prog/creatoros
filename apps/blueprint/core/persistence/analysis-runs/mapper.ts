@@ -62,6 +62,18 @@ export function deserializeCreatorAnalysisRun(
     return { status: "failure", error: parsed.error };
   }
 
-  const { schemaVersion: _schemaVersion, ...run } = parsed.record;
-  return { status: "success", run: structuredClone(run) };
+  const record = parsed.record;
+  return {
+    status: "success",
+    run: structuredClone({
+      id: record.id,
+      status: record.status,
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+      locale: record.locale,
+      source: record.source,
+      snapshots: record.snapshots,
+      metadata: record.metadata,
+    }),
+  };
 }
