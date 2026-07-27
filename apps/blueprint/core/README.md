@@ -14,7 +14,7 @@ core/
   interfaces/   Public engine and AI provider contracts
   intelligence/ Pure interpreters that turn engine output into explainable domain results
   pipeline/     Reusable sequential AI pipeline
-  persistence/  Storage-agnostic analysis-run records and repositories
+  persistence/  Versioned analysis history, lifecycle, repositories, and orchestration
   providers/    AI provider registration and lookup
   services/     Execution context, runtime, and result factories
   types/        Cross-cutting execution contracts
@@ -105,10 +105,15 @@ these concerns.
 
 ### Persistence
 
-Defines the versioned, storage-safe `CreatorAnalysisRunRecord`, mapping and
-validation boundaries, and an asynchronous repository contract. The initial
-in-memory repository uses defensive copies and exists only for deterministic
-tests and architecture validation. Core does not select or connect a database.
+Defines the provider-neutral V2 `AnalysisRun`, its centralized lifecycle,
+typed repository failures, queryable channel history, and the orchestration
+boundary from channel adapter through Creator Intelligence analysis to
+persistence. The initial in-memory repository uses instance-local state and
+defensive copies and exists only for deterministic tests and architecture
+validation. It does not persist raw source payloads. The Sprint 9 V1 aggregate
+remains available as an explicit legacy compatibility contract. Core does not
+select or connect a database. Full lifecycle, privacy, versioning, and durable
+adapter guidance is documented in `persistence/analysis-runs/README.md`.
 
 ## Creator Intelligence Engine
 

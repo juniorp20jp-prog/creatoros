@@ -4,6 +4,7 @@ export {
 } from "./creator-intelligence-engine";
 export {
   CREATOR_ANALYSIS_PIPELINE_STEPS,
+  CREATOR_ANALYSIS_PIPELINE_VERSION,
   CreatorIntelligenceAnalysisPipeline,
 } from "./analysis-pipeline";
 export type {

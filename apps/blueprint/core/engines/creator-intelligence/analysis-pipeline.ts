@@ -25,6 +25,8 @@ export const CREATOR_ANALYSIS_PIPELINE_STEPS = [
   "recommendations",
 ] as const;
 
+export const CREATOR_ANALYSIS_PIPELINE_VERSION = "1.0.0" as const;
+
 export class CreatorIntelligenceAnalysisPipeline {
   constructor(
     private readonly normalizer: ChannelDataNormalizer =
