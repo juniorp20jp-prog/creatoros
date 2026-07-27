@@ -7,6 +7,7 @@ import type {
   EngineExecutionResult,
 } from "../../types";
 import { assertNonEmptyString } from "../../utilities/assertions";
+import { CreatorIntelligenceAnalysisPipeline } from "./analysis-pipeline";
 import {
   CREATOR_INTELLIGENCE_ENGINE_ID,
   type CreatorIntelligenceEngineId,
@@ -18,9 +19,10 @@ import {
 const definition = {
   id: CREATOR_INTELLIGENCE_ENGINE_ID,
   name: "Creator Intelligence Engine",
-  version: "0.1.0",
+  version: "0.2.0",
   capabilities: [
     "creator-context",
+    "deterministic-channel-analysis",
     "provider-orchestration",
     "recommendation-pipeline",
   ],
@@ -40,6 +42,8 @@ export class CreatorIntelligenceEngine
     private readonly pipeline = new AiPipeline<CreatorIntelligencePipelineState>(
       [],
     ),
+    private readonly analysisPipeline =
+      new CreatorIntelligenceAnalysisPipeline(),
   ) {}
 
   async execute(
@@ -61,6 +65,16 @@ export class CreatorIntelligenceEngine
       const providerIds = Array.from(
         new Set(input.sources.map((source) => source.providerId)),
       );
+      const analysisResult = input.rawChannelData
+        ? this.analysisPipeline.run(input.rawChannelData, {
+            analysisId: `analysis_${context.executionId}`,
+            analyzedAt: context.now(),
+          })
+        : undefined;
+      const completedStepIds = [
+        ...pipelineResult.completedStepIds,
+        ...(analysisResult?.completedStepIds ?? []),
+      ];
 
       return completeExecution(
         context,
@@ -69,15 +83,20 @@ export class CreatorIntelligenceEngine
           objective: input.objective,
           creatorId: input.creator.creatorId,
           readiness:
-            input.sources.length === 0
+            analysisResult
+              ? "analysis-completed"
+              : input.sources.length === 0
               ? "awaiting-sources"
               : "ready-for-providers",
           signals: pipelineResult.state.signals,
           recommendations: pipelineResult.state.recommendations,
+          ...(analysisResult
+            ? { analysis: analysisResult.analysis }
+            : {}),
         },
         {
           providerIds,
-          completedStepIds: pipelineResult.completedStepIds,
+          completedStepIds,
         },
       );
     } catch (error) {
@@ -98,6 +117,16 @@ export class CreatorIntelligenceEngine
     for (const source of input.sources) {
       assertNonEmptyString(source.sourceId, "sources[].sourceId");
       assertNonEmptyString(source.providerId, "sources[].providerId");
+    }
+
+    if (
+      input.rawChannelData &&
+      input.rawChannelData.creator.id.trim() !==
+        input.creator.creatorId.trim()
+    ) {
+      throw new Error(
+        "rawChannelData.creator.id must match creator.creatorId.",
+      );
     }
   }
 }

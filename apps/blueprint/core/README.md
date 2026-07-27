@@ -110,10 +110,18 @@ Current responsibilities:
 - Validate required identifiers.
 - Produce a typed execution result.
 - Report whether it is awaiting sources or ready for provider-backed steps.
+- Optionally normalize explicit provider-neutral channel data.
+- Calculate deterministic metrics, scores, opportunities, and recommendations.
 - Expose stable metadata, capabilities, and version information.
 
-It does not analyze YouTube data or call an AI provider yet. Empty signals and
-recommendations are intentional until real pipeline steps are approved.
+It does not fetch or analyze YouTube provider payloads and does not call an AI
+provider. Without `rawChannelData`, empty signals and recommendations preserve
+the original orchestration contract. With `rawChannelData`, the deterministic
+analysis result is exposed separately through `output.analysis`.
+
+The analysis architecture, domain models, formulas, extension contracts, and
+limitations are documented in
+`engines/creator-intelligence/README.md`.
 
 ```ts
 import { executeCreatorIntelligence } from "./core";
