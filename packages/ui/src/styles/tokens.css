@@ -1,0 +1,181 @@
+:root {
+  /* =========================================================
+     CREATOROS DESIGN SYSTEM — BRAND
+     ========================================================= */
+
+  --color-brand-primary: #4f7cff;
+  --color-brand-secondary: #5b6cff;
+  --color-brand-accent: #8b7cff;
+  --color-brand-primary-soft: rgba(79, 124, 255, 0.12);
+  --color-brand-secondary-soft: rgba(91, 108, 255, 0.04);
+  --color-brand-border: rgba(79, 124, 255, 0.28);
+  --color-focus-ring: rgba(79, 124, 255, 0.35);
+
+  /* =========================================================
+     BACKGROUNDS AND SURFACES
+     ========================================================= */
+
+  --color-background: #081426;
+  --color-background-elevated: #0d192b;
+
+  --color-surface: #111c31;
+  --color-surface-hover: #16233b;
+  --color-surface-soft: rgba(255, 255, 255, 0.04);
+
+  /* =========================================================
+     BORDERS
+     ========================================================= */
+
+  --color-border: #25324d;
+  --color-border-subtle: rgba(148, 163, 184, 0.14);
+  --color-border-strong: rgba(148, 163, 184, 0.28);
+
+  /* =========================================================
+     TEXT
+     ========================================================= */
+
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #a8b3c7;
+  --color-text-muted: #718096;
+  --color-text-disabled: #4b5568;
+  --color-text-inverse: #ffffff;
+
+  /* =========================================================
+     STATUS
+     ========================================================= */
+
+  --color-success: #21c77a;
+  --color-warning: #f5b942;
+  --color-danger: #f04e4e;
+  --color-danger-strong: #dc2626;
+  --color-info: #4aa8ff;
+
+  /* =========================================================
+     SPACING
+     ========================================================= */
+
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-10: 80px;
+  --space-12: 96px;
+
+  /* =========================================================
+     BORDER RADIUS
+     ========================================================= */
+
+  --radius-none: 0;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* =========================================================
+     SHADOWS
+     ========================================================= */
+
+  --shadow-none: none;
+  --shadow-sm:
+    0 8px 24px rgba(0, 0, 0, 0.14);
+
+  --shadow-md:
+    0 16px 48px rgba(0, 0, 0, 0.2);
+
+  --shadow-lg:
+    0 24px 80px rgba(0, 0, 0, 0.24);
+
+  /* =========================================================
+     TYPOGRAPHY
+     ========================================================= */
+
+  --font-family-sans:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 2rem;
+  --font-size-display: clamp(2.5rem, 5vw, 4rem);
+  --font-size-h1: 2.25rem;
+  --font-size-h2: 1.875rem;
+  --font-size-h3: 1.5rem;
+  --font-size-body-lg: 1.125rem;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-xs: 1rem;
+  --line-height-sm: 1.25rem;
+  --line-height-md: 1.5rem;
+  --line-height-lg: 1.75rem;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+
+  /* =========================================================
+     MOTION
+     ========================================================= */
+
+  --duration-fast: 160ms;
+  --duration-normal: 220ms;
+  --duration-slow: 320ms;
+  --easing-standard: ease;
+  --transition-fast:
+    var(--duration-fast) var(--easing-standard);
+  --transition-normal:
+    var(--duration-normal) var(--easing-standard);
+  --motion-duration-autofill: 5000s;
+
+  /* =========================================================
+     BORDERS, CONTROLS, AND STATES
+     ========================================================= */
+
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+
+  --control-height-sm: 36px;
+  --control-height-md: 44px;
+  --control-height-lg: 52px;
+  --control-autofill-inset-size: 1000px;
+
+  --icon-size-sm: 16px;
+  --icon-size-md: 20px;
+  --opacity-disabled: 0.55;
+
+  /* =========================================================
+     ACCESSIBILITY
+     ========================================================= */
+
+  --focus-ring:
+    0 0 0 3px var(--color-focus-ring);
+  --focus-ring-success:
+    0 0 0 3px rgba(33, 199, 122, 0.28);
+  --focus-ring-danger:
+    0 0 0 3px rgba(240, 78, 78, 0.3);
+
+  /* =========================================================
+     TEMPORARY COMPATIBILITY ALIASES
+
+     Estos nombres mantienen funcionando los estilos antiguos.
+     Serán eliminados cuando termine la migración.
+     ========================================================= */
+
+  --color-primary: var(--color-brand-primary);
+  --color-primary-hover: var(--color-brand-secondary);
+  --color-white: var(--color-text-inverse);
+}
