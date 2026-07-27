@@ -8,6 +8,7 @@ CSS, or translated interface copy.
 
 ```text
 core/
+  adapters/     Source-specific validation and mapping into domain inputs
   domain/       Business models shared by engines
   engines/      Engine implementations and the typed engine registry
   interfaces/   Public engine and AI provider contracts
@@ -50,6 +51,15 @@ The Dashboard and other UI layers consume Core results, but Core never imports
 presentation components or localization dictionaries.
 
 ## Responsibilities
+
+### Channel data adapters
+
+Validate untrusted source-specific channel data and map it to the
+provider-neutral `RawChannelData` contract. Adapter failures stop before the
+Creator Intelligence pipeline; partial results continue with typed warnings.
+Adapters never calculate analysis or call external services. The contract,
+fixture implementation, versioning strategy, and privacy constraints are
+documented in `adapters/channel-data/README.md`.
 
 ### Domain
 
