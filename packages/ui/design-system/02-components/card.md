@@ -110,11 +110,10 @@ The Card component supports:
 
 - Default
 - Hover
-- Focus
-- Selected
-- Disabled (when applicable)
+- `focus-within` presentation for nested controls
 
 Interactive presentation must not be treated as control semantics.
+Card does not implement selected or disabled states.
 
 ---
 
@@ -154,7 +153,7 @@ Avoid using cards when a simple container is sufficient.
 </Card>
 
 <Card variant="interactive">
-    Open Project
+    <a href="/projects/current">Open Project</a>
 </Card>
 
 <Card variant="highlighted">
@@ -184,7 +183,8 @@ The Card component is complete when:
 
 - All variants are implemented.
 - Padding options are available.
-- Interactive behavior is accessible.
+- Interactive presentation does not claim control semantics.
+- Nested interactive content remains semantic and keyboard operable.
 - Design tokens are used exclusively.
 - No hardcoded styling values exist.
 - Documentation matches the implementation.

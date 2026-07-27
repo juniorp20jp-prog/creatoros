@@ -194,17 +194,17 @@ Use pill buttons only when the design intentionally requires that shape.
 
 ## Cards
 
-Standard cards should use:
+The canonical shared Card uses:
 
 ```css
-border-radius: var(--radius-lg);
+border-radius: var(--radius-md);
 ```
 
-Large highlighted cards may use:
+Larger product surfaces that are not the shared Card may use
+`--radius-lg` or `--radius-xl` when their design explicitly requires
+greater separation.
 
-```css
-border-radius: var(--radius-xl);
-```
+Card variants do not change radius.
 
 ---
 
@@ -303,7 +303,7 @@ Do not rely on shape alone to communicate meaning.
 
 ```css
 .card {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
 }
 
 .input {

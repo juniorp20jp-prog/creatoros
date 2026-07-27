@@ -18,6 +18,11 @@ Sources of truth:
 - Public API: `packages/ui/src/index.ts`
 - Distribution rules: `packages/ui/README.md`
 
+Foundation tokens are the documented consumer-facing vocabulary. Operational
+tokens for control dimensions, icons, autofill, and component-specific states
+are internal implementation details; they are validated for integrity but are
+not stable consumer contracts.
+
 ---
 
 ## 1. Purpose

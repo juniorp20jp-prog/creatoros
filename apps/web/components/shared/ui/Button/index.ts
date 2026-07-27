@@ -1,7 +1,7 @@
-export { Button } from "./Button";
-
-export type {
-  ButtonProps,
-  ButtonSize,
-  ButtonVariant,
-} from "./Button";
+// Legacy Web path retained as a compatibility reexport.
+export {
+  Button,
+  type ButtonProps,
+  type ButtonSize,
+  type ButtonVariant,
+} from "@repo/ui";

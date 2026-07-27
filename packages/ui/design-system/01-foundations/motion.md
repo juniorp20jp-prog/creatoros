@@ -150,12 +150,14 @@ Used for:
 ```css
 .card {
     transition:
-        background var(--duration-normal) ease,
-        box-shadow var(--duration-normal) ease;
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast);
 }
 
 .card:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
 }
 ```
 

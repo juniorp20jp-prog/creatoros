@@ -13,7 +13,7 @@ It is designed to be:
 - Themeable
 - Fully typed
 - Token-based
-- WCAG AA compliant
+- Built on native input semantics
 
 ---
 

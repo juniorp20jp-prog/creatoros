@@ -35,7 +35,8 @@ Examples:
 
 ## Search
 
-Optimized for search experiences.
+Use the native `type="search"` attribute for search experiences.
+Input does not add a separate visual search variant.
 
 Examples:
 
@@ -47,15 +48,14 @@ Examples:
 
 ## Password
 
-Used for secure text entry.
+Use the native `type="password"` attribute for secure text entry.
+Input does not currently include a visibility toggle.
 
 Examples:
 
 - Login
 - API keys
 - Account settings
-
-Password fields should support optional visibility toggling.
 
 ---
 
@@ -183,7 +183,7 @@ Validation messages should:
 
 The Input component is complete when:
 
-- All variants exist.
+- Native input types remain available.
 - All sizes exist.
 - Validation states are implemented.
 - Accessibility requirements are satisfied.

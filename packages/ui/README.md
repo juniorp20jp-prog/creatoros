@@ -62,8 +62,10 @@ implementations.
 ## Distribution model
 
 `@repo/ui` is source-first and private to this Turborepo. Its export map
-points to TypeScript source, and Next.js consumers transpile the workspace
-package through `transpilePackages`.
+points to TypeScript source. Each Next.js consumer must be able to compile
+workspace TypeScript directly. Applications may declare `transpilePackages`
+explicitly, while supported Next.js configurations may handle workspace
+source without that option.
 
 The package therefore has no separate build artifact. Type safety is enforced
 with `tsc --noEmit`, and consumer builds validate source distribution.
@@ -72,11 +74,22 @@ with `tsc --noEmit`, and consumer builds validate source distribution.
 
 `src/styles/tokens.css` is the only token source of truth.
 
+Semantic color, spacing, radius, shadow, typography, and motion tokens are
+consumer-facing foundations. Control dimensions, icon dimensions, autofill
+values, and component-specific focus treatments are internal implementation
+tokens. Internal tokens remain validated but are not a stable consumer API.
+
 Applications must import `@repo/ui/styles/globals.css` from their root layout
 before application-local global styles. This loads the shared tokens and reset
 while allowing local overrides. Components use CSS Modules and must not
 introduce unresolved CSS custom properties. The token test checks this
 invariant.
+
+## Public utilities
+
+The root API also exports `cn` and its `ClassValue` type. `cn` combines string
+class names and removes false, null, and undefined values. It is intentionally
+small and public so consumers do not recreate component class-name joining.
 
 ## Testing
 

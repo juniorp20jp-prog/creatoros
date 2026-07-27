@@ -75,7 +75,7 @@ Used for:
 - Buttons
 - Inputs
 - Dropdown menus
-- Small cards
+- Elevated and interactive shared cards
 
 ---
 
@@ -87,10 +87,10 @@ Used for:
 
 Used for:
 
-- Standard cards
 - Dashboard widgets
 - Popovers
 - Navigation panels
+- Larger floating product surfaces
 
 ---
 
@@ -117,15 +117,16 @@ Example:
 
 ```css
 .card {
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-none);
 }
 
-.card:hover {
-    box-shadow: var(--shadow-md);
+.card.interactive:hover {
+    box-shadow: var(--shadow-sm);
 }
 ```
 
-Avoid dramatic shadow changes.
+The canonical shared Card uses `--shadow-sm`, not `--shadow-md`, for its
+elevated and interactive presentation. Avoid dramatic shadow changes.
 
 ---
 
@@ -146,7 +147,7 @@ Always combine elevation with:
 
 ```css
 .card {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .modal {
