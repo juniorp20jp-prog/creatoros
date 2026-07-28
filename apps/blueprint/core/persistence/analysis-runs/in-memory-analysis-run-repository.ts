@@ -4,9 +4,11 @@ import type {
   AnalysisRun,
   AnalysisRunHistoryPage,
   AnalysisRunHistoryQuery,
+  AnalysisRunMutationOptions,
   AnalysisRunStatus,
   CompleteAnalysisRunInput,
   CreateAnalysisRunInput,
+  DeleteManyAnalysisRunsInput,
   FailAnalysisRunInput,
 } from "./analysis-run-model";
 import { ANALYSIS_RUN_SCHEMA_VERSION } from "./analysis-run-model";
@@ -74,15 +76,16 @@ export class InMemoryAnalysisRunRepository
       return failure(inputError);
     }
 
-    if (this.records.has(input.analysisRunId)) {
+    const analysisRunId = input.analysisRunId.trim();
+    if (this.records.has(analysisRunId)) {
       return failure({
         code: "duplicate-id",
-        message: `Analysis run ${input.analysisRunId} already exists.`,
-        analysisRunId: input.analysisRunId,
+        message: `Analysis run ${analysisRunId} already exists.`,
+        analysisRunId,
       });
     }
 
-    const timestamp = this.timestamp(input.analysisRunId);
+    const timestamp = this.timestamp(analysisRunId);
     if (timestamp.status === "failure") {
       return timestamp;
     }
@@ -90,7 +93,8 @@ export class InMemoryAnalysisRunRepository
     try {
       const run: AnalysisRun = {
         schemaVersion: ANALYSIS_RUN_SCHEMA_VERSION,
-        analysisRunId: input.analysisRunId.trim(),
+        revision: 1,
+        analysisRunId,
         creatorId: input.creatorId.trim(),
         channelId: input.channelId.trim(),
         status: "pending",
@@ -140,10 +144,19 @@ export class InMemoryAnalysisRunRepository
   async updateStatus(
     analysisRunId: string,
     status: AnalysisRunStatus,
+    options?: AnalysisRunMutationOptions,
   ): Promise<AnalysisRunRepositoryResult<AnalysisRun>> {
     const current = this.records.get(analysisRunId);
     if (!current) {
       return this.notFound(analysisRunId);
+    }
+
+    const concurrencyError = this.validateExpectedRevision(
+      current,
+      options,
+    );
+    if (concurrencyError) {
+      return failure(concurrencyError);
     }
 
     if (
@@ -165,6 +178,7 @@ export class InMemoryAnalysisRunRepository
 
     return this.store({
       ...current,
+      revision: current.revision + 1,
       status,
       updatedAt: timestamp.value,
     });
@@ -173,10 +187,19 @@ export class InMemoryAnalysisRunRepository
   async complete(
     analysisRunId: string,
     input: CompleteAnalysisRunInput,
+    options?: AnalysisRunMutationOptions,
   ): Promise<AnalysisRunRepositoryResult<AnalysisRun>> {
     const current = this.records.get(analysisRunId);
     if (!current) {
       return this.notFound(analysisRunId);
+    }
+
+    const concurrencyError = this.validateExpectedRevision(
+      current,
+      options,
+    );
+    if (concurrencyError) {
+      return failure(concurrencyError);
     }
 
     if (!canTransitionAnalysisRun(current.status, "completed")) {
@@ -206,6 +229,7 @@ export class InMemoryAnalysisRunRepository
 
     return this.store({
       ...current,
+      revision: current.revision + 1,
       status: "completed",
       adapterMetadata: clone(input.adapterMetadata),
       adapterWarnings: clone(input.adapterWarnings),
@@ -218,10 +242,19 @@ export class InMemoryAnalysisRunRepository
   async fail(
     analysisRunId: string,
     input: FailAnalysisRunInput,
+    options?: AnalysisRunMutationOptions,
   ): Promise<AnalysisRunRepositoryResult<AnalysisRun>> {
     const current = this.records.get(analysisRunId);
     if (!current) {
       return this.notFound(analysisRunId);
+    }
+
+    const concurrencyError = this.validateExpectedRevision(
+      current,
+      options,
+    );
+    if (concurrencyError) {
+      return failure(concurrencyError);
     }
 
     if (!canTransitionAnalysisRun(current.status, "failed")) {
@@ -239,6 +272,7 @@ export class InMemoryAnalysisRunRepository
 
     return this.store({
       ...current,
+      revision: current.revision + 1,
       status: "failed",
       adapterWarnings: clone(input.adapterWarnings ?? []),
       failure: clone(input.failure),
@@ -322,6 +356,82 @@ export class InMemoryAnalysisRunRepository
       .sort(compareHistory)[0];
 
     return record ? this.read(record) : success(null);
+  }
+
+  async deleteById(
+    analysisRunId: string,
+    options?: AnalysisRunMutationOptions,
+  ): Promise<AnalysisRunRepositoryResult<AnalysisRun>> {
+    const current = this.records.get(analysisRunId);
+    if (!current) {
+      return this.notFound(analysisRunId);
+    }
+
+    const concurrencyError = this.validateExpectedRevision(
+      current,
+      options,
+    );
+    if (concurrencyError) {
+      return failure(concurrencyError);
+    }
+
+    try {
+      const deleted = clone(current);
+      this.records.delete(analysisRunId);
+      return success(deleted);
+    } catch {
+      return failure({
+        code: "persistence-failure",
+        message: "Analysis run could not be cloned for deletion.",
+        analysisRunId,
+      });
+    }
+  }
+
+  async deleteMany(
+    input: DeleteManyAnalysisRunsInput,
+  ): Promise<
+    AnalysisRunRepositoryResult<ReadonlyArray<AnalysisRun>>
+  > {
+    const inputError = this.validateDeleteManyInput(input);
+    if (inputError) {
+      return failure(inputError);
+    }
+
+    const records: AnalysisRun[] = [];
+    for (const analysisRunId of input.analysisRunIds) {
+      const record = this.records.get(analysisRunId);
+      if (!record) {
+        return this.notFoundMany(analysisRunId);
+      }
+
+      const concurrencyError = this.validateExpectedRevision(
+        record,
+        input.expectedRevisions?.[analysisRunId] === undefined
+          ? undefined
+          : {
+              expectedRevision:
+                input.expectedRevisions[analysisRunId],
+            },
+      );
+      if (concurrencyError) {
+        return failure(concurrencyError);
+      }
+      records.push(record);
+    }
+
+    try {
+      const deleted = records.map(clone);
+      for (const analysisRunId of input.analysisRunIds) {
+        this.records.delete(analysisRunId);
+      }
+      return success(deleted);
+    } catch {
+      return failure({
+        code: "persistence-failure",
+        message: "Analysis runs could not be cloned for deletion.",
+      });
+    }
   }
 
   private validateCreateInput(
@@ -409,6 +519,100 @@ export class InMemoryAnalysisRunRepository
     return undefined;
   }
 
+  private validateDeleteManyInput(
+    input: DeleteManyAnalysisRunsInput,
+  ): AnalysisRunRepositoryError | undefined {
+    if (input.analysisRunIds.length === 0) {
+      return {
+        code: "invalid-query",
+        message: "deleteMany requires at least one explicit analysis run id.",
+      };
+    }
+
+    if (
+      input.analysisRunIds.some(
+        (analysisRunId) => !isNonEmptyString(analysisRunId),
+      )
+    ) {
+      return {
+        code: "invalid-query",
+        message: "Deletion identifiers must be non-empty strings.",
+      };
+    }
+
+    if (
+      new Set(input.analysisRunIds).size !==
+      input.analysisRunIds.length
+    ) {
+      return {
+        code: "invalid-query",
+        message: "Deletion identifiers must be unique.",
+      };
+    }
+
+    if (
+      input.expectedRevisions &&
+      Object.keys(input.expectedRevisions).some(
+        (analysisRunId) =>
+          !input.analysisRunIds.includes(analysisRunId),
+      )
+    ) {
+      return {
+        code: "invalid-query",
+        message:
+          "Expected revisions may reference only explicit deletion identifiers.",
+      };
+    }
+
+    if (
+      input.expectedRevisions &&
+      Object.values(input.expectedRevisions).some(
+        (revision) =>
+          !Number.isInteger(revision) || revision < 1,
+      )
+    ) {
+      return {
+        code: "invalid-query",
+        message: "Expected revisions must be positive integers.",
+      };
+    }
+
+    return undefined;
+  }
+
+  private validateExpectedRevision(
+    current: AnalysisRun,
+    options?: AnalysisRunMutationOptions,
+  ): AnalysisRunRepositoryError | undefined {
+    const expectedRevision = options?.expectedRevision;
+    if (expectedRevision === undefined) {
+      return undefined;
+    }
+
+    if (
+      !Number.isInteger(expectedRevision) ||
+      expectedRevision < 1
+    ) {
+      return {
+        code: "invalid-query",
+        message: "expectedRevision must be a positive integer.",
+        analysisRunId: current.analysisRunId,
+      };
+    }
+
+    if (expectedRevision !== current.revision) {
+      return {
+        code: "concurrency-conflict",
+        message: `Analysis run ${current.analysisRunId} has revision ${current.revision}, not ${expectedRevision}.`,
+        analysisRunId: current.analysisRunId,
+        expectedRevision,
+        actualRevision: current.revision,
+      };
+    }
+
+    return undefined;
+  }
+
   private timestamp(
     analysisRunId: string,
   ): AnalysisRunRepositoryResult<string> {
@@ -450,6 +654,14 @@ export class InMemoryAnalysisRunRepository
       });
     }
 
+    if (!Number.isInteger(record.revision) || record.revision < 1) {
+      return failure({
+        code: "persistence-failure",
+        message: "Analysis run revision is invalid.",
+        analysisRunId: record.analysisRunId,
+      });
+    }
+
     try {
       return success(clone(record));
     } catch {
@@ -480,6 +692,16 @@ export class InMemoryAnalysisRunRepository
   private notFound(
     analysisRunId: string,
   ): AnalysisRunRepositoryResult<AnalysisRun> {
+    return failure({
+      code: "not-found",
+      message: `Analysis run ${analysisRunId} was not found.`,
+      analysisRunId,
+    });
+  }
+
+  private notFoundMany(
+    analysisRunId: string,
+  ): AnalysisRunRepositoryResult<ReadonlyArray<AnalysisRun>> {
     return failure({
       code: "not-found",
       message: `Analysis run ${analysisRunId} was not found.`,

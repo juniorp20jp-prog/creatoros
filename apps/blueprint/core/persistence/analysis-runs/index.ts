@@ -12,12 +12,45 @@ export type {
   AnalysisRunFailureStage,
   AnalysisRunHistoryPage,
   AnalysisRunHistoryQuery,
+  AnalysisRunMutationOptions,
   AnalysisRunSourceMetadata,
   AnalysisRunStatus,
   CompleteAnalysisRunInput,
   CreateAnalysisRunInput,
+  DeleteManyAnalysisRunsInput,
   FailAnalysisRunInput,
 } from "./analysis-run-model";
+export {
+  mapAnalysisRunToPersistenceRecord,
+  mapPersistenceRecordToAnalysisRun,
+} from "./analysis-run-persistence-mapper";
+export type {
+  AnalysisRunPersistenceMappingError,
+  AnalysisRunPersistenceMappingErrorCode,
+  AnalysisRunPersistenceMappingIssue,
+  AnalysisRunPersistenceMappingResult,
+} from "./analysis-run-persistence-mapper";
+export type {
+  AnalysisRunPersistenceAdapterMetadata,
+  AnalysisRunPersistenceAdapterWarning,
+  AnalysisRunPersistenceFailure,
+  AnalysisRunPersistenceRecord,
+  AnalysisRunPersistenceSource,
+  PersistenceJsonObject,
+  PersistenceJsonPrimitive,
+  PersistenceJsonValue,
+} from "./analysis-run-persistence-record";
+export {
+  planAnalysisRunRetention,
+} from "./analysis-run-retention";
+export type {
+  AnalysisRunRetentionPolicy,
+  RetentionDecisionReason,
+  RetentionPlan,
+  RetentionPlanEntry,
+  RetentionPlanningError,
+  RetentionPlanningResult,
+} from "./analysis-run-retention";
 export {
   AnalysisRunOrchestrator,
 } from "./analysis-run-orchestrator";
@@ -37,6 +70,15 @@ export type {
 export {
   InMemoryAnalysisRunRepository,
 } from "./in-memory-analysis-run-repository";
+export {
+  CurrentAnalysisRunPersistenceRecordMigrator,
+} from "./persistence-record-migrator";
+export type {
+  PersistenceRecordMigrationError,
+  PersistenceRecordMigrationErrorCode,
+  PersistenceRecordMigrationResult,
+  PersistenceRecordMigrator,
+} from "./persistence-record-migrator";
 export type {
   CreatorAnalysisRunPersistenceErrorCode,
   CreatorAnalysisRunPersistenceIssue,

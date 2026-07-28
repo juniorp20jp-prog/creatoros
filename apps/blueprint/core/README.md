@@ -106,14 +106,18 @@ these concerns.
 ### Persistence
 
 Defines the provider-neutral V2 `AnalysisRun`, its centralized lifecycle,
-typed repository failures, queryable channel history, and the orchestration
-boundary from channel adapter through Creator Intelligence analysis to
-persistence. The initial in-memory repository uses instance-local state and
+typed repository failures, queryable channel history, optimistic revisions,
+explicit deletion, and the orchestration boundary from channel adapter through
+Creator Intelligence analysis to persistence. A separate JSON-safe persistence
+record and bidirectional mapper prepare a future durable implementation without
+coupling the domain to an ORM. Retention planning is pure and never deletes
+implicitly. The initial in-memory repository uses instance-local state and
 defensive copies and exists only for deterministic tests and architecture
 validation. It does not persist raw source payloads. The Sprint 9 V1 aggregate
 remains available as an explicit legacy compatibility contract. Core does not
-select or connect a database. Full lifecycle, privacy, versioning, and durable
-adapter guidance is documented in `persistence/analysis-runs/README.md`.
+select or connect a database. Full lifecycle, privacy, versioning, migration,
+conformance, and durable-adapter guidance is documented in
+`persistence/analysis-runs/README.md`.
 
 ## Creator Intelligence Engine
 

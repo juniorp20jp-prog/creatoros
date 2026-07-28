@@ -31,6 +31,7 @@ export type AnalysisRunFailure = {
 
 export type AnalysisRun = {
   schemaVersion: typeof ANALYSIS_RUN_SCHEMA_VERSION;
+  revision: number;
   analysisRunId: string;
   creatorId: string;
   channelId: string;
@@ -71,6 +72,15 @@ export type FailAnalysisRunInput = {
   failure: AnalysisRunFailure;
   adapterMetadata?: ChannelDataAdapterMetadata;
   adapterWarnings?: ReadonlyArray<ChannelDataAdapterWarning>;
+};
+
+export type AnalysisRunMutationOptions = {
+  expectedRevision?: number;
+};
+
+export type DeleteManyAnalysisRunsInput = {
+  analysisRunIds: ReadonlyArray<string>;
+  expectedRevisions?: Readonly<Record<string, number>>;
 };
 
 export type AnalysisRunHistoryQuery = {

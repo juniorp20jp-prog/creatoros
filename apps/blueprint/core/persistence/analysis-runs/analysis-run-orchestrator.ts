@@ -105,6 +105,7 @@ export class AnalysisRunOrchestrator<TSource> {
     const processing = await this.repository.updateStatus(
       analysisRunId,
       "processing",
+      { expectedRevision: created.value.revision },
     );
     if (processing.status === "failure") {
       return this.persistenceFailure(
@@ -124,6 +125,7 @@ export class AnalysisRunOrchestrator<TSource> {
           code: "CHANNEL_DATA_ADAPTER_FAILED",
           message: "Channel data adapter failed unexpectedly.",
         },
+        processing.value.revision,
       );
     }
 
@@ -135,6 +137,7 @@ export class AnalysisRunOrchestrator<TSource> {
           code: "CHANNEL_DATA_ADAPTER_FAILED",
           message: this.adapterFailureMessage(adapterResult),
         },
+        processing.value.revision,
         adapterResult,
       );
     }
@@ -153,6 +156,7 @@ export class AnalysisRunOrchestrator<TSource> {
           message:
             "Adapted creator or channel identity does not match the requested run.",
         },
+        processing.value.revision,
         adapterResult,
       );
     }
@@ -174,6 +178,7 @@ export class AnalysisRunOrchestrator<TSource> {
           code: "CREATOR_ANALYSIS_PIPELINE_FAILED",
           message: "Creator analysis pipeline failed.",
         },
+        processing.value.revision,
         adapterResult,
       );
     }
@@ -185,6 +190,7 @@ export class AnalysisRunOrchestrator<TSource> {
         adapterMetadata: adapterResult.metadata,
         adapterWarnings: adapterResult.warnings,
       },
+      { expectedRevision: processing.value.revision },
     );
     if (completed.status === "failure") {
       return this.persistenceFailure(
@@ -205,6 +211,7 @@ export class AnalysisRunOrchestrator<TSource> {
     analysisRunId: string,
     stage: "adapter" | "pipeline",
     error: PersistedAnalysisExecutionError,
+    expectedRevision: number,
     adapterResult?: ChannelDataAdapterResult,
   ): Promise<PersistedAnalysisExecutionResult> {
     const failed = await this.repository.fail(analysisRunId, {
@@ -219,6 +226,8 @@ export class AnalysisRunOrchestrator<TSource> {
             adapterWarnings: adapterResult.warnings,
           }
         : {}),
+    }, {
+      expectedRevision,
     });
 
     if (failed.status === "failure") {
