@@ -16,7 +16,7 @@ Source payload (ephemeral)
   -> AnalysisRun
   -> Persistence mapper
   -> AnalysisRunPersistenceRecord
-  -> Future durable repository
+  -> In-memory reference or Prisma durable repository
 ```
 
 `AnalysisRunOrchestrator` coordinates this flow. It creates a pending run,
@@ -40,6 +40,8 @@ Responsibilities remain separate:
   persistence without implementing their domain behavior.
 - `in-memory-analysis-run-repository.ts` is a local reference implementation
   for tests and composition experiments only.
+- `../prisma/prisma-analysis-run-repository.ts` is the explicit server-only
+  PostgreSQL implementation.
 
 ## Domain model and persistence record
 
@@ -184,31 +186,29 @@ a reviewable plan, and then call explicit deletion. This Core module does not
 implement identity, authorization, legal-retention decisions, or automatic
 erasure.
 
-## Adding durable persistence
+## Durable PostgreSQL persistence
 
-A future database adapter should:
+The approved durable adapter:
 
-1. Implement `AnalysisRunRepository` without changing the public model.
-2. Enforce unique `analysisRunId` values atomically.
-3. Map domain values through `AnalysisRunPersistenceRecord`.
-4. Enforce lifecycle changes with `WHERE revision = expectedRevision` or an
-   equivalent atomic compare-and-swap and increment.
-5. Implement explicit ID-based deletion transactionally.
-6. Run the reusable repository conformance suite.
-7. Store and query by channel, status, creation time, and run ID.
-8. Preserve stable history ordering and cursor semantics.
-9. Validate or explicitly migrate the schema version before reading a record.
-10. Map infrastructure failures to the public typed error taxonomy.
-11. Return defensive domain values rather than ORM entities.
-12. Keep credentials, raw source payloads, and database details outside Core
+1. Implements `AnalysisRunRepository` without changing the public model.
+2. Enforces unique `analysisRunId` values atomically.
+3. Maps domain values through `AnalysisRunPersistenceRecord`.
+4. Enforces lifecycle changes using an atomic identifier, revision, and status
+   compare-and-swap.
+5. Implements explicit ID-based deletion transactionally.
+6. Runs the reusable repository conformance suite against real PostgreSQL.
+7. Stores and queries by channel, status, creation time, and run ID.
+8. Preserves stable history ordering and cursor semantics.
+9. Validates the schema version before reading a record.
+10. Maps infrastructure failures to the public typed error taxonomy.
+11. Returns defensive domain values rather than ORM entities.
+12. Keeps credentials, raw source payloads, and database details outside Core
     records.
 
-No database selection, migration framework, external API, authentication, or
-background execution is introduced by this foundation.
-
-There is still no durable persistence. `InMemoryAnalysisRunRepository` remains
-development and test infrastructure only. This sprint selects no provider,
-installs no database, and performs no disk or network storage.
+PostgreSQL, Prisma ORM, the `pg` adapter, and Prisma Migrate are selected.
+Managed hosting, external APIs, authentication, and background execution
+remain outside this module. See `../prisma/README.md` and ADR-0002 for setup,
+migrations, recovery, security, and readiness criteria.
 
 ## Legacy V1 compatibility
 

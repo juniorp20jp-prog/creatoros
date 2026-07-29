@@ -7,13 +7,24 @@
     "dev": "next dev --port 3002",
     "build": "next build",
     "start": "next start --port 3001",
-    "test": "tsx --test core/tests/**/*.test.ts features/**/*.test.ts",
+    "postinstall": "prisma generate --config prisma.generate.config.ts",
+    "test": "tsx --test core/tests/*.test.ts features/**/*.test.ts",
+    "test:postgres": "tsx --test --test-concurrency=1 core/tests/postgres/*.postgres.test.ts",
+    "prisma:format": "prisma format",
+    "prisma:validate": "prisma validate",
+    "prisma:generate": "prisma generate --config prisma.generate.config.ts",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:migrate:status": "prisma migrate status",
     "lint": "eslint --max-warnings 0",
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "7",
+    "@prisma/client": "7",
     "@repo/ui": "workspace:*",
     "next": "16.2.0",
+    "pg": "^8.22.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -21,9 +32,11 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
+    "@types/pg": "^8.20.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "eslint": "^9.39.1",
+    "prisma": "7",
     "tsx": "^4.23.1",
     "typescript": "5.9.2"
   }
