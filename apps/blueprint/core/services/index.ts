@@ -12,3 +12,4 @@ export type {
   IdGenerator,
 } from "./execution-context";
 export { completeExecution, failExecution } from "./execution-result";
+export * from "./analysis-service";
