@@ -1,4 +1,4 @@
-import type { CreateIdentityInput, Identity, IdentityRepository, IdentityRepositoryError, IdentityRepositoryResult } from "../../identity";
+import type { CreateIdentityInput, Identity, IdentityProvider, IdentityRepository, IdentityRepositoryError, IdentityRepositoryResult } from "../../identity";
 import { createIdentity } from "../../identity";
 import type { AnalysisRunPrismaClient } from "./prisma-client";
 import { mapIdentityRow } from "./authentication-row-mappers";
@@ -28,10 +28,17 @@ export class PrismaIdentityRepository implements IdentityRepository {
   }
 
   async getByUserId(userId: string): Promise<IdentityRepositoryResult<Identity>> {
-    return this.find({ userId: userId.trim() }, userId);
+    try {
+      const row = await this.client.identityRow.findFirst({ where: { userId: userId.trim() }, orderBy: { createdAt: "asc" } });
+      return row ? this.map(row, userId) : failure({ code: "not-found", message: "Identity was not found.", entityId: userId });
+    } catch { return failure({ code: "persistence-failure", message: "Identity persistence failed." }); }
   }
 
-  private async find(where: { identityId: string } | { userId: string }, entityId: string): Promise<IdentityRepositoryResult<Identity>> {
+  async getByProviderSubject(provider: IdentityProvider, providerSubject: string): Promise<IdentityRepositoryResult<Identity>> {
+    return this.find({ provider_providerSubject: { provider, providerSubject: providerSubject.trim() } }, providerSubject);
+  }
+
+  private async find(where: { identityId: string } | { provider_providerSubject: { provider: string; providerSubject: string } }, entityId: string): Promise<IdentityRepositoryResult<Identity>> {
     try {
       const row = await this.client.identityRow.findUnique({ where });
       return row ? this.map(row, entityId) : failure({ code: "not-found", message: "Identity was not found.", entityId });

@@ -7,6 +7,7 @@ export type SessionRepositoryResult<TValue> = Readonly<{ status: "success"; valu
 export interface SessionRepository {
   create(input: CreateSessionInput): Promise<SessionRepositoryResult<Session>>;
   getById(sessionId: string): Promise<SessionRepositoryResult<Session>>;
+  getByTokenHash(tokenHash: string): Promise<SessionRepositoryResult<Session>>;
   listByUserId(userId: string): Promise<SessionRepositoryResult<ReadonlyArray<Session>>>;
   updateLastActivity(sessionId: string, lastActivityAt: string): Promise<SessionRepositoryResult<Session>>;
   revoke(sessionId: string, revokedAt: string): Promise<SessionRepositoryResult<Session>>;

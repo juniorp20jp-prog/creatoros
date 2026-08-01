@@ -18,6 +18,7 @@ export class InMemorySessionRepository implements SessionRepository {
     const result = createSession(input);
     if (result.status === "failure") return result;
     if (this.sessions.has(result.value.sessionId)) return failure({ code: "duplicate-id", message: "Session identifier already exists.", sessionId: result.value.sessionId });
+    if ([...this.sessions.values()].some((session) => session.tokenHash === result.value.tokenHash)) return failure({ code: "duplicate-id", message: "Session token already exists.", sessionId: result.value.sessionId });
     const user = await this.users.getById(result.value.userId);
     if (user.status === "failure") return failure({ code: "user-not-found", message: "Session user was not found.", sessionId: result.value.sessionId });
     this.sessions.set(result.value.sessionId, structuredClone(result.value));
@@ -27,6 +28,11 @@ export class InMemorySessionRepository implements SessionRepository {
   async getById(sessionId: string): Promise<SessionRepositoryResult<Session>> {
     const value = this.sessions.get(sessionId.trim());
     return value ? success(value) : failure({ code: "not-found", message: "Session was not found.", sessionId });
+  }
+
+  async getByTokenHash(tokenHash: string): Promise<SessionRepositoryResult<Session>> {
+    const value = [...this.sessions.values()].find((session) => session.tokenHash === tokenHash.trim());
+    return value ? success(value) : failure({ code: "not-found", message: "Session was not found." });
   }
 
   async listByUserId(userId: string): Promise<SessionRepositoryResult<ReadonlyArray<Session>>> {

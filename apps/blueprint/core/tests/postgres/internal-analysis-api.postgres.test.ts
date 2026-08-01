@@ -10,6 +10,8 @@ import {
 } from "../../composition";
 import {
   createAnalysisRunPrismaClient,
+  PrismaSessionRepository,
+  PrismaUserRepository,
 } from "../../persistence/prisma";
 import {
   UuidGenerator,
@@ -21,6 +23,7 @@ import {
 } from "./postgres-test-harness";
 import { InternalAnalysisApi } from "../../../server/analysis-api/internal-analysis-api";
 import { InternalAnalysisFixtureCatalog } from "../../../server/analysis-api/fixture-catalog";
+import { SessionTokenService } from "../../../server/auth";
 
 const timestamps = Array.from({ length: 200 }, (_, index) =>
   new Date(
@@ -400,10 +403,20 @@ test("invalid HTTP requests do not write PostgreSQL rows", async () => {
 test("actual Next.js Route Handlers resolve the server-only Composition Root", async () => {
   const databaseUrl = requireTestDatabaseUrl();
   const previousDatabaseUrl = process.env.DATABASE_URL;
+  const previousAuthCookieSecret = process.env.AUTH_COOKIE_SECRET;
+  const testAuthCookieSecret = "postgres-route-test-secret-32-characters";
   const cleaner = createAnalysisRunPrismaClient(databaseUrl);
   await deleteOwnedPostgresTestRows(cleaner);
-  await cleaner.disconnect();
   process.env.DATABASE_URL = databaseUrl;
+  process.env.AUTH_COOKIE_SECRET = testAuthCookieSecret;
+  const tokens = new SessionTokenService(testAuthCookieSecret);
+  const token = await tokens.generate();
+  const now = new Date();
+  const routeUser = new PrismaUserRepository(cleaner.client);
+  const routeSessions = new PrismaSessionRepository(cleaner.client);
+  await routeUser.create({ userId: "auth_test_route_user", email: "route@example.com", displayName: "Route User", locale: "es", createdAt: now.toISOString() });
+  await routeSessions.create({ sessionId: "auth_test_route_session", userId: "auth_test_route_user", tokenHash: token.tokenHash, createdAt: now.toISOString(), expiresAt: new Date(now.valueOf() + 3_600_000).toISOString(), metadata: { clientType: "internal" } });
+  await cleaner.disconnect();
 
   const route = await import(
     "../../../app/api/internal/v1/analysis-runs/route"
@@ -415,17 +428,17 @@ test("actual Next.js Route Handlers resolve the server-only Composition Root", a
     "../../../server/analysis-api/runtime"
   );
   try {
-    const created = await route.POST(
-      runRequest("analysis_run_api_pg_next_route"),
-    );
+    const anonymous = await route.POST(runRequest("analysis_run_api_pg_anonymous"));
+    const created = await route.POST(withSession(runRequest("analysis_run_api_pg_next_route"), token.token));
     const details = await detailsRoute.GET(
-      new Request("http://localhost/details"),
+      withSession(new Request("http://localhost/details"), token.token),
       {
         params: Promise.resolve({
           analysisRunId: "analysis_run_api_pg_next_route",
         }),
       },
     );
+    assert.equal(anonymous.status, 401);
     assert.equal(created.status, 201);
     assert.equal(details.status, 200);
     assert.match(
@@ -439,11 +452,22 @@ test("actual Next.js Route Handlers resolve the server-only Composition Root", a
     } else {
       process.env.DATABASE_URL = previousDatabaseUrl;
     }
+    if (previousAuthCookieSecret === undefined) {
+      delete process.env.AUTH_COOKIE_SECRET;
+    } else {
+      process.env.AUTH_COOKIE_SECRET = previousAuthCookieSecret;
+    }
     const cleanup = createAnalysisRunPrismaClient(databaseUrl);
     await deleteOwnedPostgresTestRows(cleanup);
     await cleanup.disconnect();
   }
 });
+
+function withSession(request: Request, token: string): Request {
+  const headers = new Headers(request.headers);
+  headers.set("cookie", `creatoros_session=${token}`);
+  return new Request(request, { headers });
+}
 
 test("Composition Root and HTTP transport close without leaking clients", async () => {
   const context = await createApiContext();

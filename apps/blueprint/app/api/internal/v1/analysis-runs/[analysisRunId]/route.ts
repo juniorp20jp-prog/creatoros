@@ -8,11 +8,12 @@ type AnalysisRunRouteContext = {
 };
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: AnalysisRunRouteContext,
 ): Promise<Response> {
   const { analysisRunId } = await context.params;
-  return getInternalAnalysisApiRuntime().api.getAnalysis(analysisRunId);
+  const runtime = getInternalAnalysisApiRuntime();
+  return runtime.auth.protect(request, () => runtime.api.getAnalysis(analysisRunId));
 }
 
 export async function DELETE(
@@ -20,8 +21,6 @@ export async function DELETE(
   context: AnalysisRunRouteContext,
 ): Promise<Response> {
   const { analysisRunId } = await context.params;
-  return getInternalAnalysisApiRuntime().api.deleteAnalysis(
-    request,
-    analysisRunId,
-  );
+  const runtime = getInternalAnalysisApiRuntime();
+  return runtime.auth.protect(request, () => runtime.api.deleteAnalysis(request, analysisRunId));
 }

@@ -8,4 +8,5 @@ export { PrismaAnalysisRunRepository } from "./prisma-analysis-run-repository";
 export { PrismaUserRepository } from "./prisma-user-repository";
 export { PrismaIdentityRepository } from "./prisma-identity-repository";
 export { PrismaSessionRepository } from "./prisma-session-repository";
+export { PrismaExternalIdentityProvisioner } from "./prisma-external-identity-provisioner";
 export { mapUserRow, mapIdentityRow, mapSessionRow, mapSessionMetadata } from "./authentication-row-mappers";

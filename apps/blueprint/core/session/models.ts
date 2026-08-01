@@ -11,6 +11,7 @@ export type SessionMetadata = Readonly<{
 export type Session = Readonly<{
   sessionId: string;
   userId: string;
+  tokenHash: string;
   createdAt: string;
   expiresAt: string;
   lastActivityAt: string;
@@ -21,6 +22,7 @@ export type Session = Readonly<{
 export type CreateSessionInput = Readonly<{
   sessionId: string;
   userId: string;
+  tokenHash: string;
   createdAt: string;
   expiresAt: string;
   metadata: SessionMetadata;

@@ -26,9 +26,13 @@ test("User rejects invalid email, locale, timezone, and timestamps", () => {
   }
 });
 
-test("Identity remains provider-neutral and validates identifiers", () => {
+test("Identity records a stable provider subject without provider credentials", () => {
   const result = createIdentity(identityInput);
   assert.equal(result.status, "success");
-  assert.equal(JSON.stringify(result).includes("provider"), false);
+  if (result.status === "success") {
+    assert.equal(result.value.provider, "internal");
+    assert.equal(result.value.providerSubject, identityInput.identityId);
+  }
+  assert.doesNotMatch(JSON.stringify(result), /accessToken|refreshToken|idToken|clientSecret/);
   assert.equal(createIdentity({ ...identityInput, identityId: " " }).status, "failure");
 });

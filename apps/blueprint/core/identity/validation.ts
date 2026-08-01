@@ -48,12 +48,12 @@ export function createUser(input: CreateUserInput): IdentityValidationResult<Use
   const displayName = input.displayName.trim();
   if (!displayName) return failure("displayName", "Display name is required.");
   if (!SUPPORTED_USER_LOCALES.includes(input.locale)) return failure("locale", "Locale is not supported.");
-  const timezone = input.timezone.trim();
-  if (!isTimezone(timezone)) return failure("timezone", "Timezone is invalid.");
+  const timezone = input.timezone?.trim();
+  if (timezone && !isTimezone(timezone)) return failure("timezone", "Timezone is invalid.");
   const createdAt = canonicalTimestamp(input.createdAt);
   if (!createdAt) return failure("createdAt", "Created timestamp must be canonical ISO-8601.");
 
-  return { status: "success", value: { userId, email, displayName, locale: input.locale, timezone, createdAt, updatedAt: createdAt, status: input.status ?? "active" } };
+  return { status: "success", value: { userId, email, displayName, locale: input.locale, ...(timezone ? { timezone } : {}), createdAt, updatedAt: createdAt, status: input.status ?? "active" } };
 }
 
 export function createIdentity(input: CreateIdentityInput): IdentityValidationResult<Identity> {
@@ -63,5 +63,8 @@ export function createIdentity(input: CreateIdentityInput): IdentityValidationRe
   if (!userId) return failure("userId", "User identifier is required.");
   const createdAt = canonicalTimestamp(input.createdAt);
   if (!createdAt) return failure("createdAt", "Created timestamp must be canonical ISO-8601.");
-  return { status: "success", value: { identityId, userId, status: input.status ?? "active", createdAt, updatedAt: createdAt } };
+  const provider = input.provider ?? "internal";
+  const providerSubject = (input.providerSubject ?? identityId).trim();
+  if (!providerSubject) return failure("providerSubject", "Provider subject is required.");
+  return { status: "success", value: { identityId, userId, provider, providerSubject, status: input.status ?? "active", createdAt, updatedAt: createdAt } };
 }

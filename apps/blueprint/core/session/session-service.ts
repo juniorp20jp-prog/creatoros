@@ -10,7 +10,7 @@ export type ResolvedSession = Readonly<{ session: Session; state: SessionState }
 export class SessionService {
   constructor(private readonly repository: SessionRepository, private readonly clock: Clock) {}
 
-  async createSession(input: Readonly<{ sessionId: string; userId: string; expiresAt: string; metadata: SessionMetadata }>): Promise<SessionServiceResult<Session>> {
+  async createSession(input: Readonly<{ sessionId: string; userId: string; tokenHash: string; expiresAt: string; metadata: SessionMetadata }>): Promise<SessionServiceResult<Session>> {
     return this.map(await this.repository.create({ ...input, createdAt: this.clock.now() }));
   }
 

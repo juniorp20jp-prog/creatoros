@@ -1,4 +1,4 @@
-import type { CreateIdentityInput, CreateUserInput, Identity, User } from "./models";
+import type { CreateIdentityInput, CreateUserInput, Identity, IdentityProvider, User } from "./models";
 import { type IdentityRepository, type IdentityRepositoryError, type IdentityRepositoryResult, type UserRepository } from "./repositories";
 import { createIdentity, createUser, normalizeEmail } from "./validation";
 
@@ -41,7 +41,7 @@ export class InMemoryIdentityRepository implements IdentityRepository {
     const result = createIdentity(input);
     if (result.status === "failure") return failure(result.error);
     if (this.identities.has(result.value.identityId)) return failure({ code: "duplicate-id", message: "Identity identifier already exists.", entityId: result.value.identityId });
-    if ([...this.identities.values()].some((identity) => identity.userId === result.value.userId)) return failure({ code: "duplicate-id", message: "User already has an internal identity.", entityId: result.value.userId });
+    if ([...this.identities.values()].some((identity) => identity.provider === result.value.provider && identity.providerSubject === result.value.providerSubject)) return failure({ code: "duplicate-id", message: "External identity already exists.", entityId: result.value.providerSubject });
     const user = await this.users.getById(result.value.userId);
     if (user.status === "failure") return failure({ code: "user-not-found", message: "Identity user was not found.", entityId: result.value.userId });
     this.identities.set(result.value.identityId, structuredClone(result.value));
@@ -56,5 +56,10 @@ export class InMemoryIdentityRepository implements IdentityRepository {
   async getByUserId(userId: string): Promise<IdentityRepositoryResult<Identity>> {
     const value = [...this.identities.values()].find((identity) => identity.userId === userId.trim());
     return value ? success(value) : failure({ code: "not-found", message: "Identity was not found.", entityId: userId });
+  }
+
+  async getByProviderSubject(provider: IdentityProvider, providerSubject: string): Promise<IdentityRepositoryResult<Identity>> {
+    const value = [...this.identities.values()].find((identity) => identity.provider === provider && identity.providerSubject === providerSubject.trim());
+    return value ? success(value) : failure({ code: "not-found", message: "Identity was not found.", entityId: providerSubject });
   }
 }

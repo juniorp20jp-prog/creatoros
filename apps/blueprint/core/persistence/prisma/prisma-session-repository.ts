@@ -15,7 +15,7 @@ export class PrismaSessionRepository implements SessionRepository {
     if (validated.status === "failure") return validated;
     const value = validated.value;
     try {
-      const row = await this.client.sessionRow.create({ data: { sessionId: value.sessionId, userId: value.userId, createdAt: new Date(value.createdAt), expiresAt: new Date(value.expiresAt), lastActivityAt: new Date(value.lastActivityAt), metadata: { ...value.metadata } } });
+      const row = await this.client.sessionRow.create({ data: { sessionId: value.sessionId, userId: value.userId, tokenHash: value.tokenHash, createdAt: new Date(value.createdAt), expiresAt: new Date(value.expiresAt), lastActivityAt: new Date(value.lastActivityAt), metadata: { ...value.metadata } } });
       return this.map(row, value.sessionId);
     } catch (error) {
       if (errorCode(error) === "P2002") return failure({ code: "duplicate-id", message: "Session already exists.", sessionId: value.sessionId });
@@ -29,6 +29,13 @@ export class PrismaSessionRepository implements SessionRepository {
       const row = await this.client.sessionRow.findUnique({ where: { sessionId: sessionId.trim() } });
       return row ? this.map(row, sessionId) : this.notFound(sessionId);
     } catch { return failure({ code: "persistence-failure", message: "Session persistence failed.", sessionId }); }
+  }
+
+  async getByTokenHash(tokenHash: string): Promise<SessionRepositoryResult<Session>> {
+    try {
+      const row = await this.client.sessionRow.findUnique({ where: { tokenHash: tokenHash.trim() } });
+      return row ? this.map(row, row.sessionId) : this.notFound("");
+    } catch { return failure({ code: "persistence-failure", message: "Session persistence failed." }); }
   }
 
   async listByUserId(userId: string): Promise<SessionRepositoryResult<ReadonlyArray<Session>>> {

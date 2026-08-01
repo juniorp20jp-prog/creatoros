@@ -16,6 +16,8 @@ export function createSession(input: CreateSessionInput): SessionRepositoryResul
   if (!sessionId) return failure("Session identifier is required.");
   const userId = input.userId.trim();
   if (!userId) return failure("Session user identifier is required.", sessionId);
+  const tokenHash = input.tokenHash.trim();
+  if (!/^[a-f0-9]{64}$/.test(tokenHash)) return failure("Session token hash is invalid.", sessionId);
   if (!isCanonicalTimestamp(input.createdAt) || !isCanonicalTimestamp(input.expiresAt)) return failure("Session timestamps must be canonical ISO-8601.", sessionId);
   if (input.expiresAt <= input.createdAt) return failure("Session expiration must be after creation.", sessionId);
   return {
@@ -23,6 +25,7 @@ export function createSession(input: CreateSessionInput): SessionRepositoryResul
     value: {
       sessionId,
       userId,
+      tokenHash,
       createdAt: input.createdAt,
       expiresAt: input.expiresAt,
       lastActivityAt: input.createdAt,

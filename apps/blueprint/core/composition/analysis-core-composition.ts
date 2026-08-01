@@ -9,6 +9,7 @@ import {
 } from "../persistence";
 import {
   createAnalysisRunPrismaClient,
+  type AnalysisRunPrismaClient,
   PrismaAnalysisRunRepository,
 } from "../persistence/prisma";
 import {
@@ -33,6 +34,7 @@ export type AnalysisCoreComposition<TSource> = {
   orchestrator: AnalysisRunOrchestrator<TSource>;
   analysisService: AnalysisService<TSource>;
   analysisQueryService: AnalysisQueryService;
+  prismaClient: AnalysisRunPrismaClient;
   disconnect(): Promise<void>;
 };
 
@@ -77,6 +79,7 @@ export function createAnalysisCoreComposition<TSource>(
     orchestrator,
     analysisService,
     analysisQueryService,
+    prismaClient: ownedClient.client,
     disconnect: ownedClient.disconnect,
   };
 }

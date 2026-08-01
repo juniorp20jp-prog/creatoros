@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { InMemoryUserRepository } from "../identity";
 import { createSession, InMemorySessionRepository, SessionService } from "../session";
-import { AUTH_TEST_EXPIRY, AUTH_TEST_LATER, AUTH_TEST_TIME, AuthenticationTestClock, sessionInput, userInput } from "./fixtures/authentication-fixtures";
+import { AUTH_TEST_EXPIRY, AUTH_TEST_LATER, AUTH_TEST_TIME, AUTH_TEST_TOKEN_HASH, AuthenticationTestClock, sessionInput, userInput } from "./fixtures/authentication-fixtures";
 
 test("Session validates expiration without transport credentials", () => {
   assert.equal(createSession(sessionInput).status, "success");
@@ -15,7 +15,7 @@ test("SessionService creates and resolves an active session", async () => {
   const users = new InMemoryUserRepository();
   await users.create(userInput);
   const service = new SessionService(new InMemorySessionRepository(users), new AuthenticationTestClock([AUTH_TEST_TIME, AUTH_TEST_LATER]));
-  const created = await service.createSession({ sessionId: sessionInput.sessionId, userId: sessionInput.userId, expiresAt: AUTH_TEST_EXPIRY, metadata: sessionInput.metadata });
+  const created = await service.createSession({ sessionId: sessionInput.sessionId, userId: sessionInput.userId, tokenHash: AUTH_TEST_TOKEN_HASH, expiresAt: AUTH_TEST_EXPIRY, metadata: sessionInput.metadata });
   assert.equal(created.status, "success");
   const resolved = await service.getSession(sessionInput.sessionId);
   assert.equal(resolved.status, "success");

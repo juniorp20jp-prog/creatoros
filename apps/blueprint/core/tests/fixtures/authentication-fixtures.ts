@@ -5,6 +5,7 @@ import type { Clock } from "../../services";
 export const AUTH_TEST_TIME = "2026-08-01T12:00:00.000Z";
 export const AUTH_TEST_LATER = "2026-08-01T12:30:00.000Z";
 export const AUTH_TEST_EXPIRY = "2026-08-01T13:00:00.000Z";
+export const AUTH_TEST_TOKEN_HASH = "a".repeat(64);
 
 export const userInput: CreateUserInput = {
   userId: "auth_test_user",
@@ -24,6 +25,7 @@ export const identityInput: CreateIdentityInput = {
 export const sessionInput: CreateSessionInput = {
   sessionId: "auth_test_session",
   userId: userInput.userId,
+  tokenHash: AUTH_TEST_TOKEN_HASH,
   createdAt: AUTH_TEST_TIME,
   expiresAt: AUTH_TEST_EXPIRY,
   metadata: { clientType: "web", locale: "es" },

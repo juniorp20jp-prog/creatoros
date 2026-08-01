@@ -1,8 +1,8 @@
 # Authentication Foundation
 
-Sprint 11.0 introduces a provider-neutral identity and session foundation. It
-contains no login UI, password handling, OAuth provider, token, cookie, or JWT
-implementation.
+Sprint 11.0 introduced the provider-neutral identity and session foundation.
+Sprint 11.1 adds a server-only Google OIDC adapter and opaque cookie transport
+without adding password handling or application JWTs.
 
 ## Boundaries
 
@@ -14,9 +14,9 @@ Future verified provider adapter
   -> provider-neutral AuthenticationResult
 ```
 
-- `identity/` owns `User`, the internal `Identity`, validation, and repository
-  ports. An identity is intentionally not an OAuth identity and stores no
-  provider subject or credential.
+- `identity/` owns `User`, `Identity`, validation, and repository ports. An
+  identity stores a provider name and stable provider subject for lookup, but
+  never stores OAuth tokens, authorization codes, or raw claims.
 - `authentication/` orchestrates an identity that a future boundary has already
   verified. It rejects inactive identities and users, then asks the session
   service to create a persistent session.
@@ -41,12 +41,13 @@ or raw provider payloads.
 
 ## Extension points
 
-1. A future provider adapter verifies external evidence outside Core.
-2. It resolves that evidence to an internal `identityId`.
-3. It calls `AuthenticationService.authenticateIdentity` with a generated
-   session identifier and expiration policy.
-4. A future HTTP transport may place only an opaque session reference in a
-   cookie. That choice does not change the identity or session domain.
+1. The Google adapter verifies external evidence outside Core.
+2. The application provisioner transactionally resolves or creates User and
+   Identity without linking accounts by email alone.
+3. `AuthenticationService` creates a session with a generated identifier,
+   expiration policy, and opaque-token hash.
+4. The HTTP transport places only the raw opaque session token in an HttpOnly
+   cookie; the database stores only its hash.
 5. Authorization policies can later implement `AuthorizationService` without
    changing authentication or persistence contracts.
 

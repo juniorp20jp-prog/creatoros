@@ -40,30 +40,35 @@ model UserRow {
   email       String        @unique(map: "users_email_key") @db.VarChar(320)
   displayName String        @map("display_name") @db.VarChar(255)
   locale      String        @db.VarChar(8)
-  timezone    String        @db.VarChar(100)
+  timezone    String?       @db.VarChar(100)
   status      String        @db.VarChar(16)
   createdAt   DateTime      @map("created_at") @db.Timestamptz(3)
   updatedAt   DateTime      @map("updated_at") @db.Timestamptz(3)
-  identity    IdentityRow?
+  identities  IdentityRow[]
   sessions    SessionRow[]
 
   @@map("users")
 }
 
 model IdentityRow {
-  identityId String   @id @map("identity_id") @db.VarChar(255)
-  userId     String   @unique(map: "identities_user_id_key") @map("user_id") @db.VarChar(255)
-  status     String   @db.VarChar(16)
-  createdAt  DateTime @map("created_at") @db.Timestamptz(3)
-  updatedAt  DateTime @map("updated_at") @db.Timestamptz(3)
-  user       UserRow  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  identityId      String   @id @map("identity_id") @db.VarChar(255)
+  userId          String   @map("user_id") @db.VarChar(255)
+  provider        String   @db.VarChar(32)
+  providerSubject String   @map("provider_subject") @db.VarChar(255)
+  status          String   @db.VarChar(16)
+  createdAt       DateTime @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime @map("updated_at") @db.Timestamptz(3)
+  user            UserRow  @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
+  @@unique([provider, providerSubject], map: "identities_provider_subject_key")
+  @@index([userId, createdAt(sort: Asc)], map: "identities_user_idx")
   @@map("identities")
 }
 
 model SessionRow {
   sessionId      String    @id @map("session_id") @db.VarChar(255)
   userId         String    @map("user_id") @db.VarChar(255)
+  tokenHash      String    @unique(map: "sessions_token_hash_key") @map("token_hash") @db.Char(64)
   createdAt      DateTime  @map("created_at") @db.Timestamptz(3)
   expiresAt      DateTime  @map("expires_at") @db.Timestamptz(3)
   lastActivityAt DateTime  @map("last_activity_at") @db.Timestamptz(3)

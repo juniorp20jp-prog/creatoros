@@ -8,11 +8,10 @@ type AnalysisHistoryRouteContext = {
 };
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: AnalysisHistoryRouteContext,
 ): Promise<Response> {
   const { analysisRunId } = await context.params;
-  return getInternalAnalysisApiRuntime().api.getAnalysisHistory(
-    analysisRunId,
-  );
+  const runtime = getInternalAnalysisApiRuntime();
+  return runtime.auth.protect(request, () => runtime.api.getAnalysisHistory(analysisRunId));
 }

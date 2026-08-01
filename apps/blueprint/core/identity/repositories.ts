@@ -1,4 +1,4 @@
-import type { CreateIdentityInput, CreateUserInput, Identity, User } from "./models";
+import type { CreateIdentityInput, CreateUserInput, Identity, IdentityProvider, User } from "./models";
 
 export type IdentityRepositoryErrorCode = "invalid-input" | "duplicate-id" | "duplicate-email" | "not-found" | "user-not-found" | "persistence-failure";
 export type IdentityRepositoryError = Readonly<{ code: IdentityRepositoryErrorCode; message: string; entityId?: string }>;
@@ -14,4 +14,5 @@ export interface IdentityRepository {
   create(input: CreateIdentityInput): Promise<IdentityRepositoryResult<Identity>>;
   getById(identityId: string): Promise<IdentityRepositoryResult<Identity>>;
   getByUserId(userId: string): Promise<IdentityRepositoryResult<Identity>>;
+  getByProviderSubject(provider: IdentityProvider, providerSubject: string): Promise<IdentityRepositoryResult<Identity>>;
 }

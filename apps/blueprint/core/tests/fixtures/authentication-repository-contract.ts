@@ -110,7 +110,8 @@ export function runAuthenticationRepositoryContractTests(name: string, factory: 
       (input.metadata as { clientType: "web" | "internal" }).clientType = "internal";
       const stored = await sessions.getById(sessionInput.sessionId);
       assert.equal(stored.status, "success");
-      assert.equal(JSON.stringify(stored).includes("token"), false);
+      assert.equal(JSON.stringify(stored).includes("accessToken"), false);
+      assert.equal(JSON.stringify(stored).includes("refreshToken"), false);
       if (stored.status === "success") assert.deepEqual(stored.value.metadata, sessionInput.metadata);
     });
   });

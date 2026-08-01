@@ -9,6 +9,7 @@ export type AuthenticationResult =
 export type AuthenticateIdentityInput = Readonly<{
   identityId: string;
   sessionId: string;
+  tokenHash: string;
   expiresAt: string;
   metadata: SessionMetadata;
 }>;
@@ -33,7 +34,7 @@ export class AuthenticationService {
     if (user.status === "failure") return this.failure("user-not-found", "Identity could not be authenticated.");
     if (user.value.status !== "active") return this.failure("user-inactive", "Identity could not be authenticated.");
 
-    const session = await this.sessions.createSession({ sessionId: input.sessionId, userId: user.value.userId, expiresAt: input.expiresAt, metadata: input.metadata });
+    const session = await this.sessions.createSession({ sessionId: input.sessionId, userId: user.value.userId, tokenHash: input.tokenHash, expiresAt: input.expiresAt, metadata: input.metadata });
     if (session.status === "failure") return this.failure("session-failure", "Authentication session could not be created.");
     return { status: "authenticated", user: user.value, identity: identity.value, session: session.value };
   }

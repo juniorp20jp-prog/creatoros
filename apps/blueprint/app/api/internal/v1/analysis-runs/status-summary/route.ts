@@ -4,5 +4,6 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export function GET(request: Request): Promise<Response> {
-  return getInternalAnalysisApiRuntime().api.summarizeAnalysisRuns(request);
+  const runtime = getInternalAnalysisApiRuntime();
+  return runtime.auth.protect(request, () => runtime.api.summarizeAnalysisRuns(request));
 }

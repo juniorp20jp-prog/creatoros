@@ -1,10 +1,11 @@
-import type { Identity, IdentityStatus, User, UserStatus } from "../../identity";
+import type { Identity, IdentityProvider, IdentityStatus, User, UserStatus } from "../../identity";
 import { SUPPORTED_USER_LOCALES, type UserLocale } from "../../identity";
 import type { Session, SessionClientType, SessionMetadata } from "../../session";
 import type { IdentityRow, SessionRow, UserRow } from "./generated/client";
 
 const USER_STATUSES: ReadonlyArray<UserStatus> = ["active", "suspended", "disabled"];
 const IDENTITY_STATUSES: ReadonlyArray<IdentityStatus> = ["active", "disabled"];
+const IDENTITY_PROVIDERS: ReadonlyArray<IdentityProvider> = ["internal", "google"];
 const CLIENT_TYPES: ReadonlyArray<SessionClientType> = ["web", "mobile", "internal"];
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
@@ -18,7 +19,7 @@ export function mapUserRow(row: UserRow): User | undefined {
     email: row.email,
     displayName: row.displayName,
     locale: row.locale as UserLocale,
-    timezone: row.timezone,
+    ...(row.timezone ? { timezone: row.timezone } : {}),
     status: row.status as UserStatus,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -26,10 +27,12 @@ export function mapUserRow(row: UserRow): User | undefined {
 }
 
 export function mapIdentityRow(row: IdentityRow): Identity | undefined {
-  if (!IDENTITY_STATUSES.includes(row.status as IdentityStatus)) return undefined;
+  if (!IDENTITY_STATUSES.includes(row.status as IdentityStatus) || !IDENTITY_PROVIDERS.includes(row.provider as IdentityProvider)) return undefined;
   return {
     identityId: row.identityId,
     userId: row.userId,
+    provider: row.provider as IdentityProvider,
+    providerSubject: row.providerSubject,
     status: row.status as IdentityStatus,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -53,6 +56,7 @@ export function mapSessionRow(row: SessionRow): Session | undefined {
   return {
     sessionId: row.sessionId,
     userId: row.userId,
+    tokenHash: row.tokenHash,
     createdAt: row.createdAt.toISOString(),
     expiresAt: row.expiresAt.toISOString(),
     lastActivityAt: row.lastActivityAt.toISOString(),
