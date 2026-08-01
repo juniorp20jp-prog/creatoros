@@ -1,4 +1,5 @@
 export * from "./adapters";
+export * from "./composition";
 export * from "./domain";
 export * from "./decisions";
 export * from "./engines";

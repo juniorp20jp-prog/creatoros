@@ -13,3 +13,4 @@ export type {
 } from "./execution-context";
 export { completeExecution, failExecution } from "./execution-result";
 export * from "./analysis-service";
+export * from "./analysis-query";
