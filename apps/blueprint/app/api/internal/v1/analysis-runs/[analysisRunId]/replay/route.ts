@@ -1,0 +1,19 @@
+import { getInternalAnalysisApiRuntime } from "../../../../../../../server/analysis-api/runtime";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+type AnalysisReplayRouteContext = {
+  params: Promise<{ analysisRunId: string }>;
+};
+
+export async function POST(
+  request: Request,
+  context: AnalysisReplayRouteContext,
+): Promise<Response> {
+  const { analysisRunId } = await context.params;
+  return getInternalAnalysisApiRuntime().api.replayAnalysis(
+    request,
+    analysisRunId,
+  );
+}
