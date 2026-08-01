@@ -9,14 +9,18 @@ CSS, or translated interface copy.
 ```text
 core/
   adapters/     Source-specific validation and mapping into domain inputs
+  authentication/ Provider-neutral authentication orchestration
+  authorization/  Future authorization contracts (no policies yet)
   domain/       Business models shared by engines
   engines/      Engine implementations and the typed engine registry
   interfaces/   Public engine and AI provider contracts
   intelligence/ Pure interpreters that turn engine output into explainable domain results
+  identity/     Users, internal identities, validation, and repository ports
   pipeline/     Reusable sequential AI pipeline
   persistence/  Versioned analysis history, lifecycle, repositories, and orchestration
   providers/    AI provider registration and lookup
   services/     Execution context, runtime, and result factories
+  session/      Persistent session lifecycle and service boundary
   types/        Cross-cutting execution contracts
   utilities/    Small dependency-free validation helpers
   runtime.ts    Composition root for registered CreatorOS engines
@@ -49,6 +53,15 @@ Caller
 
 The Dashboard and other UI layers consume Core results, but Core never imports
 presentation components or localization dictionaries.
+
+## Authentication foundation
+
+Identity, authentication, and session lifecycle are separate provider-neutral
+boundaries. PostgreSQL adapters implement their repository ports without
+leaking Prisma into the domain. Authorization currently exposes contracts only.
+The architecture stores no password, OAuth token, provider credential, cookie,
+or JWT. See `authentication/README.md` for the flow, privacy constraints, and
+future extension points.
 
 ## Responsibilities
 

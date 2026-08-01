@@ -34,3 +34,44 @@ model AnalysisRunRow {
   @@index([channelId, status, createdAt(sort: Desc), analysisRunId(sort: Asc)], map: "analysis_runs_channel_status_history_idx")
   @@map("analysis_runs")
 }
+
+model UserRow {
+  userId      String        @id @map("user_id") @db.VarChar(255)
+  email       String        @unique(map: "users_email_key") @db.VarChar(320)
+  displayName String        @map("display_name") @db.VarChar(255)
+  locale      String        @db.VarChar(8)
+  timezone    String        @db.VarChar(100)
+  status      String        @db.VarChar(16)
+  createdAt   DateTime      @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @map("updated_at") @db.Timestamptz(3)
+  identity    IdentityRow?
+  sessions    SessionRow[]
+
+  @@map("users")
+}
+
+model IdentityRow {
+  identityId String   @id @map("identity_id") @db.VarChar(255)
+  userId     String   @unique(map: "identities_user_id_key") @map("user_id") @db.VarChar(255)
+  status     String   @db.VarChar(16)
+  createdAt  DateTime @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @map("updated_at") @db.Timestamptz(3)
+  user       UserRow  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("identities")
+}
+
+model SessionRow {
+  sessionId      String    @id @map("session_id") @db.VarChar(255)
+  userId         String    @map("user_id") @db.VarChar(255)
+  createdAt      DateTime  @map("created_at") @db.Timestamptz(3)
+  expiresAt      DateTime  @map("expires_at") @db.Timestamptz(3)
+  lastActivityAt DateTime  @map("last_activity_at") @db.Timestamptz(3)
+  revokedAt      DateTime? @map("revoked_at") @db.Timestamptz(3)
+  metadata       Json
+  user           UserRow   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc), sessionId(sort: Asc)], map: "sessions_user_history_idx")
+  @@index([expiresAt], map: "sessions_expiration_idx")
+  @@map("sessions")
+}
