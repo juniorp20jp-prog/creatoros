@@ -102,6 +102,22 @@ test("AnalysisApiClient calls every certified endpoint with typed serialization"
   assert.equal(requests[0]?.init?.cache, "no-store");
 });
 
+test("AnalysisApiClient preserves the runtime receiver required by fetch", async () => {
+  const receiverSensitiveFetch = function (
+    this: typeof globalThis,
+  ): Promise<Response> {
+    assert.equal(this, globalThis);
+    return Promise.resolve(successResponse(statusSummary));
+  } as typeof globalThis.fetch;
+  const client = new AnalysisApiClient({ fetch: receiverSensitiveFetch });
+
+  const result = await client.getStatusSummary({
+    channelId: "channel_fixture_complete",
+  });
+
+  assert.deepEqual(result, statusSummary);
+});
+
 test("client validates success and error envelopes", async () => {
   const invalidSuccess = new AnalysisApiClient({
     fetch: async () => Response.json({ data: analysisDetails }),

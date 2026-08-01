@@ -34,10 +34,11 @@ export class AnalysisApiClient {
 
   constructor(options: AnalysisApiClientOptions = {}) {
     this.baseUrl = normalizeBaseUrl(options.baseUrl ?? "");
-    this.fetchImplementation = options.fetch ?? globalThis.fetch;
-    if (typeof this.fetchImplementation !== "function") {
+    const fetchImplementation = options.fetch ?? globalThis.fetch;
+    if (typeof fetchImplementation !== "function") {
       throw new Error("AnalysisApiClient requires a fetch implementation.");
     }
+    this.fetchImplementation = fetchImplementation.bind(globalThis);
   }
 
   runAnalysis(
