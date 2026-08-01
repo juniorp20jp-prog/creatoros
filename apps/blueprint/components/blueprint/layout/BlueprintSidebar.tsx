@@ -26,6 +26,11 @@ export function BlueprintSidebar({
   const navigation: NavigationItem[] = [
     { id: "overview", href: `/${locale}`, label: content.overview },
     {
+      id: "missionControl",
+      href: `/${locale}/mission-control`,
+      label: content.missionControl,
+    },
+    {
       id: "creatorIntelligence",
       href: `/${locale}/creator-intelligence`,
       label: content.creatorIntelligence,

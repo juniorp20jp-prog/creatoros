@@ -64,6 +64,7 @@
       "ariaLabel": "Navegación de Blueprint",
       "label": "Espacio de trabajo",
       "overview": "Resumen",
+      "missionControl": "Mission Control",
       "creatorIntelligence": "Inteligencia del creador",
       "youtubeAnalyzer": "YouTube Analyzer",
       "vision": "Visión",
@@ -74,6 +75,53 @@
       "research": "Investigación",
       "footerTitle": "CreatorOS Blueprint",
       "footerDetail": "Centro operativo activo"
+    },
+    "missionControl": {
+      "metadata": { "title": "Mission Control | CreatorOS Blueprint", "description": "Ejecuta e inspecciona flujos certificados de análisis de CreatorOS." },
+      "header": {
+        "eyebrow": "Operaciones de análisis", "title": "Mission Control", "description": "Ejecuta análisis de demostración y consulta su estado, evidencia e historial mediante la API certificada de CreatorOS.",
+        "demoMode": "Modo demostración", "runAnalysis": "Ejecutar análisis", "running": "Ejecutando análisis…"
+      },
+      "summary": { "eyebrow": "Estado del sistema", "title": "Estado de análisis", "description": "Ejecuciones actuales del canal de demostración permitido.", "total": "Total" },
+      "status": {
+        "completed": { "label": "Completado", "description": "Finalizó con un resultado completo." },
+        "partial": { "label": "Parcial", "description": "Finalizó con limitaciones de datos declaradas." },
+        "failed": { "label": "Fallido", "description": "Se detuvo mediante un fallo controlado." },
+        "processing": { "label": "Procesando", "description": "Está avanzando por el pipeline." },
+        "pending": { "label": "Pendiente", "description": "Fue aceptado y espera comenzar." }
+      },
+      "list": {
+        "eyebrow": "Actividad reciente", "title": "Análisis recientes", "description": "Selecciona una ejecución para inspeccionar su modelo de lectura certificado.",
+        "caption": "Ejecuciones recientes de análisis", "paginationLabel": "Paginación de análisis", "pageSize": "Tamaño de página",
+        "columns": { "run": "Ejecución", "status": "Estado", "channel": "Canal", "created": "Creado", "attempt": "Intento", "score": "Puntuación principal", "actions": "Acciones" }
+      },
+      "inspector": { "eyebrow": "Espacio de análisis", "title": "Inspector de análisis", "description": "Consulta los resultados disponibles sin exponer datos raw ni privados.", "noSelection": "Selecciona un análisis para consultar sus detalles e historial.", "tabsLabel": "Vistas del análisis" },
+      "details": {
+        "status": "Estado", "channel": "Canal", "created": "Creado", "updated": "Actualizado", "completed": "Completado", "attempt": "Intento",
+        "replayRelationship": "Relación de replay", "originalRun": "Ejecución original", "correlation": "Correlación", "scores": "Puntuaciones", "opportunities": "Oportunidades",
+        "recommendations": "Recomendaciones", "warnings": "Advertencias y limitaciones", "warningCount": "Se registraron {count} advertencias del adaptador.",
+        "insufficientData": "Datos insuficientes", "analysisUnavailable": "Esta ejecución no tiene un resultado de análisis completado."
+      },
+      "history": { "title": "Historial de ejecuciones", "empty": "No hay historial disponible para esta ejecución.", "original": "Ejecución original", "replay": "Replay", "date": "Fecha", "retryOf": "Replay de" },
+      "actions": { "details": "Detalles", "history": "Historial", "replay": "Replay", "delete": "Eliminar", "retry": "Intentar de nuevo", "cancel": "Cancelar", "previous": "Anterior", "next": "Siguiente" },
+      "states": {
+        "loading": "Cargando datos del análisis…", "retrying": "Intentando de nuevo…", "empty": "Aún no hay análisis. Ejecuta el primero para comenzar.",
+        "loadError": "No pudimos cargar los análisis.", "cancelled": "La solicitud fue cancelada.", "operationInProgress": "La operación solicitada está en curso."
+      },
+      "errors": {
+        "invalidRequest": "No se pudo procesar la solicitud. Revisa la acción seleccionada.", "notFound": "Este análisis ya no está disponible.",
+        "conflict": "El análisis cambió antes de completar esta acción. Actualiza e inténtalo de nuevo.", "unprocessable": "Los datos disponibles no permiten completar esta acción.",
+        "server": "CreatorOS no pudo completar la solicitud.", "network": "No se pudo contactar el servicio. Revisa la conexión e inténtalo de nuevo.",
+        "invalidResponse": "CreatorOS devolvió una respuesta inesperada."
+      },
+      "feedback": { "runSuccess": "El análisis finalizó y el espacio se actualizó.", "replaySuccess": "El replay se creó correctamente; el original permanece intacto.", "deleteSuccess": "El análisis fue eliminado." },
+      "confirmations": { "replay": "¿Crear un replay de este análisis? La ejecución original permanecerá intacta.", "delete": "¿Eliminar este análisis permanentemente? Esta acción no se puede deshacer." },
+      "common": { "notAvailable": "No disponible", "none": "Ninguna" },
+      "scoreKinds": { "content": "Contenido", "consistency": "Consistencia", "optimization": "Optimización", "growth": "Crecimiento" },
+      "impacts": { "low": "Impacto bajo", "medium": "Impacto medio", "high": "Impacto alto" },
+      "opportunities": { "improveDataCoverage": "Mejorar la cobertura de datos", "stabilizePublishingCadence": "Estabilizar la frecuencia de publicación", "reviewLowReachContent": "Revisar contenido de bajo alcance" },
+      "recommendations": { "collectMissingMetrics": "Recopilar métricas ausentes del canal", "definePublishingCadence": "Definir una frecuencia de publicación repetible", "reviewLowReachContent": "Revisar contenido con bajo alcance entre suscriptores", "availableAction": "Revisar la acción respaldada por evidencia" },
+      "limitations": { "deterministicFoundation": "Esta versión utiliza análisis determinista sin proveedores externos.", "noVideos": "No había videos disponibles para este análisis.", "engagementUnavailable": "Los datos de engagement no estaban disponibles.", "publishingUnavailable": "No se pudo calcular la consistencia de publicación.", "subscriberReachUnavailable": "No se pudo calcular el alcance entre suscriptores.", "other": "Este resultado tiene una limitación adicional declarada." }
     },
     "creatorDecisions": {
       "metadata": { "title": "Decisiones | CreatorOS Blueprint", "description": "Acciones priorizadas, medibles y respaldadas por evidencia generadas por CreatorOS." },

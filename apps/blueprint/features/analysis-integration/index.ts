@@ -3,6 +3,7 @@ export * from "./hooks";
 export type {
   AnalysisDetails,
   AnalysisHistory,
+  AnalysisReadStatus,
   AnalysisStatusSummary,
   AnalysisSummary,
   DeleteAnalysisRequest,

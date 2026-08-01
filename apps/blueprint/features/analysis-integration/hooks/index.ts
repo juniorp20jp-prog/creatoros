@@ -15,4 +15,5 @@ export {
   useReplay,
   type ReplayAnalysisMutationInput,
 } from "./use-replay";
+export { useRunAnalysis } from "./use-run-analysis";
 export { useStatusSummary } from "./use-status-summary";

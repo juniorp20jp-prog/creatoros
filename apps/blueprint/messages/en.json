@@ -64,6 +64,7 @@
       "ariaLabel": "Blueprint navigation",
       "label": "Workspace",
       "overview": "Overview",
+      "missionControl": "Mission Control",
       "creatorIntelligence": "Creator Intelligence",
       "youtubeAnalyzer": "YouTube Analyzer",
       "vision": "Vision",
@@ -74,6 +75,53 @@
       "research": "Research",
       "footerTitle": "CreatorOS Blueprint",
       "footerDetail": "Operations center active"
+    },
+    "missionControl": {
+      "metadata": { "title": "Mission Control | CreatorOS Blueprint", "description": "Run and inspect certified CreatorOS analysis workflows." },
+      "header": {
+        "eyebrow": "Analysis operations", "title": "Mission Control", "description": "Run demonstration analyses and inspect their status, evidence and history through the certified CreatorOS API.",
+        "demoMode": "Demonstration mode", "runAnalysis": "Run analysis", "running": "Running analysis…"
+      },
+      "summary": { "eyebrow": "System status", "title": "Analysis status", "description": "Current runs for the allowlisted demonstration channel.", "total": "Total" },
+      "status": {
+        "completed": { "label": "Completed", "description": "Finished with a complete result." },
+        "partial": { "label": "Partial", "description": "Finished with declared data limitations." },
+        "failed": { "label": "Failed", "description": "Stopped through a controlled failure." },
+        "processing": { "label": "Processing", "description": "Currently moving through the pipeline." },
+        "pending": { "label": "Pending", "description": "Accepted and waiting to start." }
+      },
+      "list": {
+        "eyebrow": "Recent activity", "title": "Recent analyses", "description": "Select a run to inspect its certified read model.",
+        "caption": "Recent analysis runs", "paginationLabel": "Analysis pagination", "pageSize": "Page size",
+        "columns": { "run": "Run", "status": "Status", "channel": "Channel", "created": "Created", "attempt": "Attempt", "score": "Primary score", "actions": "Actions" }
+      },
+      "inspector": { "eyebrow": "Analysis workspace", "title": "Analysis inspector", "description": "Review available results without exposing raw or private data.", "noSelection": "Select an analysis to view its details and history.", "tabsLabel": "Analysis views" },
+      "details": {
+        "status": "Status", "channel": "Channel", "created": "Created", "updated": "Updated", "completed": "Completed", "attempt": "Attempt",
+        "replayRelationship": "Replay relationship", "originalRun": "Original run", "correlation": "Correlation", "scores": "Scores", "opportunities": "Opportunities",
+        "recommendations": "Recommendations", "warnings": "Warnings and limitations", "warningCount": "{count} adapter warnings recorded.",
+        "insufficientData": "Insufficient data", "analysisUnavailable": "This run has no completed analysis result."
+      },
+      "history": { "title": "Run history", "empty": "No history is available for this run.", "original": "Original run", "replay": "Replay", "date": "Date", "retryOf": "Replay of" },
+      "actions": { "details": "Details", "history": "History", "replay": "Replay", "delete": "Delete", "retry": "Try again", "cancel": "Cancel", "previous": "Previous", "next": "Next" },
+      "states": {
+        "loading": "Loading analysis data…", "retrying": "Trying again…", "empty": "There are no analyses yet. Run the first one to begin.",
+        "loadError": "We could not load the analyses.", "cancelled": "The request was cancelled.", "operationInProgress": "The requested operation is in progress."
+      },
+      "errors": {
+        "invalidRequest": "The request could not be processed. Review the selected action.", "notFound": "This analysis is no longer available.",
+        "conflict": "The analysis changed before this action completed. Refresh and try again.", "unprocessable": "The available data cannot complete this action.",
+        "server": "CreatorOS could not complete the request.", "network": "The service could not be reached. Check the connection and try again.",
+        "invalidResponse": "CreatorOS returned an unexpected response."
+      },
+      "feedback": { "runSuccess": "Analysis completed and the workspace was refreshed.", "replaySuccess": "Replay created successfully; the original remains unchanged.", "deleteSuccess": "The analysis was deleted." },
+      "confirmations": { "replay": "Create a replay from this analysis? The original run will remain unchanged.", "delete": "Delete this analysis permanently? This action cannot be undone." },
+      "common": { "notAvailable": "Not available", "none": "None" },
+      "scoreKinds": { "content": "Content", "consistency": "Consistency", "optimization": "Optimization", "growth": "Growth" },
+      "impacts": { "low": "Low impact", "medium": "Medium impact", "high": "High impact" },
+      "opportunities": { "improveDataCoverage": "Improve data coverage", "stabilizePublishingCadence": "Stabilize publishing cadence", "reviewLowReachContent": "Review low-reach content" },
+      "recommendations": { "collectMissingMetrics": "Collect missing channel metrics", "definePublishingCadence": "Define a repeatable publishing cadence", "reviewLowReachContent": "Review content with low subscriber reach", "availableAction": "Review the evidence-backed action" },
+      "limitations": { "deterministicFoundation": "This version uses deterministic analysis without external providers.", "noVideos": "No videos were available for this analysis.", "engagementUnavailable": "Engagement data was unavailable.", "publishingUnavailable": "Publishing consistency could not be calculated.", "subscriberReachUnavailable": "Subscriber reach could not be calculated.", "other": "An additional declared limitation applies to this result." }
     },
     "creatorDecisions": {
       "metadata": { "title": "Decisions | CreatorOS Blueprint", "description": "Prioritized, evidence-backed and measurable actions generated by CreatorOS." },

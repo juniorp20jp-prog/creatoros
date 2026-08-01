@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start --port 3001",
     "postinstall": "prisma generate --config prisma.generate.config.ts",
-    "test": "tsx --test core/tests/*.test.ts features/**/*.test.ts server/analysis-api/tests/*.test.ts",
+    "test": "tsx --import ./features/mission-control-analysis/tests/css-modules-register.mjs --test core/tests/*.test.ts features/**/*.test.ts server/analysis-api/tests/*.test.ts",
     "test:postgres": "tsx --test --test-concurrency=1 core/tests/postgres/*.postgres.test.ts",
     "prisma:format": "prisma format",
     "prisma:validate": "prisma validate",
