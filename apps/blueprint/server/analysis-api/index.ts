@@ -7,6 +7,7 @@ export type {
   AnalysisFixture,
   AnalysisFixtureCatalog,
   AnalysisReadService,
+  DeleteAnalysisRequest,
   DeleteAnalysisResponse,
   InternalAnalysisApiDependencies,
   InternalAnalysisApiError,
@@ -15,10 +16,20 @@ export type {
   InternalAnalysisApiMeta,
   InternalAnalysisApiSuccess,
   InternalAnalysisApiValidationDetail,
+  ListAnalysisRunsRequest,
   ReplayAnalysisRequest,
   ReplayAnalysisResponse,
   RunAnalysisRequest,
   RunAnalysisResponse,
+  StatusSummaryRequest,
+} from "./contracts";
+export type {
+  AnalysisDetails,
+  AnalysisHistory,
+  AnalysisReadStatus,
+  AnalysisStatusSummary,
+  AnalysisSummary,
+  PaginationResult,
 } from "./contracts";
 export { InternalAnalysisFixtureCatalog } from "./fixture-catalog";
 export { InternalAnalysisApi } from "./internal-analysis-api";

@@ -2,6 +2,7 @@ import type {
   AnalysisDetails,
   AnalysisHistory,
   AnalysisQueryResult,
+  AnalysisReadStatus,
   AnalysisServiceExecution,
   AnalysisServiceResult,
   AnalysisStatusSummary,
@@ -90,6 +91,27 @@ export type DeleteAnalysisResponse = {
   revision: number;
 };
 
+export type ListAnalysisRunsRequest = {
+  channelId: string;
+  creatorId?: string;
+  status?: AnalysisReadStatus;
+  from?: string;
+  to?: string;
+  attempt?: number;
+  analysisId?: string;
+  cursor?: string;
+  limit?: number;
+};
+
+export type StatusSummaryRequest = Omit<
+  ListAnalysisRunsRequest,
+  "cursor" | "limit"
+>;
+
+export type DeleteAnalysisRequest = {
+  expectedRevision?: number;
+};
+
 export type AnalysisFixture = {
   fixtureId: string;
   creatorId: string;
@@ -141,3 +163,12 @@ export type InternalAnalysisApiDependencies = {
   clock: Clock;
   requestIdGenerator: IdGenerator;
 };
+
+export type {
+  AnalysisDetails,
+  AnalysisHistory,
+  AnalysisReadStatus,
+  AnalysisStatusSummary,
+  AnalysisSummary,
+  PaginationResult,
+} from "../../core";
