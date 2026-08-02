@@ -3,6 +3,7 @@ import { AUTH_STATE_COOKIE, type AuthResult } from "./contracts";
 import { InMemoryAuthorizationStateStore, safeReturnTo } from "./authorization-state";
 import { authorizationStateCookie, clearAuthorizationStateCookie, clearSessionCookie, readCookie, sessionCookie } from "./cookies";
 import { CurrentSessionResolver } from "./current-session";
+import { reportAuthDiagnostic } from "./diagnostics";
 import type { GoogleOidcIdentityAdapter } from "./oidc/google-oidc-adapter";
 import { SessionTokenService } from "./session-token";
 
@@ -35,17 +36,22 @@ export class AuthHttpHandlers {
   async callback(request: Request): Promise<Response> {
     const handle = readCookie(request, AUTH_STATE_COOKIE);
     const transaction = handle ? this.dependencies.authorizationStates.consume(handle) : undefined;
-    if (!transaction || transaction.status === "failure") return this.callbackFailure();
+    if (!transaction) {
+      return this.callbackFailure("authorization-state", "authorization-state-missing", "Authorization state cookie was not available.");
+    }
+    if (transaction.status === "failure") {
+      return this.callbackFailure("authorization-state", transaction.error.code, transaction.error.message);
+    }
     const adapter = await this.dependencies.adapterFactory();
-    if (adapter.status === "failure") return this.callbackFailure();
+    if (adapter.status === "failure") return this.callbackFailure("provider-configuration", adapter.error.code, adapter.error.message);
     const verified = await adapter.value.complete(new URL(request.url), transaction.value);
-    if (verified.status === "failure") return this.callbackFailure();
+    if (verified.status === "failure") return this.callbackFailure("oidc-verification", verified.error.code, verified.error.message);
     const token = await this.dependencies.tokens.generate();
     const now = this.dependencies.clock.now();
     const expiresAt = new Date(Date.parse(now) + 7 * 24 * 60 * 60 * 1000).toISOString();
     const locale = supportedLocale(verified.value.locale);
     const authenticated = await this.dependencies.externalAuthentication.authenticate({ externalIdentity: verified.value, userId: this.dependencies.ids.create("user"), identityId: this.dependencies.ids.create("identity"), sessionId: this.dependencies.ids.create("session"), tokenHash: token.tokenHash, expiresAt, createdAt: now, locale, metadata: { clientType: "web", locale } });
-    if (authenticated.status === "failure") return this.callbackFailure();
+    if (authenticated.status === "failure") return this.callbackFailure("authentication", authenticated.error.code, authenticated.error.message);
     return new Response(null, { status: 302, headers: [["location", new URL(transaction.value.returnTo, request.url).toString()], ["set-cookie", clearAuthorizationStateCookie(this.dependencies.production)], ["set-cookie", sessionCookie(token.token, this.dependencies.production, 7 * 24 * 60 * 60)]] });
   }
 
@@ -67,7 +73,8 @@ export class AuthHttpHandlers {
     return current.status === "authenticated" ? action() : authError("session-invalid", 401);
   }
 
-  private callbackFailure(): Response {
+  private callbackFailure(stage: string, code: string, cause: string): Response {
+    reportAuthDiagnostic({ stage, code, cause });
     const response = Response.json({ error: { code: "AUTHENTICATION_FAILED", message: "Authentication could not be completed." } }, { status: 400 });
     response.headers.append("set-cookie", clearAuthorizationStateCookie(this.dependencies.production));
     return response;

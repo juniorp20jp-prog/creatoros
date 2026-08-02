@@ -3,9 +3,10 @@ import { test } from "node:test";
 
 import { InMemorySessionRepository, InMemoryUserRepository } from "../../../core";
 import { AuthenticationTestClock, AUTH_TEST_EXPIRY, AUTH_TEST_LATER, AUTH_TEST_TIME, userInput } from "../../../core/tests/fixtures/authentication-fixtures";
-import { InMemoryAuthorizationStateStore, safeReturnTo } from "../authorization-state";
+import { InMemoryAuthorizationStateStore, createProcessAuthorizationStateStore, safeReturnTo } from "../authorization-state";
 import { authorizationStateCookie, clearSessionCookie, sessionCookie } from "../cookies";
 import { CurrentSessionResolver } from "../current-session";
+import { createAuthDiagnostic, readSafeExternalErrorCode } from "../diagnostics";
 import { SessionTokenService } from "../session-token";
 
 test("temporary authorization state expires and is consumed exactly once", () => {
@@ -19,6 +20,24 @@ test("temporary authorization state expires and is consumed exactly once", () =>
   const result = expired.consume("expired");
   assert.equal(result.status, "failure");
   if (result.status === "failure") assert.equal(result.error.code, "authorization-state-expired");
+});
+
+test("process authorization state is shared across independently composed routes", () => {
+  const clock = new AuthenticationTestClock([AUTH_TEST_TIME]);
+  const loginRouteStore = createProcessAuthorizationStateStore(clock);
+  const callbackRouteStore = createProcessAuthorizationStateStore(clock);
+  const handle = "authstate_route_bundle_test";
+  loginRouteStore.save(handle, {
+    state: "state",
+    nonce: "nonce",
+    codeVerifier: "verifier",
+    returnTo: "/es/mission-control",
+    createdAt: AUTH_TEST_TIME,
+    expiresAt: AUTH_TEST_EXPIRY,
+  });
+
+  assert.equal(callbackRouteStore.consume(handle).status, "success");
+  assert.equal(loginRouteStore.consume(handle).status, "failure");
 });
 
 test("returnTo allowlist rejects open redirects", () => {
@@ -36,6 +55,24 @@ test("authorization and session cookies have secure server-only flags", () => {
   }
   assert.match(temporary, /Path=\/api\/auth\/google/);
   assert.match(clearSessionCookie(true), /Max-Age=0/);
+});
+
+test("auth diagnostics expose stages and stack frames without sensitive values", () => {
+  const error = new Error("authorization_code=private-code client_secret=private-secret");
+  const diagnostic = createAuthDiagnostic({
+    stage: "token-exchange",
+    code: "OAUTH_RESPONSE_IS_ERROR",
+    cause: "The provider returned a controlled OAuth error.",
+    error,
+  });
+  const serialized = JSON.stringify(diagnostic);
+
+  assert.equal(diagnostic.name, "Error");
+  assert.equal(diagnostic.stage, "token-exchange");
+  assert.match(diagnostic.stack ?? "", /\[redacted\]/u);
+  assert.doesNotMatch(serialized, /private-code|private-secret|authorization_code|client_secret/u);
+  assert.equal(readSafeExternalErrorCode({ error: "invalid_client" }, "fallback"), "invalid_client");
+  assert.equal(readSafeExternalErrorCode({ error: "invalid client: private-secret" }, "fallback"), "fallback");
 });
 
 test("session tokens are random, opaque, and persist only a SHA-256 hash", async () => {

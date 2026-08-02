@@ -10,9 +10,17 @@ export type AuthorizationTransaction = Readonly<{
   expiresAt: string;
 }>;
 
+type AuthorizationStateRecords = Map<string, AuthorizationTransaction>;
+
+type CreatorOSProcess = typeof globalThis & {
+  __creatorosAuthorizationStateRecords?: AuthorizationStateRecords;
+};
+
 export class InMemoryAuthorizationStateStore {
-  private readonly records = new Map<string, AuthorizationTransaction>();
-  constructor(private readonly clock: Clock) {}
+  constructor(
+    private readonly clock: Clock,
+    private readonly records: AuthorizationStateRecords = new Map(),
+  ) {}
 
   save(handle: string, transaction: AuthorizationTransaction): void {
     this.records.set(handle, structuredClone(transaction));
@@ -25,6 +33,13 @@ export class InMemoryAuthorizationStateStore {
     if (value.expiresAt <= this.clock.now()) return failure("authorization-state-expired", "Authorization state has expired.");
     return { status: "success", value: structuredClone(value) };
   }
+}
+
+/** Shares transient OIDC state between independently bundled Node.js routes. */
+export function createProcessAuthorizationStateStore(clock: Clock): InMemoryAuthorizationStateStore {
+  const processScope = globalThis as CreatorOSProcess;
+  processScope.__creatorosAuthorizationStateRecords ??= new Map();
+  return new InMemoryAuthorizationStateStore(clock, processScope.__creatorosAuthorizationStateRecords);
 }
 
 export function safeReturnTo(value: string | null): string {

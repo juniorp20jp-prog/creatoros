@@ -1,6 +1,7 @@
 import type { Clock } from "../../../core";
 import type { VerifiedExternalIdentity } from "../../../core/authentication";
 import { GOOGLE_ISSUERS, type AuthResult } from "../contracts";
+import { readSafeExternalErrorCode, reportAuthDiagnostic } from "../diagnostics";
 
 export type GoogleAuthorizationRequest = Readonly<{ authorizationUrl: URL; state: string; nonce: string; codeVerifier: string }>;
 export type GoogleCallbackChecks = Readonly<{ state: string; nonce: string; codeVerifier: string }>;
@@ -21,7 +22,18 @@ export class GoogleOidcIdentityAdapter {
     if (callbackUrl.searchParams.has("error")) return failure("callback-error", "The identity provider rejected the authentication request.");
     if (callbackUrl.searchParams.get("state") !== checks.state) return failure("authorization-state-invalid", "Authorization state is invalid.");
     let claims: Readonly<Record<string, unknown>>;
-    try { claims = await this.protocol.exchangeCallback(callbackUrl, checks); } catch { return failure("token-exchange-failed", "The identity provider callback could not be verified."); }
+    try {
+      claims = await this.protocol.exchangeCallback(callbackUrl, checks);
+    } catch (error) {
+      const code = readSafeExternalErrorCode(error, "token-exchange-failed");
+      reportAuthDiagnostic({
+        stage: "token-exchange",
+        code,
+        cause: `The OIDC token endpoint rejected the authorization grant (${code}).`,
+        error,
+      });
+      return failure("token-exchange-failed", "The identity provider callback could not be verified.");
+    }
     if (!GOOGLE_ISSUERS.includes(claims.iss as (typeof GOOGLE_ISSUERS)[number])) return failure("identity-claims-invalid", "Identity claims are invalid.");
     const audience = Array.isArray(claims.aud) ? claims.aud : [claims.aud];
     if (!audience.includes(this.clientId) || claims.nonce !== checks.nonce || typeof claims.exp !== "number" || claims.exp * 1000 <= Date.parse(this.clock.now())) return failure("identity-claims-invalid", "Identity claims are invalid.");

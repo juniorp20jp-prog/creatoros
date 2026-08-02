@@ -10,7 +10,7 @@ import {
 import { PrismaExternalIdentityProvisioner, PrismaIdentityRepository, PrismaSessionRepository, PrismaUserRepository, requireDatabaseUrl } from "../../core/persistence/prisma";
 import { InternalAnalysisFixtureCatalog } from "./fixture-catalog";
 import { InternalAnalysisApi } from "./internal-analysis-api";
-import { AuthHttpHandlers, CurrentSessionResolver, GoogleOidcIdentityAdapter, InMemoryAuthorizationStateStore, OpenIdClientGoogleProtocol, SessionTokenService, readAuthConfiguration, type AuthResult } from "../auth";
+import { AuthHttpHandlers, CurrentSessionResolver, GoogleOidcIdentityAdapter, OpenIdClientGoogleProtocol, SessionTokenService, createProcessAuthorizationStateStore, readAuthConfiguration, type AuthResult } from "../auth";
 
 type InternalAnalysisApiRuntime = {
   api: InternalAnalysisApi;
@@ -56,7 +56,7 @@ export function getInternalAnalysisApiRuntime(): InternalAnalysisApiRuntime {
   };
   const auth = new AuthHttpHandlers({
     adapterFactory,
-    authorizationStates: new InMemoryAuthorizationStateStore(clock),
+    authorizationStates: createProcessAuthorizationStateStore(clock),
     externalAuthentication,
     sessionService,
     currentSession: new CurrentSessionResolver(sessions, users, tokens, clock),
