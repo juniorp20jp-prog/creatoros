@@ -10,3 +10,5 @@ export { PrismaIdentityRepository } from "./prisma-identity-repository";
 export { PrismaSessionRepository } from "./prisma-session-repository";
 export { PrismaExternalIdentityProvisioner } from "./prisma-external-identity-provisioner";
 export { mapUserRow, mapIdentityRow, mapSessionRow, mapSessionMetadata } from "./authentication-row-mappers";
+export { PrismaYouTubeAuthorizationRepository } from "./prisma-youtube-authorization-repository";
+export { mapYouTubeIdentityRow, mapYouTubeTokenRow } from "./youtube-authorization-row-mappers";

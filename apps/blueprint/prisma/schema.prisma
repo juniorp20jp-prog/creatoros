@@ -36,18 +36,52 @@ model AnalysisRunRow {
 }
 
 model UserRow {
-  userId      String        @id @map("user_id") @db.VarChar(255)
-  email       String        @unique(map: "users_email_key") @db.VarChar(320)
-  displayName String        @map("display_name") @db.VarChar(255)
-  locale      String        @db.VarChar(8)
-  timezone    String?       @db.VarChar(100)
-  status      String        @db.VarChar(16)
-  createdAt   DateTime      @map("created_at") @db.Timestamptz(3)
-  updatedAt   DateTime      @map("updated_at") @db.Timestamptz(3)
-  identities  IdentityRow[]
-  sessions    SessionRow[]
+  userId          String              @id @map("user_id") @db.VarChar(255)
+  email           String              @unique(map: "users_email_key") @db.VarChar(320)
+  displayName     String              @map("display_name") @db.VarChar(255)
+  locale          String              @db.VarChar(8)
+  timezone        String?             @db.VarChar(100)
+  status          String              @db.VarChar(16)
+  createdAt       DateTime            @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime            @map("updated_at") @db.Timestamptz(3)
+  identities      IdentityRow[]
+  sessions        SessionRow[]
+  youtubeIdentity YouTubeIdentityRow?
 
   @@map("users")
+}
+
+model YouTubeIdentityRow {
+  youtubeIdentityId String           @id @map("youtube_identity_id") @db.VarChar(255)
+  userId            String           @unique(map: "youtube_identities_user_key") @map("user_id") @db.VarChar(255)
+  provider          String           @db.VarChar(32)
+  providerUserId    String           @map("provider_user_id") @db.VarChar(255)
+  channelId         String           @unique(map: "youtube_identities_channel_key") @map("channel_id") @db.VarChar(255)
+  channelTitle      String           @map("channel_title") @db.VarChar(255)
+  scopes            String[]
+  state             String           @db.VarChar(16)
+  createdAt         DateTime         @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime         @map("updated_at") @db.Timestamptz(3)
+  revokedAt         DateTime?        @map("revoked_at") @db.Timestamptz(3)
+  user              UserRow          @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  token             YouTubeTokenRow?
+
+  @@index([providerUserId], map: "youtube_identities_provider_user_idx")
+  @@map("youtube_identities")
+}
+
+model YouTubeTokenRow {
+  tokenId               String             @id @map("token_id") @db.VarChar(255)
+  youtubeIdentityId     String             @unique(map: "youtube_tokens_identity_key") @map("youtube_identity_id") @db.VarChar(255)
+  encryptedRefreshToken String             @map("encrypted_refresh_token") @db.Text
+  encryptedAccessToken  String?            @map("encrypted_access_token") @db.Text
+  accessTokenExpiresAt  DateTime?          @map("access_token_expires_at") @db.Timestamptz(3)
+  encryptionKeyId       String             @map("encryption_key_id") @db.VarChar(64)
+  createdAt             DateTime           @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime           @map("updated_at") @db.Timestamptz(3)
+  identity              YouTubeIdentityRow @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
+
+  @@map("youtube_tokens")
 }
 
 model IdentityRow {
