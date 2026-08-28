@@ -12,3 +12,5 @@ export { PrismaExternalIdentityProvisioner } from "./prisma-external-identity-pr
 export { mapUserRow, mapIdentityRow, mapSessionRow, mapSessionMetadata } from "./authentication-row-mappers";
 export { PrismaYouTubeAuthorizationRepository } from "./prisma-youtube-authorization-repository";
 export { mapYouTubeIdentityRow, mapYouTubeTokenRow } from "./youtube-authorization-row-mappers";
+export { PrismaChannelSynchronizationRepository } from "./prisma-channel-synchronization-repository";
+export { mapYouTubeChannelRow, mapChannelSyncRow } from "./youtube-channel-row-mappers";

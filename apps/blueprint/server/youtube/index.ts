@@ -5,3 +5,6 @@ export * from "./cookies";
 export * from "./openid-client-youtube-protocol";
 export * from "./runtime";
 export * from "./youtube-http";
+export * from "./youtube-api-adapter";
+export * from "./channel-sync-http";
+export * from "./youtube-diagnostics";

@@ -52,6 +52,12 @@ test("PostgreSQL rejects one channel owned by two CreatorOS users without partia
     const duplicate = await repository.saveAuthorization({ identity: { ...youtubeAuthorizationInput.identity, youtubeIdentityId: "youtube_identity_other", userId: "auth_test_youtube_other", providerUserId: "provider_other" }, token: { ...youtubeAuthorizationInput.token, tokenId: "youtube_token_other", youtubeIdentityId: "youtube_identity_other" } });
     assert.equal(duplicate.status, "failure");
     if (duplicate.status === "failure") assert.equal(duplicate.error.code, "duplicate-channel");
-    assert.equal(await owned.client.youTubeTokenRow.count(), 1);
+    assert.equal(await owned.client.youTubeTokenRow.count({
+      where: {
+        youtubeIdentityId: {
+          in: [youtubeAuthorizationInput.identity.youtubeIdentityId, "youtube_identity_other"],
+        },
+      },
+    }), 1);
   } finally { await deleteOwnedPostgresTestRows(owned); await owned.disconnect(); }
 });

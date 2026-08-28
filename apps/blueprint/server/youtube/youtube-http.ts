@@ -5,8 +5,9 @@ import type { Clock, IdGenerator, YouTubeAuthorizationService } from "../../core
 import type { YouTubeOAuthProtocol } from "./openid-client-youtube-protocol";
 import { clearYouTubeStateCookie, YOUTUBE_AUTH_STATE_COOKIE, youtubeStateCookie } from "./cookies";
 import { safeYouTubeReturnTo, type YouTubeAuthorizationStateStore } from "./authorization-state";
+import { reportYouTubeDiagnostic } from "./youtube-diagnostics";
 
-export type YouTubeComposition = Readonly<{ service: YouTubeAuthorizationService; protocol: YouTubeOAuthProtocol }>;
+export type YouTubeComposition = Readonly<{ service: YouTubeAuthorizationService; protocol: YouTubeOAuthProtocol; channelSynchronization?: import("../../core").ChannelSynchronizationService }>;
 export type YouTubeCompositionResult = Readonly<{ status: "success"; value: YouTubeComposition }> | Readonly<{ status: "failure"; error: Readonly<{ code: string; message: string }> }>;
 
 export class YouTubeHttpHandlers {
@@ -33,16 +34,38 @@ export class YouTubeHttpHandlers {
 
   async callback(request: Request): Promise<Response> {
     const handle = readCookie(request, YOUTUBE_AUTH_STATE_COOKIE);
-    const transaction = handle ? this.dependencies.authorizationStates.consume(handle) : undefined;
-    if (!transaction) return callbackError("YOUTUBE_AUTHORIZATION_FAILED", "YouTube authorization could not be completed.", this.dependencies.production, 400);
+    if (!handle) {
+      reportYouTubeDiagnostic({ stage: "authorization-state", code: "authorization-state-cookie-missing", cause: "The YouTube authorization state cookie was not available." });
+      return callbackError("YOUTUBE_AUTHORIZATION_FAILED", "YouTube authorization could not be completed.", this.dependencies.production, 400);
+    }
+    const state = this.dependencies.authorizationStates.consumeResult(handle);
+    if (state.status === "failure") {
+      reportYouTubeDiagnostic({ stage: "authorization-state", code: state.error.code, cause: state.error.message });
+      return callbackError("YOUTUBE_AUTHORIZATION_FAILED", "YouTube authorization could not be completed.", this.dependencies.production, 400);
+    }
+    const transaction = state.value;
     const current = await this.dependencies.currentSession.resolveCurrentSession(request);
-    if (current.status !== "authenticated" || current.principal.userId !== transaction.userId) return callbackError("AUTHENTICATION_REQUIRED", "A valid CreatorOS session is required.", this.dependencies.production, 401);
+    if (current.status !== "authenticated" || current.principal.userId !== transaction.userId) {
+      reportYouTubeDiagnostic({ stage: "creatoros-session", code: "creatoros-session-invalid", cause: "The CreatorOS session did not match the YouTube authorization transaction." });
+      return callbackError("AUTHENTICATION_REQUIRED", "A valid CreatorOS session is required.", this.dependencies.production, 401);
+    }
     const composition = await this.dependencies.compositionFactory();
-    if (composition.status === "failure") return callbackError("YOUTUBE_UNAVAILABLE", "YouTube authorization is unavailable.", this.dependencies.production, 503);
+    if (composition.status === "failure") {
+      reportYouTubeDiagnostic({ stage: "configuration", code: composition.error.code, cause: composition.error.message });
+      return callbackError("YOUTUBE_UNAVAILABLE", "YouTube authorization is unavailable.", this.dependencies.production, 503);
+    }
     const verified = await composition.value.protocol.complete(new URL(request.url), transaction);
-    if (verified.status === "failure") return callbackError("YOUTUBE_AUTHORIZATION_FAILED", "YouTube authorization could not be completed.", this.dependencies.production, 400);
+    if (verified.status === "failure") {
+      if (!verified.error.diagnosticReported) {
+        reportYouTubeDiagnostic({ stage: verified.error.stage, code: verified.error.providerCode ?? verified.error.code, cause: verified.error.message });
+      }
+      return callbackError("YOUTUBE_AUTHORIZATION_FAILED", "YouTube authorization could not be completed.", this.dependencies.production, 400);
+    }
     const connected = await composition.value.service.connect(current.principal.userId, verified.value);
-    if (connected.status === "failure") return callbackError(connected.error.code === "channel-conflict" ? "YOUTUBE_CHANNEL_CONFLICT" : "YOUTUBE_AUTHORIZATION_FAILED", connected.error.code === "channel-conflict" ? "This YouTube channel is already connected." : "YouTube authorization could not be completed.", this.dependencies.production, connected.error.code === "channel-conflict" ? 409 : 500);
+    if (connected.status === "failure") {
+      reportYouTubeDiagnostic({ stage: connected.error.code === "token-protection-failed" ? "token-encryption" : "persistence", code: connected.error.code, cause: connected.error.message });
+      return callbackError(connected.error.code === "channel-conflict" ? "YOUTUBE_CHANNEL_CONFLICT" : "YOUTUBE_AUTHORIZATION_FAILED", connected.error.code === "channel-conflict" ? "This YouTube channel is already connected." : "YouTube authorization could not be completed.", this.dependencies.production, connected.error.code === "channel-conflict" ? 409 : 500);
+    }
     const response = new Response(null, { status: 302, headers: { location: new URL(transaction.returnTo, request.url).toString() } });
     response.headers.append("set-cookie", clearYouTubeStateCookie(this.dependencies.production));
     return response;

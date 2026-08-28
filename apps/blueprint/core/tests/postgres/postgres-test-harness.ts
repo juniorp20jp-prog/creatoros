@@ -38,6 +38,12 @@ export function requireTestDatabaseUrl(): string {
 export async function deleteOwnedPostgresTestRows(
   owned: OwnedAnalysisRunPrismaClient,
 ): Promise<void> {
+  await owned.client.channelSyncRow.deleteMany({
+    where: { userId: { startsWith: "auth_test_" } },
+  });
+  await owned.client.youTubeChannelRow.deleteMany({
+    where: { userId: { startsWith: "auth_test_" } },
+  });
   await owned.client.youTubeTokenRow.deleteMany({
     where: { identity: { userId: { startsWith: "auth_test_" } } },
   });

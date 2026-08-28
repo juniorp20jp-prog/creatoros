@@ -16,6 +16,7 @@ export * from "./session";
 export * from "./types";
 export * from "./utilities";
 export * from "./youtube-authorization";
+export * from "./youtube-channel-sync";
 export {
   coreEngineRegistry,
   coreEngineRuntime,

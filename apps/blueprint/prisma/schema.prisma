@@ -47,27 +47,78 @@ model UserRow {
   identities      IdentityRow[]
   sessions        SessionRow[]
   youtubeIdentity YouTubeIdentityRow?
+  youtubeChannel  YouTubeChannelRow?
+  channelSyncs    ChannelSyncRow[]
 
   @@map("users")
 }
 
 model YouTubeIdentityRow {
-  youtubeIdentityId String           @id @map("youtube_identity_id") @db.VarChar(255)
-  userId            String           @unique(map: "youtube_identities_user_key") @map("user_id") @db.VarChar(255)
-  provider          String           @db.VarChar(32)
-  providerUserId    String           @map("provider_user_id") @db.VarChar(255)
-  channelId         String           @unique(map: "youtube_identities_channel_key") @map("channel_id") @db.VarChar(255)
-  channelTitle      String           @map("channel_title") @db.VarChar(255)
+  youtubeIdentityId String             @id @map("youtube_identity_id") @db.VarChar(255)
+  userId            String             @unique(map: "youtube_identities_user_key") @map("user_id") @db.VarChar(255)
+  provider          String             @db.VarChar(32)
+  providerUserId    String             @map("provider_user_id") @db.VarChar(255)
+  channelId         String             @unique(map: "youtube_identities_channel_key") @map("channel_id") @db.VarChar(255)
+  channelTitle      String             @map("channel_title") @db.VarChar(255)
   scopes            String[]
-  state             String           @db.VarChar(16)
-  createdAt         DateTime         @map("created_at") @db.Timestamptz(3)
-  updatedAt         DateTime         @map("updated_at") @db.Timestamptz(3)
-  revokedAt         DateTime?        @map("revoked_at") @db.Timestamptz(3)
-  user              UserRow          @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  state             String             @db.VarChar(16)
+  createdAt         DateTime           @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime           @map("updated_at") @db.Timestamptz(3)
+  revokedAt         DateTime?          @map("revoked_at") @db.Timestamptz(3)
+  user              UserRow            @relation(fields: [userId], references: [userId], onDelete: Cascade)
   token             YouTubeTokenRow?
+  channel           YouTubeChannelRow?
+  channelSyncs      ChannelSyncRow[]
 
   @@index([providerUserId], map: "youtube_identities_provider_user_idx")
   @@map("youtube_identities")
+}
+
+model YouTubeChannelRow {
+  channelId             String             @id @map("channel_id") @db.VarChar(255)
+  userId                String             @unique(map: "youtube_channels_user_key") @map("user_id") @db.VarChar(255)
+  youtubeIdentityId     String             @unique(map: "youtube_channels_identity_key") @map("youtube_identity_id") @db.VarChar(255)
+  title                 String             @db.VarChar(255)
+  handle                String?            @db.VarChar(255)
+  description           String             @db.Text
+  publishedAt           DateTime           @map("published_at") @db.Timestamptz(3)
+  country               String?            @db.VarChar(8)
+  customUrl             String?            @map("custom_url") @db.VarChar(255)
+  thumbnailUrl          String?            @map("thumbnail_url") @db.Text
+  bannerUrl             String?            @map("banner_url") @db.Text
+  subscriberCount       Decimal?           @map("subscriber_count") @db.Decimal(20, 0)
+  viewCount             Decimal            @map("view_count") @db.Decimal(20, 0)
+  videoCount            Decimal            @map("video_count") @db.Decimal(20, 0)
+  hiddenSubscriberCount Boolean            @map("hidden_subscriber_count")
+  defaultLanguage       String?            @map("default_language") @db.VarChar(32)
+  keywords              String[]
+  brandingSettings      Json               @map("branding_settings")
+  privacyStatus         String             @map("privacy_status") @db.VarChar(16)
+  sourceEtag            String?            @map("source_etag") @db.VarChar(255)
+  lastSyncedAt          DateTime           @map("last_synced_at") @db.Timestamptz(3)
+  syncStatus            String             @map("sync_status") @db.VarChar(16)
+  createdAt             DateTime           @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime           @map("updated_at") @db.Timestamptz(3)
+  user                  UserRow            @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  youtubeIdentity       YouTubeIdentityRow @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
+
+  @@map("youtube_channels")
+}
+
+model ChannelSyncRow {
+  syncId            String             @id @map("sync_id") @db.VarChar(255)
+  userId            String             @map("user_id") @db.VarChar(255)
+  youtubeIdentityId String             @map("youtube_identity_id") @db.VarChar(255)
+  channelId         String?            @map("channel_id") @db.VarChar(255)
+  outcome           String             @db.VarChar(16)
+  changedFields     String[]           @map("changed_fields")
+  failureCode       String?            @map("failure_code") @db.VarChar(64)
+  startedAt         DateTime           @map("started_at") @db.Timestamptz(3)
+  completedAt       DateTime           @map("completed_at") @db.Timestamptz(3)
+  user              UserRow            @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  youtubeIdentity   YouTubeIdentityRow @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
+  @@index([userId, startedAt(sort: Desc), syncId(sort: Asc)], map: "channel_syncs_user_history_idx")
+  @@map("channel_syncs")
 }
 
 model YouTubeTokenRow {

@@ -4,24 +4,29 @@ import { test } from "node:test";
 import { InMemorySessionRepository, InMemoryUserRepository, InMemoryYouTubeAuthorizationRepository, SessionService, YouTubeAuthorizationService, YOUTUBE_READONLY_SCOPE, type Clock, type IdGenerator, type RefreshedYouTubeGrant, type TokenProtectionResult, type YouTubeProviderResult, type YouTubeTokenProtector } from "../../../core";
 import { AUTH_SESSION_COOKIE, CurrentSessionResolver, SessionTokenService } from "../../auth";
 import { YouTubeAuthorizationStateStore } from "../authorization-state";
+import { YOUTUBE_AUTH_STATE_COOKIE } from "../cookies";
 import { YouTubeHttpHandlers } from "../youtube-http";
 import type { YouTubeAuthorizationRequest, YouTubeOAuthProtocol, YouTubeProtocolResult } from "../openid-client-youtube-protocol";
 
 const NOW = "2026-08-02T12:00:00.000Z";
 const EXPIRY = "2026-08-03T12:00:00.000Z";
-class StaticClock implements Clock { now(): string { return NOW; } }
+class StaticClock implements Clock { constructor(private readonly value = NOW) {} now(): string { return this.value; } }
 class TestIds implements IdGenerator { private value = 0; create(prefix: string): string { return `${prefix}_${++this.value}`; } }
 class TestProtector implements YouTubeTokenProtector { readonly activeKeyId = "test"; async protect(value: string): Promise<TokenProtectionResult<string>> { return { status: "success", value: `encrypted:${value}` }; } async reveal(value: string): Promise<TokenProtectionResult<string>> { return { status: "success", value: value.replace(/^encrypted:/u, "") }; } }
 class TestProtocol implements YouTubeOAuthProtocol {
   revokeCount = 0;
-  async begin(): Promise<YouTubeAuthorizationRequest> { return { authorizationUrl: new URL("https://accounts.google.com/o/oauth2/v2/auth?state=state&code_challenge=challenge"), state: "state", nonce: "nonce", codeVerifier: "verifier" }; }
-  async complete(): Promise<YouTubeProtocolResult<{ providerUserId: string; channelId: string; channelTitle: string; scopes: readonly string[]; refreshToken: string; accessToken: string }>> { return { status: "success", value: { providerUserId: "provider", channelId: "UC_http", channelTitle: "HTTP Channel", scopes: [YOUTUBE_READONLY_SCOPE], refreshToken: "refresh", accessToken: "access" } }; }
+  async begin(): Promise<YouTubeAuthorizationRequest> { return { authorizationUrl: new URL("https://accounts.google.com/o/oauth2/v2/auth?state=state&code_challenge=challenge&code_challenge_method=S256"), state: "state", nonce: "nonce", codeVerifier: "verifier" }; }
+  async complete(callbackUrl: URL, transaction: Readonly<{ state: string }>): Promise<YouTubeProtocolResult<{ providerUserId: string; channelId: string; channelTitle: string; scopes: readonly string[]; refreshToken: string; accessToken: string }>> {
+    if (callbackUrl.searchParams.get("state") !== transaction.state) {
+      return { status: "failure", error: { code: "callback-invalid", message: "YouTube callback could not be verified.", stage: "authorization-state", providerCode: "authorization-state-mismatch" } };
+    }
+    return { status: "success", value: { providerUserId: "provider", channelId: "UC_http", channelTitle: "HTTP Channel", scopes: [YOUTUBE_READONLY_SCOPE], refreshToken: "refresh", accessToken: "access" } };
+  }
   async refresh(): Promise<YouTubeProviderResult<RefreshedYouTubeGrant>> { return { status: "success", value: { accessToken: "new-access" } }; }
   async revoke(): Promise<YouTubeProviderResult<true>> { this.revokeCount += 1; return { status: "success", value: true }; }
 }
 
-async function createHarness() {
-  const clock = new StaticClock();
+async function createHarness(clock: Clock = new StaticClock()) {
   const users = new InMemoryUserRepository();
   await users.create({ userId: "user_http", email: "http@example.com", displayName: "HTTP User", locale: "es", createdAt: NOW });
   const sessions = new InMemorySessionRepository(users);
@@ -31,8 +36,9 @@ async function createHarness() {
   const protocol = new TestProtocol();
   const repository = new InMemoryYouTubeAuthorizationRepository();
   const service = new YouTubeAuthorizationService(repository, new TestProtector(), protocol, clock, new TestIds());
-  const handlers = new YouTubeHttpHandlers({ currentSession: new CurrentSessionResolver(sessions, users, sessionTokens, clock), compositionFactory: async () => ({ status: "success", value: { service, protocol } }), authorizationStates: new YouTubeAuthorizationStateStore(clock), clock, ids: new TestIds(), production: false });
-  return { handlers, protocol, sessionCookie: `${AUTH_SESSION_COOKIE}=${token.token}` };
+  const authorizationStates = new YouTubeAuthorizationStateStore(clock);
+  const handlers = new YouTubeHttpHandlers({ currentSession: new CurrentSessionResolver(sessions, users, sessionTokens, clock), compositionFactory: async () => ({ status: "success", value: { service, protocol } }), authorizationStates, clock, ids: new TestIds(), production: false });
+  return { handlers, protocol, authorizationStates, sessionCookie: `${AUTH_SESSION_COOKIE}=${token.token}` };
 }
 
 test("YouTube endpoints require an authenticated CreatorOS session", async () => {
@@ -47,6 +53,7 @@ test("connect and callback use state, PKCE transaction, safe cookies and persist
   const connect = await handlers.connect(new Request("http://localhost/api/youtube/connect?returnTo=/es/youtube-analyzer", { headers: { cookie: sessionCookie } }));
   assert.equal(connect.status, 302);
   assert.match(connect.headers.get("location") ?? "", /code_challenge/u);
+  assert.match(connect.headers.get("location") ?? "", /code_challenge_method=S256/u);
   const stateCookie = connect.headers.get("set-cookie")?.split(";")[0];
   assert.ok(stateCookie);
   const callback = await handlers.callback(new Request("http://localhost/api/youtube/callback?state=state&code=private-code", { headers: { cookie: `${sessionCookie}; ${stateCookie}` } }));
@@ -55,6 +62,45 @@ test("connect and callback use state, PKCE transaction, safe cookies and persist
   const status = await handlers.status(new Request("http://localhost/api/youtube/status", { headers: { cookie: sessionCookie } }));
   assert.equal(status.status, 200);
   assert.equal((await status.json() as { data: { connected: boolean } }).data.connected, true);
+});
+
+test("callback without the transient state cookie fails safely and clears its cookie scope", async () => {
+  const { handlers, sessionCookie } = await createHarness();
+  const callback = await handlers.callback(new Request("http://localhost/api/youtube/callback?state=state&code=private-code", { headers: { cookie: sessionCookie } }));
+  assert.equal(callback.status, 400);
+  assert.deepEqual(await callback.json(), { error: { code: "YOUTUBE_AUTHORIZATION_FAILED", message: "YouTube authorization could not be completed." } });
+  assert.equal(callback.headers.get("set-cookie"), `${YOUTUBE_AUTH_STATE_COOKIE}=; Path=/api/youtube; HttpOnly; SameSite=Lax; Max-Age=0`);
+});
+
+test("callback state is single-use and cannot be replayed", async () => {
+  const { handlers, sessionCookie } = await createHarness();
+  const connect = await handlers.connect(new Request("http://localhost/api/youtube/connect", { headers: { cookie: sessionCookie } }));
+  const stateCookie = connect.headers.get("set-cookie")?.split(";")[0];
+  assert.ok(stateCookie);
+  const cookie = `${sessionCookie}; ${stateCookie}`;
+  const callbackUrl = "http://localhost/api/youtube/callback?state=state&code=private-code";
+  assert.equal((await handlers.callback(new Request(callbackUrl, { headers: { cookie } }))).status, 302);
+  assert.equal((await handlers.callback(new Request(callbackUrl, { headers: { cookie } }))).status, 400);
+});
+
+test("expired authorization state fails before protocol completion", async () => {
+  const clock = new StaticClock("2026-08-02T12:11:00.000Z");
+  const { handlers, authorizationStates, sessionCookie } = await createHarness(clock);
+  authorizationStates.save("expired-handle", { userId: "user_http", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
+  const cookie = `${sessionCookie}; ${YOUTUBE_AUTH_STATE_COOKIE}=expired-handle`;
+  const callback = await handlers.callback(new Request("http://localhost/api/youtube/callback?state=state&code=private-code", { headers: { cookie } }));
+  assert.equal(callback.status, 400);
+});
+
+test("callback rejects a mismatched OAuth state", async () => {
+  const { handlers, sessionCookie } = await createHarness();
+  const connect = await handlers.connect(new Request("http://localhost/api/youtube/connect", { headers: { cookie: sessionCookie } }));
+  const stateCookie = connect.headers.get("set-cookie")?.split(";")[0];
+  assert.ok(stateCookie);
+  const callback = await handlers.callback(new Request("http://localhost/api/youtube/callback?state=other-state&code=private-code", { headers: { cookie: `${sessionCookie}; ${stateCookie}` } }));
+  assert.equal(callback.status, 400);
+  const status = await handlers.status(new Request("http://localhost/api/youtube/status", { headers: { cookie: sessionCookie } }));
+  assert.equal((await status.json() as { data: { connected: boolean } }).data.connected, false);
 });
 
 test("disconnect revokes provider access and returns a safe disconnected status", async () => {
