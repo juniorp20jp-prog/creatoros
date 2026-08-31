@@ -52,13 +52,36 @@ test("not connected renders the official OAuth CTA", async () => {
   assert.equal(connect.getAttribute("href"), "/api/youtube/connect?returnTo=%2Fen%2Fyoutube-analyzer");
 });
 
-test("connected state renders real channel data with accessible identity", async () => {
+test("connected state renders the real thumbnail, identity, and metrics", async () => {
+  const client = new YouTubeApiClient({ fetch: createYouTubeFetch({ channel: realChannel }) });
+  const view = render(createElement(YouTubeConnectionExperience, { client, content: en.blueprint.youtubeAnalyzer.connection, locale: "en" }));
+  assert.ok(await view.findByRole("heading", { name: realChannel.title }));
+  const avatarName = realChannel.title + " — " + en.blueprint.youtubeAnalyzer.connection.channelAvatar;
+  const avatar = view.getByRole("img", { name: avatarName });
+  assert.equal(avatar.getAttribute("src"), realChannel.thumbnailUrl);
+  assert.ok(view.getByText(realChannel.handle ?? ""));
+  assert.ok(view.getByText(formatYouTubeCounter(realChannel.subscriberCount, "en", "N/A")));
+  assert.ok(view.getByText(formatYouTubeCounter(realChannel.viewCount, "en", "N/A")));
+  assert.ok(view.getByText(formatYouTubeCounter(realChannel.videoCount, "en", "N/A")));
+  assert.ok(view.getByText(en.blueprint.youtubeAnalyzer.connection.realData));
+  assert.equal(view.queryByText("Creator Lab Complete"), null);
+});
+
+test("missing channel thumbnail renders a safe fallback without a broken image", async () => {
   const client = new YouTubeApiClient({ fetch: createYouTubeFetch({ channel: { ...realChannel, thumbnailUrl: undefined } }) });
   const view = render(createElement(YouTubeConnectionExperience, { client, content: en.blueprint.youtubeAnalyzer.connection, locale: "en" }));
   assert.ok(await view.findByRole("heading", { name: realChannel.title }));
   assert.ok(view.getByRole("img", { name: en.blueprint.youtubeAnalyzer.connection.channelAvatarUnavailable }));
-  assert.ok(view.getByText(en.blueprint.youtubeAnalyzer.connection.realData));
-  assert.equal(view.queryByText("Creator Lab Complete"), null);
+  assert.equal(view.queryByRole("img", { name: realChannel.title + " — " + en.blueprint.youtubeAnalyzer.connection.channelAvatar }), null);
+});
+
+test("failed channel thumbnail is replaced by the safe fallback", async () => {
+  const client = new YouTubeApiClient({ fetch: createYouTubeFetch({ channel: realChannel }) });
+  const view = render(createElement(YouTubeConnectionExperience, { client, content: en.blueprint.youtubeAnalyzer.connection, locale: "en" }));
+  const avatarName = realChannel.title + " — " + en.blueprint.youtubeAnalyzer.connection.channelAvatar;
+  fireEvent.error(await view.findByRole("img", { name: avatarName }));
+  assert.ok(view.getByRole("img", { name: en.blueprint.youtubeAnalyzer.connection.channelAvatarUnavailable }));
+  assert.equal(view.queryByRole("img", { name: avatarName }), null);
 });
 
 test("first synchronization exposes loading then completed and blocks double submit", async () => {

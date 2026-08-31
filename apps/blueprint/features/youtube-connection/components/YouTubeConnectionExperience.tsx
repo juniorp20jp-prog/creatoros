@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import React, { useMemo, useState } from "react";
 
 import { Button, Card } from "@repo/ui";
@@ -82,18 +81,11 @@ export function YouTubeConnectionExperience({
         <Card className={styles.channelCard} padding="none" variant="elevated">
           <div className={styles.channelHero}>
             <div className={styles.channelIdentity}>
-              {controller.channel?.thumbnailUrl ? (
-                <Image
-                  alt={`${controller.channel.title} — ${content.channelAvatar}`}
-                  className={styles.avatar}
-                  height={88}
-                  src={controller.channel.thumbnailUrl}
-                  unoptimized
-                  width={88}
-                />
-              ) : (
-                <div aria-label={content.channelAvatarUnavailable} className={styles.avatarFallback} role="img">YT</div>
-              )}
+              <ChannelAvatar
+                fallbackLabel={content.channelAvatarUnavailable}
+                label={`${controller.channel?.title ?? controller.connection?.channelTitle ?? content.channelFallback} — ${content.channelAvatar}`}
+                thumbnailUrl={controller.channel?.thumbnailUrl}
+              />
               <div>
                 <div className={styles.connectionLine}>
                   <span className={styles.connectedDot} aria-hidden="true" />
@@ -192,6 +184,39 @@ export function YouTubeConnectionExperience({
         </Card>
       ) : null}
     </section>
+  );
+}
+
+function ChannelAvatar({
+  fallbackLabel,
+  label,
+  thumbnailUrl,
+}: Readonly<{
+  fallbackLabel: string;
+  label: string;
+  thumbnailUrl?: string;
+}>) {
+  const [failedThumbnailUrl, setFailedThumbnailUrl] = useState<string | null>(null);
+  const canRenderThumbnail = Boolean(thumbnailUrl && thumbnailUrl !== failedThumbnailUrl);
+
+  if (!canRenderThumbnail) {
+    return <div aria-label={fallbackLabel} className={styles.avatarFallback} role="img">YT</div>;
+  }
+
+  return (
+    // The public YouTube CDN URL is already sized; a native image keeps runtime failure handling local.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      alt={label}
+      className={styles.avatar}
+      decoding="async"
+      height={88}
+      loading="lazy"
+      onError={() => setFailedThumbnailUrl(thumbnailUrl ?? null)}
+      referrerPolicy="no-referrer"
+      src={thumbnailUrl}
+      width={88}
+    />
   );
 }
 

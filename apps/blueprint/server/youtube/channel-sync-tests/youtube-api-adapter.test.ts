@@ -15,10 +15,30 @@ test("adapter maps the official channel resource without returning credentials",
     assert.equal(result.value.handle, "@real");
     assert.deepEqual(result.value.keywords, ["creator", "long form"]);
     assert.equal(result.value.subscriberCount, "1234");
+    assert.equal(result.value.thumbnailUrl, "https://yt.example/thumb.jpg");
     assert.equal(JSON.stringify(result.value).includes("private-access-token"), false);
   }
 });
 
+test("adapter selects the best available thumbnail deterministically", async () => {
+  const thumbnails = {
+    default: { url: "https://yt.example/default.jpg" },
+    medium: { url: "https://yt.example/medium.jpg" },
+    high: { url: "https://yt.example/high.jpg" },
+    maxres: { url: "https://yt.example/maxres.jpg" },
+  };
+  const adapter = new GoogleYouTubeApiAdapter(async () => Response.json({ items: [{ ...resource, snippet: { ...resource.snippet, thumbnails } }] }));
+  const result = await adapter.fetchAuthenticatedChannel("token");
+  assert.equal(result.status, "success");
+  if (result.status === "success") assert.equal(result.value.thumbnailUrl, thumbnails.maxres.url);
+});
+
+test("adapter preserves an absent thumbnail without inventing a URL", async () => {
+  const adapter = new GoogleYouTubeApiAdapter(async () => Response.json({ items: [{ ...resource, snippet: { ...resource.snippet, thumbnails: undefined } }] }));
+  const result = await adapter.fetchAuthenticatedChannel("token");
+  assert.equal(result.status, "success");
+  if (result.status === "success") assert.equal(result.value.thumbnailUrl, undefined);
+});
 test("adapter supports ETag incremental requests and 304", async () => {
   let etag = "";
   const adapter = new GoogleYouTubeApiAdapter(async (_input, init) => { etag = new Headers(init?.headers).get("if-none-match") ?? ""; return new Response(null, { status: 304 }); });
