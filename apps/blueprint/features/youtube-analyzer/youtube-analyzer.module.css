@@ -1,8 +1,35 @@
 .analyzer,
-.analysisContent {
+.analysisContent,
+.demoWorkspace {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
+}
+
+.demoWorkspace {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-default);
+}
+
+.demoBoundary {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.demoBoundary h2 {
+  margin-top: var(--space-2);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-2xl);
+}
+
+.demoBoundary > p {
+  max-width: 40rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  text-align: right;
 }
 
 .eyebrow {
@@ -61,7 +88,7 @@
   color: var(--color-text-primary);
 }
 
-.headerCopy h2 {
+.headerCopy h3 {
   max-width: 43rem;
   margin-top: var(--space-3);
   color: var(--color-text-primary);
@@ -872,12 +899,14 @@
 }
 
 @media (max-width: 820px) {
-  .sectionHeading {
+  .sectionHeading,
+  .demoBoundary {
     align-items: flex-start;
     flex-direction: column;
   }
 
-  .sectionHeading > p {
+  .sectionHeading > p,
+  .demoBoundary > p {
     text-align: left;
   }
 

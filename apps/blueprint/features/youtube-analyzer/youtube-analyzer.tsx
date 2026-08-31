@@ -1,4 +1,5 @@
 import type { Locale } from "../../i18n/config";
+import { YouTubeConnectionExperience } from "../youtube-connection";
 import type { YouTubeAnalyzerScenarioId } from "./fixtures";
 import type {
   YouTubeAnalyzerSuccessViewModel,
@@ -56,57 +57,69 @@ export function YouTubeAnalyzer({
 
   return (
     <div className={styles.analyzer} lang={locale}>
-      <AnalyzerHeader
-        channelName={scenario?.channelName ?? content.overview.notAvailable}
-        content={content}
-        locale={locale}
-        period={scenario?.period ?? null}
-        scenarioId={scenario?.id ?? null}
-        scenarios={scenarios}
-        state={state}
-      />
+      <YouTubeConnectionExperience content={content.connection} locale={locale} />
 
-      {viewModel === null ? <AnalyzerEmptyState content={content} /> : null}
-
-      {viewModel?.state === "validation-error" ||
-      viewModel?.state === "unexpected-error" ? (
-        <AnalyzerErrorState
-          content={content}
-          errorCode={viewModel.errorCode}
-          type={viewModel.state}
-        />
-      ) : null}
-
-      {successfulViewModel ? (
-        <div aria-live="polite" className={styles.analysisContent}>
-          <AnalysisOverview
-            content={content}
-            locale={locale}
-            metrics={successfulViewModel.metrics}
-          />
-          <PublishingInsights
-            content={content}
-            locale={locale}
-            publishing={successfulViewModel.publishing}
-          />
-          <VideoPerformanceTable
-            content={content}
-            locale={locale}
-            videos={successfulViewModel.videos}
-          />
-          <SignalsPanel
-            content={content}
-            locale={locale}
-            signals={successfulViewModel.signals}
-          />
-          <DataQualityPanel
-            content={content}
-            quality={successfulViewModel.quality}
-          />
+      <section aria-labelledby="youtube-demo-title" className={styles.demoWorkspace}>
+        <div className={styles.demoBoundary}>
+          <div>
+            <p className={styles.eyebrow}>{content.connection.demoBadge}</p>
+            <h2 id="youtube-demo-title">{content.connection.demoTitle}</h2>
+          </div>
+          <p>{content.connection.demoDescription}</p>
         </div>
-      ) : null}
 
-      <AnalysisLimitations content={content} />
+        <AnalyzerHeader
+          channelName={scenario?.channelName ?? content.overview.notAvailable}
+          content={content}
+          locale={locale}
+          period={scenario?.period ?? null}
+          scenarioId={scenario?.id ?? null}
+          scenarios={scenarios}
+          state={state}
+        />
+
+        {viewModel === null ? <AnalyzerEmptyState content={content} /> : null}
+
+        {viewModel?.state === "validation-error" ||
+        viewModel?.state === "unexpected-error" ? (
+          <AnalyzerErrorState
+            content={content}
+            errorCode={viewModel.errorCode}
+            type={viewModel.state}
+          />
+        ) : null}
+
+        {successfulViewModel ? (
+          <div aria-live="polite" className={styles.analysisContent}>
+            <AnalysisOverview
+              content={content}
+              locale={locale}
+              metrics={successfulViewModel.metrics}
+            />
+            <PublishingInsights
+              content={content}
+              locale={locale}
+              publishing={successfulViewModel.publishing}
+            />
+            <VideoPerformanceTable
+              content={content}
+              locale={locale}
+              videos={successfulViewModel.videos}
+            />
+            <SignalsPanel
+              content={content}
+              locale={locale}
+              signals={successfulViewModel.signals}
+            />
+            <DataQualityPanel
+              content={content}
+              quality={successfulViewModel.quality}
+            />
+          </div>
+        ) : null}
+
+        <AnalysisLimitations content={content} />
+      </section>
     </div>
   );
 }

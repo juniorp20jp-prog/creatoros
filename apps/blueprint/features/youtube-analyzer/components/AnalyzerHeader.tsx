@@ -38,7 +38,7 @@ export function AnalyzerHeader({
           {content.header.backToDashboard}
         </Link>
         <p className={styles.eyebrow}>{content.header.eyebrow}</p>
-        <h2>{content.header.title}</h2>
+        <h3>{content.header.title}</h3>
         <p className={styles.headerDescription}>{content.header.description}</p>
         <Link
           className={styles.intelligenceLink}

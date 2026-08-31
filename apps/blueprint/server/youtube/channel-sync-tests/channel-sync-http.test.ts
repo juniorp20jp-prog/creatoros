@@ -47,8 +47,8 @@ test("HTTP synchronization, channel and status expose safe read models", async (
   const statusResponse = await handlers.status(new Request("http://localhost/api/youtube/channel/status", { headers: { cookie } }));
   assert.equal(channelResponse.status, 200);
   assert.equal(statusResponse.status, 200);
-  const serialized = `${await channelResponse.text()}${await statusResponse.text()}`;
-  for (const forbidden of ["access", "refresh", "authorizationCode", "idToken", "claims"]) assert.equal(serialized.includes(forbidden), false);
+  const serialized = `${await synchronized.text()}${await channelResponse.text()}${await statusResponse.text()}`;
+  for (const forbidden of ["access", "refresh", "authorizationCode", "idToken", "claims", "userId", "youtubeIdentityId", "syncId"]) assert.equal(serialized.includes(forbidden), false);
 });
 
 test("HTTP maps quota exceeded to a stable safe response", async () => {

@@ -8,3 +8,4 @@ export * from "./youtube-http";
 export * from "./youtube-api-adapter";
 export * from "./channel-sync-http";
 export * from "./youtube-diagnostics";
+export * from "./http-contracts";
