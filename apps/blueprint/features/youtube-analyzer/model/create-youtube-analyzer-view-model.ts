@@ -3,13 +3,13 @@ import type {
   YouTubeIntelligenceOutput,
   YouTubeIntelligenceSignal,
 } from "../../../core";
-import type { YouTubeAnalyzerScenarioId } from "../fixtures";
 import type {
   AnalyzerEvidenceViewModel,
   AnalyzerSignalViewModel,
   AnalyzerValueFormat,
   YouTubeAnalyzerSuccessViewModel,
   YouTubeAnalyzerViewModel,
+  YouTubeAnalyzerSourceId,
 } from "./youtube-analyzer-view-model.types";
 
 function evidenceFormat(
@@ -106,7 +106,7 @@ function determineSuccessfulState(
 }
 
 export function createYouTubeAnalyzerViewModel(
-  scenarioId: YouTubeAnalyzerScenarioId,
+  scenarioId: YouTubeAnalyzerSourceId,
   result: EngineExecutionResult<YouTubeIntelligenceOutput>,
 ): YouTubeAnalyzerViewModel {
   if (result.status === "failed") {
@@ -213,4 +213,25 @@ export function createYouTubeAnalyzerViewModel(
     signals,
     quality: output.dataQuality,
   };
+}
+
+export function createRealYouTubeAnalyzerViewModel(
+  output: YouTubeIntelligenceOutput,
+): YouTubeAnalyzerSuccessViewModel {
+  const viewModel = createYouTubeAnalyzerViewModel("real", {
+    status: "completed",
+    output,
+    metadata: {
+      executionId: "real-persisted-analysis",
+      engineId: "youtube-intelligence",
+      startedAt: output.context.analysisDate,
+      finishedAt: output.context.analysisDate,
+      providerIds: [],
+      completedStepIds: [],
+    },
+  });
+  if (!("metrics" in viewModel)) {
+    throw new Error("A completed YouTube output must produce a success view model.");
+  }
+  return viewModel;
 }

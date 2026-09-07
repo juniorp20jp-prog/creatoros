@@ -67,3 +67,80 @@ export function toYouTubeSynchronizationStatusReadModel(
       : null,
   };
 }
+
+export type YouTubeVideoReadModel = Omit<
+  import("../../core").YouTubeVideo,
+  "userId"
+>;
+
+export type YouTubeVideoSynchronizationReadModel = Omit<
+  import("../../core").VideoSynchronization,
+  "syncId" | "userId" | "youtubeIdentityId"
+>;
+
+export type YouTubeVideoPageReadModel = Readonly<{
+  videos: ReadonlyArray<YouTubeVideoReadModel>;
+  nextCursor?: string;
+}>;
+
+export type YouTubeVideoSynchronizationStatusReadModel = Readonly<{
+  videoCount: number;
+  lastSync: YouTubeVideoSynchronizationReadModel | null;
+}>;
+
+export type YouTubeVideoSynchronizationResultReadModel = Readonly<{
+  videos: ReadonlyArray<YouTubeVideoReadModel>;
+  synchronization: YouTubeVideoSynchronizationReadModel;
+}>;
+
+export type RealYouTubeIntelligenceReadModel = Readonly<{
+  output: import("../../core").YouTubeIntelligenceOutput;
+  excludedVideoCount: number;
+  synchronization: YouTubeVideoSynchronizationReadModel | null;
+}>;
+
+export function toVideoPageReadModel(
+  video: import("../../core").YouTubeVideo,
+): YouTubeVideoReadModel {
+  const { userId, ...publicVideo } = video;
+  void userId;
+  return publicVideo;
+}
+
+export function toVideoSynchronizationReadModel(
+  synchronization: import("../../core").VideoSynchronization,
+): YouTubeVideoSynchronizationReadModel {
+  const { syncId, userId, youtubeIdentityId, ...publicSynchronization } =
+    synchronization;
+  void syncId;
+  void userId;
+  void youtubeIdentityId;
+  return publicSynchronization;
+}
+
+export function toVideoSynchronizationStatusReadModel(
+  status: import("../../core").VideoSynchronizationStatus,
+): YouTubeVideoSynchronizationStatusReadModel {
+  return {
+    videoCount: status.videoCount,
+    lastSync: status.lastSync
+      ? toVideoSynchronizationReadModel(status.lastSync)
+      : null,
+  };
+}
+
+export function toRealYouTubeIntelligenceReadModel(
+  value: Readonly<{
+    output: import("../../core").YouTubeIntelligenceOutput;
+    excludedVideoCount: number;
+    synchronization: import("../../core").VideoSynchronization | null;
+  }>,
+): RealYouTubeIntelligenceReadModel {
+  return {
+    output: value.output,
+    excludedVideoCount: value.excludedVideoCount,
+    synchronization: value.synchronization
+      ? toVideoSynchronizationReadModel(value.synchronization)
+      : null,
+  };
+}

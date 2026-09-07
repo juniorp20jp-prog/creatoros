@@ -49,7 +49,37 @@
     "developmentEnvironment": "Ambiente de desenvolvimento"
   },
   "blueprint": {
-    "header": {
+    "realAnalyzer": {
+    "eyebrow": "Inteligência real",
+    "title": "Análise dos seus vídeos sincronizados",
+    "description": "Sincronize vídeos públicos recentes e execute o motor determinístico com dados reais.",
+    "action": "Sincronizar vídeos e analisar",
+    "synchronizing": "Sincronizando e analisando…",
+    "loading": "Carregando inteligência real…",
+    "emptyTitle": "Ainda não há vídeos sincronizados",
+    "emptyDescription": "Sincronize os vídeos do canal para criar a primeira análise real.",
+    "errorTitle": "Não foi possível carregar a inteligência real",
+    "retry": "Tentar novamente",
+    "noChange": "Os vídeos já estavam atualizados. A análise foi recalculada com os dados persistidos.",
+    "completed": "A sincronização e a análise real foram concluídas.",
+    "partial": "A sincronização foi parcial. A análise usa somente vídeos acessíveis e válidos.",
+    "coverageExact": "Análise baseada em {count} vídeos recentes acessíveis.",
+    "coverageTruncated": "Análise baseada nos {count} vídeos acessíveis mais recentes dentro do limite V1 de {limit}.",
+    "excluded": "{count} vídeos persistidos não puderam ser incluídos por métricas públicas ausentes ou inseguras.",
+    "realDataNotice": "Dados reais do canal conectado",
+    "errors": {
+      "unauthenticated": "Sua sessão do CreatorOS não é mais válida.",
+      "not-connected": "Conecte o YouTube antes de sincronizar vídeos.",
+      "authorization": "A autorização do YouTube precisa ser renovada.",
+      "provider": "O YouTube não concluiu a sincronização. Os dados anteriores foram preservados.",
+      "server": "O CreatorOS não concluiu a análise.",
+      "invalid-response": "O CreatorOS recebeu uma resposta inválida.",
+      "network": "Não foi possível contatar o CreatorOS.",
+      "cancelled": "A operação foi cancelada.",
+      "generic": "Não foi possível concluir a operação."
+    }
+  },
+  "header": {
       "eyebrow": "Centro de operações",
       "title": "CreatorOS Blueprint",
       "description": "Controle, arquitetura e evolução de toda a plataforma.",
@@ -78,7 +108,37 @@
     },
     "missionControl": {
       "metadata": { "title": "Mission Control | CreatorOS Blueprint", "description": "Execute e inspecione fluxos certificados de análise do CreatorOS." },
-      "header": {
+      "realAnalyzer": {
+    "eyebrow": "Inteligência real",
+    "title": "Análise dos seus vídeos sincronizados",
+    "description": "Sincronize vídeos públicos recentes e execute o motor determinístico com dados reais.",
+    "action": "Sincronizar vídeos e analisar",
+    "synchronizing": "Sincronizando e analisando…",
+    "loading": "Carregando inteligência real…",
+    "emptyTitle": "Ainda não há vídeos sincronizados",
+    "emptyDescription": "Sincronize os vídeos do canal para criar a primeira análise real.",
+    "errorTitle": "Não foi possível carregar a inteligência real",
+    "retry": "Tentar novamente",
+    "noChange": "Os vídeos já estavam atualizados. A análise foi recalculada com os dados persistidos.",
+    "completed": "A sincronização e a análise real foram concluídas.",
+    "partial": "A sincronização foi parcial. A análise usa somente vídeos acessíveis e válidos.",
+    "coverageExact": "Análise baseada em {count} vídeos recentes acessíveis.",
+    "coverageTruncated": "Análise baseada nos {count} vídeos acessíveis mais recentes dentro do limite V1 de {limit}.",
+    "excluded": "{count} vídeos persistidos não puderam ser incluídos por métricas públicas ausentes ou inseguras.",
+    "realDataNotice": "Dados reais do canal conectado",
+    "errors": {
+      "unauthenticated": "Sua sessão do CreatorOS não é mais válida.",
+      "not-connected": "Conecte o YouTube antes de sincronizar vídeos.",
+      "authorization": "A autorização do YouTube precisa ser renovada.",
+      "provider": "O YouTube não concluiu a sincronização. Os dados anteriores foram preservados.",
+      "server": "O CreatorOS não concluiu a análise.",
+      "invalid-response": "O CreatorOS recebeu uma resposta inválida.",
+      "network": "Não foi possível contatar o CreatorOS.",
+      "cancelled": "A operação foi cancelada.",
+      "generic": "Não foi possível concluir a operação."
+    }
+  },
+  "header": {
         "eyebrow": "Operações de análise", "title": "Mission Control", "description": "Execute análises de demonstração e consulte status, evidências e histórico pela API certificada do CreatorOS.",
         "demoMode": "Modo demonstração", "runAnalysis": "Executar análise", "running": "Executando análise…"
       },
@@ -125,7 +185,37 @@
     },
     "creatorDecisions": {
       "metadata": { "title": "Decisões | CreatorOS Blueprint", "description": "Ações priorizadas, mensuráveis e sustentadas por evidências geradas pelo CreatorOS." },
-      "header": {
+      "realAnalyzer": {
+    "eyebrow": "Inteligência real",
+    "title": "Análise dos seus vídeos sincronizados",
+    "description": "Sincronize vídeos públicos recentes e execute o motor determinístico com dados reais.",
+    "action": "Sincronizar vídeos e analisar",
+    "synchronizing": "Sincronizando e analisando…",
+    "loading": "Carregando inteligência real…",
+    "emptyTitle": "Ainda não há vídeos sincronizados",
+    "emptyDescription": "Sincronize os vídeos do canal para criar a primeira análise real.",
+    "errorTitle": "Não foi possível carregar a inteligência real",
+    "retry": "Tentar novamente",
+    "noChange": "Os vídeos já estavam atualizados. A análise foi recalculada com os dados persistidos.",
+    "completed": "A sincronização e a análise real foram concluídas.",
+    "partial": "A sincronização foi parcial. A análise usa somente vídeos acessíveis e válidos.",
+    "coverageExact": "Análise baseada em {count} vídeos recentes acessíveis.",
+    "coverageTruncated": "Análise baseada nos {count} vídeos acessíveis mais recentes dentro do limite V1 de {limit}.",
+    "excluded": "{count} vídeos persistidos não puderam ser incluídos por métricas públicas ausentes ou inseguras.",
+    "realDataNotice": "Dados reais do canal conectado",
+    "errors": {
+      "unauthenticated": "Sua sessão do CreatorOS não é mais válida.",
+      "not-connected": "Conecte o YouTube antes de sincronizar vídeos.",
+      "authorization": "A autorização do YouTube precisa ser renovada.",
+      "provider": "O YouTube não concluiu a sincronização. Os dados anteriores foram preservados.",
+      "server": "O CreatorOS não concluiu a análise.",
+      "invalid-response": "O CreatorOS recebeu uma resposta inválida.",
+      "network": "Não foi possível contatar o CreatorOS.",
+      "cancelled": "A operação foi cancelada.",
+      "generic": "Não foi possível concluir a operação."
+    }
+  },
+  "header": {
         "eyebrow": "Centro de Decisões V1", "title": "Decisões para colocar em prática agora",
         "description": "O CreatorOS organizou as evidências disponíveis em ações priorizadas, com raciocínio transparente e resultados mensuráveis.",
         "backToDashboard": "Voltar ao Dashboard", "activeCount": "{count} decisões ativas geradas",
@@ -388,7 +478,37 @@
           "generic": "Não foi possível concluir a operação. Seus dados anteriores continuam disponíveis."
         }
       },
-      "header": {
+      "realAnalyzer": {
+    "eyebrow": "Inteligência real",
+    "title": "Análise dos seus vídeos sincronizados",
+    "description": "Sincronize vídeos públicos recentes e execute o motor determinístico com dados reais.",
+    "action": "Sincronizar vídeos e analisar",
+    "synchronizing": "Sincronizando e analisando…",
+    "loading": "Carregando inteligência real…",
+    "emptyTitle": "Ainda não há vídeos sincronizados",
+    "emptyDescription": "Sincronize os vídeos do canal para criar a primeira análise real.",
+    "errorTitle": "Não foi possível carregar a inteligência real",
+    "retry": "Tentar novamente",
+    "noChange": "Os vídeos já estavam atualizados. A análise foi recalculada com os dados persistidos.",
+    "completed": "A sincronização e a análise real foram concluídas.",
+    "partial": "A sincronização foi parcial. A análise usa somente vídeos acessíveis e válidos.",
+    "coverageExact": "Análise baseada em {count} vídeos recentes acessíveis.",
+    "coverageTruncated": "Análise baseada nos {count} vídeos acessíveis mais recentes dentro do limite V1 de {limit}.",
+    "excluded": "{count} vídeos persistidos não puderam ser incluídos por métricas públicas ausentes ou inseguras.",
+    "realDataNotice": "Dados reais do canal conectado",
+    "errors": {
+      "unauthenticated": "Sua sessão do CreatorOS não é mais válida.",
+      "not-connected": "Conecte o YouTube antes de sincronizar vídeos.",
+      "authorization": "A autorização do YouTube precisa ser renovada.",
+      "provider": "O YouTube não concluiu a sincronização. Os dados anteriores foram preservados.",
+      "server": "O CreatorOS não concluiu a análise.",
+      "invalid-response": "O CreatorOS recebeu uma resposta inválida.",
+      "network": "Não foi possível contatar o CreatorOS.",
+      "cancelled": "A operação foi cancelada.",
+      "generic": "Não foi possível concluir a operação."
+    }
+  },
+  "header": {
         "eyebrow": "YouTube Intelligence Engine V1",
         "title": "Inteligência do canal baseada em evidências.",
         "description": "Explore métricas, desempenho relativo, sinais e qualidade de dados produzidos pelo motor real do CreatorOS.",
@@ -598,7 +718,37 @@
     },
     "creatorIntelligence": {
       "metadata": { "title": "Inteligência do criador", "description": "Interpretação executiva determinística da análise de canal do CreatorOS." },
-      "header": { "eyebrow": "Creator Intelligence Workspace V1", "title": "Entenda o que aconteceu e as evidências que sustentam a leitura.", "description": "O CreatorOS organiza os achados analíticos mais importantes em um briefing claro, priorizado e rastreável.", "backToDashboard": "Voltar ao Dashboard", "viewTechnicalAnalysis": "Ver análise técnica", "scenarioLabel": "Cenário de demonstração", "scenarioHelp": "Selecione um cenário", "channelLabel": "Canal", "periodLabel": "Período da análise", "statusLabel": "Estado da inteligência", "demoDataNotice": "Dados locais de demonstração — nenhum canal real é representado" },
+      "realAnalyzer": {
+    "eyebrow": "Inteligência real",
+    "title": "Análise dos seus vídeos sincronizados",
+    "description": "Sincronize vídeos públicos recentes e execute o motor determinístico com dados reais.",
+    "action": "Sincronizar vídeos e analisar",
+    "synchronizing": "Sincronizando e analisando…",
+    "loading": "Carregando inteligência real…",
+    "emptyTitle": "Ainda não há vídeos sincronizados",
+    "emptyDescription": "Sincronize os vídeos do canal para criar a primeira análise real.",
+    "errorTitle": "Não foi possível carregar a inteligência real",
+    "retry": "Tentar novamente",
+    "noChange": "Os vídeos já estavam atualizados. A análise foi recalculada com os dados persistidos.",
+    "completed": "A sincronização e a análise real foram concluídas.",
+    "partial": "A sincronização foi parcial. A análise usa somente vídeos acessíveis e válidos.",
+    "coverageExact": "Análise baseada em {count} vídeos recentes acessíveis.",
+    "coverageTruncated": "Análise baseada nos {count} vídeos acessíveis mais recentes dentro do limite V1 de {limit}.",
+    "excluded": "{count} vídeos persistidos não puderam ser incluídos por métricas públicas ausentes ou inseguras.",
+    "realDataNotice": "Dados reais do canal conectado",
+    "errors": {
+      "unauthenticated": "Sua sessão do CreatorOS não é mais válida.",
+      "not-connected": "Conecte o YouTube antes de sincronizar vídeos.",
+      "authorization": "A autorização do YouTube precisa ser renovada.",
+      "provider": "O YouTube não concluiu a sincronização. Os dados anteriores foram preservados.",
+      "server": "O CreatorOS não concluiu a análise.",
+      "invalid-response": "O CreatorOS recebeu uma resposta inválida.",
+      "network": "Não foi possível contatar o CreatorOS.",
+      "cancelled": "A operação foi cancelada.",
+      "generic": "Não foi possível concluir a operação."
+    }
+  },
+  "header": { "eyebrow": "Creator Intelligence Workspace V1", "title": "Entenda o que aconteceu e as evidências que sustentam a leitura.", "description": "O CreatorOS organiza os achados analíticos mais importantes em um briefing claro, priorizado e rastreável.", "backToDashboard": "Voltar ao Dashboard", "viewTechnicalAnalysis": "Ver análise técnica", "scenarioLabel": "Cenário de demonstração", "scenarioHelp": "Selecione um cenário", "channelLabel": "Canal", "periodLabel": "Período da análise", "statusLabel": "Estado da inteligência", "demoDataNotice": "Dados locais de demonstração — nenhum canal real é representado" },
       "common": { "notAvailable": "Não disponível", "none": "Nenhum" },
       "states": {
         "success": "Inteligência completa", "partial-data": "Inteligência parcial", "insufficient-sample": "Inteligência limitada", "validation-error": "Erro de validação", "unexpected-error": "Erro inesperado", "empty": "Sem inteligência", "loading": "Construindo o briefing de inteligência…",

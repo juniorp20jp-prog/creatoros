@@ -53,6 +53,44 @@ export class YouTubeAuthorizationService {
     return this.connect(userId, { providerUserId: identity.value.providerUserId, channelId: identity.value.channelId, channelTitle: identity.value.channelTitle, scopes: refreshed.value.scopes ?? identity.value.scopes, refreshToken: refreshed.value.refreshToken ?? revealed.value, accessToken: refreshed.value.accessToken, ...(refreshed.value.accessTokenExpiresAt ? { accessTokenExpiresAt: refreshed.value.accessTokenExpiresAt } : {}) });
   }
 
+  async getAccessToken(userId: string): Promise<YouTubeAuthorizationResult<string>> {
+    const identity = await this.repository.getByUserId(userId);
+    if (identity.status === "failure" || identity.value.state !== "connected") {
+      return failure("not-connected", "YouTube is not connected.");
+    }
+    let stored = await this.repository.getByYouTubeIdentityId(
+      identity.value.youtubeIdentityId,
+    );
+    const expiresSoon =
+      stored.status === "success" &&
+      (!stored.value.accessTokenExpiresAt ||
+        stored.value.accessTokenExpiresAt <=
+          new Date(Date.parse(this.clock.now()) + 30_000).toISOString());
+    if (
+      stored.status === "failure" ||
+      !stored.value.encryptedAccessToken ||
+      expiresSoon
+    ) {
+      const refreshed = await this.refresh(userId);
+      if (refreshed.status === "failure") {
+        return failure(
+          "refresh-failed",
+          "YouTube authorization could not be refreshed.",
+        );
+      }
+      stored = await this.repository.getByYouTubeIdentityId(
+        identity.value.youtubeIdentityId,
+      );
+    }
+    if (stored.status === "failure" || !stored.value.encryptedAccessToken) {
+      return failure("refresh-failed", "YouTube access token is unavailable.");
+    }
+    const revealed = await this.tokens.reveal(stored.value.encryptedAccessToken);
+    return revealed.status === "success"
+      ? { status: "success", value: revealed.value }
+      : failure("token-protection-failed", revealed.error.message);
+  }
+
   async disconnect(userId: string): Promise<YouTubeAuthorizationResult<YouTubeConnectionStatus>> {
     const identity = await this.repository.getByUserId(userId);
     if (identity.status === "failure") return identity.error.code === "not-found" ? { status: "success", value: { connected: false, scopes: [] } } : failure("persistence-failure", identity.error.message);

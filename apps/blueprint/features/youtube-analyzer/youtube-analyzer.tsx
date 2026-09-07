@@ -10,6 +10,7 @@ import type {
   YouTubeAnalyzerScenarioOption,
 } from "./types";
 import { AnalysisLimitations } from "./components/AnalysisLimitations";
+import { RealYouTubeAnalyzerExperience } from "./components/RealYouTubeAnalyzerExperience";
 import { AnalysisOverview } from "./components/AnalysisOverview";
 import { AnalyzerHeader } from "./components/AnalyzerHeader";
 import {
@@ -58,6 +59,8 @@ export function YouTubeAnalyzer({
   return (
     <div className={styles.analyzer} lang={locale}>
       <YouTubeConnectionExperience content={content.connection} locale={locale} />
+
+      <RealYouTubeAnalyzerExperience content={content} locale={locale} />
 
       <section aria-labelledby="youtube-demo-title" className={styles.demoWorkspace}>
         <div className={styles.demoBoundary}>

@@ -7,7 +7,7 @@ import { clearYouTubeStateCookie, YOUTUBE_AUTH_STATE_COOKIE, youtubeStateCookie 
 import { safeYouTubeReturnTo, type YouTubeAuthorizationStateStore } from "./authorization-state";
 import { reportYouTubeDiagnostic } from "./youtube-diagnostics";
 
-export type YouTubeComposition = Readonly<{ service: YouTubeAuthorizationService; protocol: YouTubeOAuthProtocol; channelSynchronization?: import("../../core").ChannelSynchronizationService }>;
+export type YouTubeComposition = Readonly<{ service: YouTubeAuthorizationService; protocol: YouTubeOAuthProtocol; channelSynchronization?: import("../../core").ChannelSynchronizationService; videoSynchronization?: import("../../core").VideoSynchronizationService; realIntelligence?: import("../../core").RealYouTubeIntelligenceService }>;
 export type YouTubeCompositionResult = Readonly<{ status: "success"; value: YouTubeComposition }> | Readonly<{ status: "failure"; error: Readonly<{ code: string; message: string }> }>;
 
 export class YouTubeHttpHandlers {

@@ -10,3 +10,5 @@ export type {
   YouTubeAnalyzerDictionary,
   YouTubeAnalyzerScenarioOption,
 } from "./types";
+export * from "./client";
+export * from "./hooks";

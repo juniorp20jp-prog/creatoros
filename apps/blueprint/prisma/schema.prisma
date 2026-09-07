@@ -49,6 +49,8 @@ model UserRow {
   youtubeIdentity YouTubeIdentityRow?
   youtubeChannel  YouTubeChannelRow?
   channelSyncs    ChannelSyncRow[]
+  youtubeVideos   YouTubeVideoRow[]
+  videoSyncs      VideoSyncRow[]
 
   @@map("users")
 }
@@ -69,6 +71,7 @@ model YouTubeIdentityRow {
   token             YouTubeTokenRow?
   channel           YouTubeChannelRow?
   channelSyncs      ChannelSyncRow[]
+  videoSyncs        VideoSyncRow[]
 
   @@index([providerUserId], map: "youtube_identities_provider_user_idx")
   @@map("youtube_identities")
@@ -101,6 +104,8 @@ model YouTubeChannelRow {
   updatedAt             DateTime           @map("updated_at") @db.Timestamptz(3)
   user                  UserRow            @relation(fields: [userId], references: [userId], onDelete: Cascade)
   youtubeIdentity       YouTubeIdentityRow @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
+  videos                YouTubeVideoRow[]
+  videoSyncs            VideoSyncRow[]
 
   @@map("youtube_channels")
 }
@@ -117,6 +122,7 @@ model ChannelSyncRow {
   completedAt       DateTime           @map("completed_at") @db.Timestamptz(3)
   user              UserRow            @relation(fields: [userId], references: [userId], onDelete: Cascade)
   youtubeIdentity   YouTubeIdentityRow @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
+
   @@index([userId, startedAt(sort: Desc), syncId(sort: Asc)], map: "channel_syncs_user_history_idx")
   @@map("channel_syncs")
 }
@@ -164,4 +170,59 @@ model SessionRow {
   @@index([userId, createdAt(sort: Desc), sessionId(sort: Asc)], map: "sessions_user_history_idx")
   @@index([expiresAt], map: "sessions_expiration_idx")
   @@map("sessions")
+}
+
+model YouTubeVideoRow {
+  videoId            String            @id @map("video_id") @db.VarChar(255)
+  userId             String            @map("user_id") @db.VarChar(255)
+  channelId          String            @map("channel_id") @db.VarChar(255)
+  title              String            @db.Text
+  description        String            @db.Text
+  publishedAt        DateTime          @map("published_at") @db.Timestamptz(3)
+  thumbnailUrl       String?           @map("thumbnail_url") @db.Text
+  durationSeconds    Int               @map("duration_seconds")
+  viewCount          Decimal?          @map("view_count") @db.Decimal(20, 0)
+  likeCount          Decimal?          @map("like_count") @db.Decimal(20, 0)
+  commentCount       Decimal?          @map("comment_count") @db.Decimal(20, 0)
+  privacyStatus      String?           @map("privacy_status") @db.VarChar(16)
+  tags               String[]
+  categoryId         String?           @map("category_id") @db.VarChar(64)
+  defaultLanguage    String?           @map("default_language") @db.VarChar(32)
+  sourceEtag         String?           @map("source_etag") @db.VarChar(255)
+  availabilityStatus String            @map("availability_status") @db.VarChar(16)
+  lastSeenAt         DateTime          @map("last_seen_at") @db.Timestamptz(3)
+  lastSyncedAt       DateTime          @map("last_synced_at") @db.Timestamptz(3)
+  createdAt          DateTime          @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime          @map("updated_at") @db.Timestamptz(3)
+  user               UserRow           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  channel            YouTubeChannelRow @relation(fields: [channelId], references: [channelId], onDelete: Cascade)
+
+  @@index([userId, publishedAt(sort: Desc), videoId(sort: Asc)], map: "youtube_videos_user_publication_idx")
+  @@index([channelId, publishedAt(sort: Desc)], map: "youtube_videos_channel_publication_idx")
+  @@map("youtube_videos")
+}
+
+model VideoSyncRow {
+  syncId            String             @id @map("sync_id") @db.VarChar(255)
+  userId            String             @map("user_id") @db.VarChar(255)
+  youtubeIdentityId String             @map("youtube_identity_id") @db.VarChar(255)
+  channelId         String             @map("channel_id") @db.VarChar(255)
+  outcome           String             @db.VarChar(16)
+  discoveredCount   Int                @map("discovered_count")
+  createdCount      Int                @map("created_count")
+  updatedCount      Int                @map("updated_count")
+  unchangedCount    Int                @map("unchanged_count")
+  unavailableCount  Int                @map("unavailable_count")
+  coverageCount     Int                @map("coverage_count")
+  coverageLimit     Int                @map("coverage_limit")
+  truncated         Boolean
+  failureCode       String?            @map("failure_code") @db.VarChar(64)
+  startedAt         DateTime           @map("started_at") @db.Timestamptz(3)
+  completedAt       DateTime           @map("completed_at") @db.Timestamptz(3)
+  user              UserRow            @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  youtubeIdentity   YouTubeIdentityRow @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
+  channel           YouTubeChannelRow  @relation(fields: [channelId], references: [channelId], onDelete: Cascade)
+
+  @@index([userId, startedAt(sort: Desc), syncId(sort: Asc)], map: "video_syncs_user_history_idx")
+  @@map("youtube_video_syncs")
 }

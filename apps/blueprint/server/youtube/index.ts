@@ -9,3 +9,5 @@ export * from "./youtube-api-adapter";
 export * from "./channel-sync-http";
 export * from "./youtube-diagnostics";
 export * from "./http-contracts";
+export * from "./video-sync-http";
+export * from "./youtube-video-api-adapter";

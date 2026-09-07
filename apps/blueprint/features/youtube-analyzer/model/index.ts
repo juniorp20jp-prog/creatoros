@@ -1,4 +1,4 @@
-export { createYouTubeAnalyzerViewModel } from "./create-youtube-analyzer-view-model";
+export { createRealYouTubeAnalyzerViewModel, createYouTubeAnalyzerViewModel } from "./create-youtube-analyzer-view-model";
 export type {
   AnalyzerEvidenceViewModel,
   AnalyzerMetricId,
@@ -7,6 +7,7 @@ export type {
   AnalyzerValueFormat,
   AnalyzerVideoViewModel,
   YouTubeAnalyzerErrorViewModel,
+  YouTubeAnalyzerSourceId,
   YouTubeAnalyzerSuccessViewModel,
   YouTubeAnalyzerUiState,
   YouTubeAnalyzerViewModel,

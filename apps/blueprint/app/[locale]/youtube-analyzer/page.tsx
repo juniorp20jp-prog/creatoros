@@ -51,7 +51,7 @@ export default async function YouTubeAnalyzerPage({
     : query.scenario;
   const scenarioId: YouTubeAnalyzerScenarioId | null =
     requestedScenario === undefined
-      ? "complete"
+      ? null
       : isYouTubeAnalyzerScenarioId(requestedScenario)
         ? requestedScenario
         : null;

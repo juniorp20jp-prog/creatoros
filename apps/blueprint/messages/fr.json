@@ -49,7 +49,37 @@
     "developmentEnvironment": "Environnement de développement"
   },
   "blueprint": {
-    "header": {
+    "realAnalyzer": {
+    "eyebrow": "Intelligence réelle",
+    "title": "Analyse de vos vidéos synchronisées",
+    "description": "Synchronisez les vidéos publiques récentes et exécutez le moteur déterministe avec des données réelles.",
+    "action": "Synchroniser les vidéos et analyser",
+    "synchronizing": "Synchronisation et analyse…",
+    "loading": "Chargement de l’intelligence réelle…",
+    "emptyTitle": "Aucune vidéo n’a encore été synchronisée",
+    "emptyDescription": "Synchronisez les vidéos de la chaîne pour créer la première analyse réelle.",
+    "errorTitle": "Impossible de charger l’intelligence réelle",
+    "retry": "Réessayer",
+    "noChange": "Les vidéos étaient déjà à jour. L’analyse a été recalculée depuis les données persistées.",
+    "completed": "La synchronisation et l’analyse réelles sont terminées.",
+    "partial": "La synchronisation est partielle. L’analyse utilise uniquement les vidéos accessibles et valides.",
+    "coverageExact": "Analyse basée sur {count} vidéos récentes accessibles.",
+    "coverageTruncated": "Analyse basée sur les {count} vidéos accessibles les plus récentes dans la limite V1 de {limit}.",
+    "excluded": "{count} vidéos persistées n’ont pas pu être incluses faute de métriques publiques sûres.",
+    "realDataNotice": "Données réelles de la chaîne connectée",
+    "errors": {
+      "unauthenticated": "Votre session CreatorOS n’est plus valide.",
+      "not-connected": "Connectez YouTube avant de synchroniser les vidéos.",
+      "authorization": "L’autorisation YouTube doit être renouvelée.",
+      "provider": "YouTube n’a pas pu terminer la synchronisation. Les données précédentes sont conservées.",
+      "server": "CreatorOS n’a pas pu terminer l’analyse.",
+      "invalid-response": "CreatorOS a reçu une réponse invalide.",
+      "network": "Impossible de contacter CreatorOS.",
+      "cancelled": "L’opération a été annulée.",
+      "generic": "Impossible de terminer l’opération."
+    }
+  },
+  "header": {
       "eyebrow": "Centre des opérations",
       "title": "CreatorOS Blueprint",
       "description": "Contrôle, architecture et évolution de toute la plateforme.",
@@ -78,7 +108,37 @@
     },
     "missionControl": {
       "metadata": { "title": "Mission Control | CreatorOS Blueprint", "description": "Exécutez et inspectez les flux d’analyse certifiés de CreatorOS." },
-      "header": {
+      "realAnalyzer": {
+    "eyebrow": "Intelligence réelle",
+    "title": "Analyse de vos vidéos synchronisées",
+    "description": "Synchronisez les vidéos publiques récentes et exécutez le moteur déterministe avec des données réelles.",
+    "action": "Synchroniser les vidéos et analyser",
+    "synchronizing": "Synchronisation et analyse…",
+    "loading": "Chargement de l’intelligence réelle…",
+    "emptyTitle": "Aucune vidéo n’a encore été synchronisée",
+    "emptyDescription": "Synchronisez les vidéos de la chaîne pour créer la première analyse réelle.",
+    "errorTitle": "Impossible de charger l’intelligence réelle",
+    "retry": "Réessayer",
+    "noChange": "Les vidéos étaient déjà à jour. L’analyse a été recalculée depuis les données persistées.",
+    "completed": "La synchronisation et l’analyse réelles sont terminées.",
+    "partial": "La synchronisation est partielle. L’analyse utilise uniquement les vidéos accessibles et valides.",
+    "coverageExact": "Analyse basée sur {count} vidéos récentes accessibles.",
+    "coverageTruncated": "Analyse basée sur les {count} vidéos accessibles les plus récentes dans la limite V1 de {limit}.",
+    "excluded": "{count} vidéos persistées n’ont pas pu être incluses faute de métriques publiques sûres.",
+    "realDataNotice": "Données réelles de la chaîne connectée",
+    "errors": {
+      "unauthenticated": "Votre session CreatorOS n’est plus valide.",
+      "not-connected": "Connectez YouTube avant de synchroniser les vidéos.",
+      "authorization": "L’autorisation YouTube doit être renouvelée.",
+      "provider": "YouTube n’a pas pu terminer la synchronisation. Les données précédentes sont conservées.",
+      "server": "CreatorOS n’a pas pu terminer l’analyse.",
+      "invalid-response": "CreatorOS a reçu une réponse invalide.",
+      "network": "Impossible de contacter CreatorOS.",
+      "cancelled": "L’opération a été annulée.",
+      "generic": "Impossible de terminer l’opération."
+    }
+  },
+  "header": {
         "eyebrow": "Opérations d’analyse", "title": "Mission Control", "description": "Exécutez des analyses de démonstration et consultez leur statut, leurs preuves et leur historique via l’API certifiée de CreatorOS.",
         "demoMode": "Mode démonstration", "runAnalysis": "Exécuter l’analyse", "running": "Analyse en cours…"
       },
@@ -125,7 +185,37 @@
     },
     "creatorDecisions": {
       "metadata": { "title": "Décisions | CreatorOS Blueprint", "description": "Actions prioritaires, mesurables et étayées par des preuves générées par CreatorOS." },
-      "header": {
+      "realAnalyzer": {
+    "eyebrow": "Intelligence réelle",
+    "title": "Analyse de vos vidéos synchronisées",
+    "description": "Synchronisez les vidéos publiques récentes et exécutez le moteur déterministe avec des données réelles.",
+    "action": "Synchroniser les vidéos et analyser",
+    "synchronizing": "Synchronisation et analyse…",
+    "loading": "Chargement de l’intelligence réelle…",
+    "emptyTitle": "Aucune vidéo n’a encore été synchronisée",
+    "emptyDescription": "Synchronisez les vidéos de la chaîne pour créer la première analyse réelle.",
+    "errorTitle": "Impossible de charger l’intelligence réelle",
+    "retry": "Réessayer",
+    "noChange": "Les vidéos étaient déjà à jour. L’analyse a été recalculée depuis les données persistées.",
+    "completed": "La synchronisation et l’analyse réelles sont terminées.",
+    "partial": "La synchronisation est partielle. L’analyse utilise uniquement les vidéos accessibles et valides.",
+    "coverageExact": "Analyse basée sur {count} vidéos récentes accessibles.",
+    "coverageTruncated": "Analyse basée sur les {count} vidéos accessibles les plus récentes dans la limite V1 de {limit}.",
+    "excluded": "{count} vidéos persistées n’ont pas pu être incluses faute de métriques publiques sûres.",
+    "realDataNotice": "Données réelles de la chaîne connectée",
+    "errors": {
+      "unauthenticated": "Votre session CreatorOS n’est plus valide.",
+      "not-connected": "Connectez YouTube avant de synchroniser les vidéos.",
+      "authorization": "L’autorisation YouTube doit être renouvelée.",
+      "provider": "YouTube n’a pas pu terminer la synchronisation. Les données précédentes sont conservées.",
+      "server": "CreatorOS n’a pas pu terminer l’analyse.",
+      "invalid-response": "CreatorOS a reçu une réponse invalide.",
+      "network": "Impossible de contacter CreatorOS.",
+      "cancelled": "L’opération a été annulée.",
+      "generic": "Impossible de terminer l’opération."
+    }
+  },
+  "header": {
         "eyebrow": "Centre de Décisions V1", "title": "Des décisions sur lesquelles agir maintenant",
         "description": "CreatorOS organise les preuves disponibles en actions prioritaires, avec un raisonnement transparent et des résultats mesurables.",
         "backToDashboard": "Retour au tableau de bord", "activeCount": "{count} décisions actives générées",
@@ -388,7 +478,37 @@
           "generic": "Impossible de terminer l'opération. Vos données précédentes restent disponibles."
         }
       },
-      "header": {
+      "realAnalyzer": {
+    "eyebrow": "Intelligence réelle",
+    "title": "Analyse de vos vidéos synchronisées",
+    "description": "Synchronisez les vidéos publiques récentes et exécutez le moteur déterministe avec des données réelles.",
+    "action": "Synchroniser les vidéos et analyser",
+    "synchronizing": "Synchronisation et analyse…",
+    "loading": "Chargement de l’intelligence réelle…",
+    "emptyTitle": "Aucune vidéo n’a encore été synchronisée",
+    "emptyDescription": "Synchronisez les vidéos de la chaîne pour créer la première analyse réelle.",
+    "errorTitle": "Impossible de charger l’intelligence réelle",
+    "retry": "Réessayer",
+    "noChange": "Les vidéos étaient déjà à jour. L’analyse a été recalculée depuis les données persistées.",
+    "completed": "La synchronisation et l’analyse réelles sont terminées.",
+    "partial": "La synchronisation est partielle. L’analyse utilise uniquement les vidéos accessibles et valides.",
+    "coverageExact": "Analyse basée sur {count} vidéos récentes accessibles.",
+    "coverageTruncated": "Analyse basée sur les {count} vidéos accessibles les plus récentes dans la limite V1 de {limit}.",
+    "excluded": "{count} vidéos persistées n’ont pas pu être incluses faute de métriques publiques sûres.",
+    "realDataNotice": "Données réelles de la chaîne connectée",
+    "errors": {
+      "unauthenticated": "Votre session CreatorOS n’est plus valide.",
+      "not-connected": "Connectez YouTube avant de synchroniser les vidéos.",
+      "authorization": "L’autorisation YouTube doit être renouvelée.",
+      "provider": "YouTube n’a pas pu terminer la synchronisation. Les données précédentes sont conservées.",
+      "server": "CreatorOS n’a pas pu terminer l’analyse.",
+      "invalid-response": "CreatorOS a reçu une réponse invalide.",
+      "network": "Impossible de contacter CreatorOS.",
+      "cancelled": "L’opération a été annulée.",
+      "generic": "Impossible de terminer l’opération."
+    }
+  },
+  "header": {
         "eyebrow": "YouTube Intelligence Engine V1",
         "title": "L’intelligence de la chaîne fondée sur des preuves.",
         "description": "Explorez les métriques, performances relatives, signaux et la qualité des données produits par le véritable moteur CreatorOS.",
@@ -598,7 +718,37 @@
     },
     "creatorIntelligence": {
       "metadata": { "title": "Intelligence du créateur", "description": "Interprétation exécutive déterministe de l’analyse de chaîne CreatorOS." },
-      "header": {
+      "realAnalyzer": {
+    "eyebrow": "Intelligence réelle",
+    "title": "Analyse de vos vidéos synchronisées",
+    "description": "Synchronisez les vidéos publiques récentes et exécutez le moteur déterministe avec des données réelles.",
+    "action": "Synchroniser les vidéos et analyser",
+    "synchronizing": "Synchronisation et analyse…",
+    "loading": "Chargement de l’intelligence réelle…",
+    "emptyTitle": "Aucune vidéo n’a encore été synchronisée",
+    "emptyDescription": "Synchronisez les vidéos de la chaîne pour créer la première analyse réelle.",
+    "errorTitle": "Impossible de charger l’intelligence réelle",
+    "retry": "Réessayer",
+    "noChange": "Les vidéos étaient déjà à jour. L’analyse a été recalculée depuis les données persistées.",
+    "completed": "La synchronisation et l’analyse réelles sont terminées.",
+    "partial": "La synchronisation est partielle. L’analyse utilise uniquement les vidéos accessibles et valides.",
+    "coverageExact": "Analyse basée sur {count} vidéos récentes accessibles.",
+    "coverageTruncated": "Analyse basée sur les {count} vidéos accessibles les plus récentes dans la limite V1 de {limit}.",
+    "excluded": "{count} vidéos persistées n’ont pas pu être incluses faute de métriques publiques sûres.",
+    "realDataNotice": "Données réelles de la chaîne connectée",
+    "errors": {
+      "unauthenticated": "Votre session CreatorOS n’est plus valide.",
+      "not-connected": "Connectez YouTube avant de synchroniser les vidéos.",
+      "authorization": "L’autorisation YouTube doit être renouvelée.",
+      "provider": "YouTube n’a pas pu terminer la synchronisation. Les données précédentes sont conservées.",
+      "server": "CreatorOS n’a pas pu terminer l’analyse.",
+      "invalid-response": "CreatorOS a reçu une réponse invalide.",
+      "network": "Impossible de contacter CreatorOS.",
+      "cancelled": "L’opération a été annulée.",
+      "generic": "Impossible de terminer l’opération."
+    }
+  },
+  "header": {
         "eyebrow": "Creator Intelligence Workspace V1", "title": "Comprenez ce qui s’est passé et les preuves qui l’étayent.", "description": "CreatorOS organise les constats analytiques les plus importants dans un briefing clair, priorisé et traçable.", "backToDashboard": "Retour au Dashboard", "viewTechnicalAnalysis": "Voir l’analyse technique", "scenarioLabel": "Scénario de démonstration", "scenarioHelp": "Sélectionnez un scénario", "channelLabel": "Chaîne", "periodLabel": "Période d’analyse", "statusLabel": "État de l’intelligence", "demoDataNotice": "Données locales de démonstration — aucune chaîne réelle n’est représentée"
       },
       "common": { "notAvailable": "Indisponible", "none": "Aucun" },

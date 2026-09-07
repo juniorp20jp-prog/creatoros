@@ -14,3 +14,5 @@ export { PrismaYouTubeAuthorizationRepository } from "./prisma-youtube-authoriza
 export { mapYouTubeIdentityRow, mapYouTubeTokenRow } from "./youtube-authorization-row-mappers";
 export { PrismaChannelSynchronizationRepository } from "./prisma-channel-synchronization-repository";
 export { mapYouTubeChannelRow, mapChannelSyncRow } from "./youtube-channel-row-mappers";
+export { PrismaVideoSynchronizationRepository } from "./prisma-video-synchronization-repository";
+export { mapYouTubeVideoRow, mapVideoSyncRow } from "./youtube-video-row-mappers";

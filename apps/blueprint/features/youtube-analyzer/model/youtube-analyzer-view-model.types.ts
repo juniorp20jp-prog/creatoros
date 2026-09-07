@@ -7,6 +7,8 @@ import type {
 } from "../../../core";
 import type { YouTubeAnalyzerScenarioId } from "../fixtures";
 
+export type YouTubeAnalyzerSourceId = YouTubeAnalyzerScenarioId | "real";
+
 export type YouTubeAnalyzerUiState =
   | "success"
   | "partial-data"
@@ -72,7 +74,7 @@ export type AnalyzerVideoViewModel = {
 
 export type YouTubeAnalyzerSuccessViewModel = {
   state: "success" | "partial-data" | "insufficient-sample";
-  scenarioId: YouTubeAnalyzerScenarioId;
+  scenarioId: YouTubeAnalyzerSourceId;
   channel: {
     id: string;
     name: string;
@@ -99,7 +101,7 @@ export type YouTubeAnalyzerSuccessViewModel = {
 
 export type YouTubeAnalyzerErrorViewModel = {
   state: "validation-error" | "unexpected-error";
-  scenarioId: YouTubeAnalyzerScenarioId;
+  scenarioId: YouTubeAnalyzerSourceId;
   errorCode: string;
 };
 
