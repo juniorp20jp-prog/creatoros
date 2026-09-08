@@ -5,5 +5,5 @@ export const runtime = "nodejs";
 
 export function GET(request: Request): Promise<Response> {
   const runtime = getInternalAnalysisApiRuntime();
-  return runtime.auth.protect(request, () => runtime.api.summarizeAnalysisRuns(request));
+  return runtime.auth.protect(request, (principal) => runtime.api.summarizeAnalysisRuns(request, principal));
 }

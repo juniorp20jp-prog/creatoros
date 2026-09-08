@@ -26,7 +26,8 @@ export type ChannelDataAdapterErrorCode =
 
 export type ChannelDataAdapterWarningCode =
   | "MISSING_OPTIONAL_FIELD"
-  | "UNKNOWN_FIELD_IGNORED";
+  | "UNKNOWN_FIELD_IGNORED"
+  | "UNSAFE_INTEGER_OMITTED";
 
 export type ChannelDataAdapterError = {
   severity: "error";

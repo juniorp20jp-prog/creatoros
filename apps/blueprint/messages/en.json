@@ -139,10 +139,10 @@
     }
   },
   "header": {
-        "eyebrow": "Analysis operations", "title": "Mission Control", "description": "Run demonstration analyses and inspect their status, evidence and history through the certified CreatorOS API.",
-        "demoMode": "Demonstration mode", "runAnalysis": "Run analysis", "running": "Running analysis…"
+        "eyebrow": "Analysis operations", "title": "Mission Control", "description": "Run analyses and inspect their status, evidence, and history through the certified CreatorOS API.",
+        "realMode": "Real channel mode", "demoMode": "Demonstration mode", "runAnalysis": "Run analysis", "running": "Running analysis…"
       },
-      "summary": { "eyebrow": "System status", "title": "Analysis status", "description": "Current runs for the allowlisted demonstration channel.", "total": "Total" },
+      "summary": { "eyebrow": "System status", "title": "Analysis status", "description": "Current runs for the selected analysis source.", "total": "Total" },
       "status": {
         "completed": { "label": "Completed", "description": "Finished with a complete result." },
         "partial": { "label": "Partial", "description": "Finished with declared data limitations." },

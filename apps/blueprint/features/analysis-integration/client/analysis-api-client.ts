@@ -152,8 +152,11 @@ function serializeAnalysisQuery(
   input: ListAnalysisRunsRequest | StatusSummaryRequest,
 ): string {
   const query = new URLSearchParams();
-  query.set("channelId", input.channelId);
-  setOptional(query, "creatorId", input.creatorId);
+  if (input.source !== undefined) query.set("source", input.source);
+  if ("channelId" in input) {
+    query.set("channelId", input.channelId);
+    setOptional(query, "creatorId", input.creatorId);
+  }
   setOptional(query, "status", input.status);
   setOptional(query, "from", input.from);
   setOptional(query, "to", input.to);
@@ -163,9 +166,7 @@ function serializeAnalysisQuery(
     input.attempt === undefined ? undefined : String(input.attempt),
   );
   setOptional(query, "analysisId", input.analysisId);
-  if ("cursor" in input) {
-    setOptional(query, "cursor", input.cursor);
-  }
+  if ("cursor" in input) setOptional(query, "cursor", input.cursor);
   if ("limit" in input) {
     setOptional(
       query,
@@ -175,7 +176,6 @@ function serializeAnalysisQuery(
   }
   return `?${query.toString()}`;
 }
-
 function setOptional(
   query: URLSearchParams,
   key: string,

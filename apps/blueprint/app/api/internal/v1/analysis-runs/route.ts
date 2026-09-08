@@ -5,10 +5,10 @@ export const runtime = "nodejs";
 
 export function GET(request: Request): Promise<Response> {
   const runtime = getInternalAnalysisApiRuntime();
-  return runtime.auth.protect(request, () => runtime.api.listAnalysisRuns(request));
+  return runtime.auth.protect(request, (principal) => runtime.api.listAnalysisRuns(request, principal));
 }
 
 export function POST(request: Request): Promise<Response> {
   const runtime = getInternalAnalysisApiRuntime();
-  return runtime.auth.protect(request, () => runtime.api.runAnalysis(request));
+  return runtime.auth.protect(request, (principal) => runtime.api.runAnalysis(request, principal));
 }

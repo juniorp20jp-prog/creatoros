@@ -139,10 +139,10 @@
     }
   },
   "header": {
-        "eyebrow": "Opérations d’analyse", "title": "Mission Control", "description": "Exécutez des analyses de démonstration et consultez leur statut, leurs preuves et leur historique via l’API certifiée de CreatorOS.",
-        "demoMode": "Mode démonstration", "runAnalysis": "Exécuter l’analyse", "running": "Analyse en cours…"
+        "eyebrow": "Opérations d’analyse", "title": "Mission Control", "description": "Exécutez des analyses et consultez leur état, leurs preuves et leur historique via API certifiée CreatorOS.",
+        "realMode": "Mode chaîne réelle", "demoMode": "Mode démonstration", "runAnalysis": "Exécuter l’analyse", "running": "Analyse en cours…"
       },
-      "summary": { "eyebrow": "État du système", "title": "État des analyses", "description": "Exécutions actuelles du canal de démonstration autorisé.", "total": "Total" },
+      "summary": { "eyebrow": "État du système", "title": "État des analyses", "description": "Exécutions actuelles de la source d’analyse sélectionnée.", "total": "Total" },
       "status": {
         "completed": { "label": "Terminée", "description": "Terminée avec un résultat complet." },
         "partial": { "label": "Partielle", "description": "Terminée avec des limites de données déclarées." },

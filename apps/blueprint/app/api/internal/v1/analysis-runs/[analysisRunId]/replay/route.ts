@@ -13,5 +13,5 @@ export async function POST(
 ): Promise<Response> {
   const { analysisRunId } = await context.params;
   const runtime = getInternalAnalysisApiRuntime();
-  return runtime.auth.protect(request, () => runtime.api.replayAnalysis(request, analysisRunId));
+  return runtime.auth.protect(request, (principal) => runtime.api.replayAnalysis(request, analysisRunId, principal));
 }

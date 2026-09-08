@@ -31,7 +31,7 @@ export type AnalysisRunPersistenceAdapterMetadata = {
 
 export type AnalysisRunPersistenceAdapterWarning = {
   severity: "warning";
-  code: "MISSING_OPTIONAL_FIELD" | "UNKNOWN_FIELD_IGNORED";
+  code: "MISSING_OPTIONAL_FIELD" | "UNKNOWN_FIELD_IGNORED" | "UNSAFE_INTEGER_OMITTED";
   path: string;
   message: string;
 };

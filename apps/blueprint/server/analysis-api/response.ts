@@ -114,13 +114,13 @@ export function mapAnalysisServiceError(
       return {
         status: 422,
         code: "ANALYSIS_ADAPTER_FAILED",
-        message: "The selected fixture could not be normalized.",
+        message: "The selected analysis source could not be normalized.",
       };
     case "pipeline-failure":
       return {
         status: 422,
         code: "ANALYSIS_PIPELINE_FAILED",
-        message: "The selected fixture could not be analyzed.",
+        message: "The selected analysis source could not be analyzed.",
       };
     case "persistence-failure":
     case "repository-failure":

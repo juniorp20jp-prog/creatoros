@@ -47,3 +47,5 @@ export {
   parseStatusSummaryQuery,
 } from "./validation";
 export type { ValidationResult } from "./validation";
+
+export * from "./persisted-youtube-source-resolver";

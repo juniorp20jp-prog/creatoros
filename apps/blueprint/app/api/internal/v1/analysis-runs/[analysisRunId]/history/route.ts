@@ -13,5 +13,5 @@ export async function GET(
 ): Promise<Response> {
   const { analysisRunId } = await context.params;
   const runtime = getInternalAnalysisApiRuntime();
-  return runtime.auth.protect(request, () => runtime.api.getAnalysisHistory(analysisRunId));
+  return runtime.auth.protect(request, (principal) => runtime.api.getAnalysisHistory(analysisRunId, principal));
 }

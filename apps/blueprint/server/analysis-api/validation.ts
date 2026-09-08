@@ -37,47 +37,38 @@ export async function parseRunAnalysisRequest(
   request: Request,
 ): Promise<ValidationResult<RunAnalysisRequest>> {
   const body = await parseJsonObject(request);
-  if (body.status === "invalid") {
-    return body;
+  if (body.status === "invalid") return body;
+  const source = body.value.source;
+  if (source === "connected-youtube") {
+    return validateStrictObject(
+      body.value,
+      ["source", "correlationId", "analysisRunId"],
+      (value, issues) => {
+        const correlationId = optionalIdentifier(value, "correlationId", issues);
+        const analysisRunId = optionalIdentifier(value, "analysisRunId", issues);
+        return {
+          source: "connected-youtube" as const,
+          ...(correlationId ? { correlationId } : {}),
+          ...(analysisRunId ? { analysisRunId } : {}),
+        };
+      },
+    );
   }
   return validateStrictObject(
     body.value,
-    [
-      "fixtureId",
-      "creatorId",
-      "channelId",
-      "correlationId",
-      "analysisRunId",
-    ],
+    ["source", "fixtureId", "creatorId", "channelId", "correlationId", "analysisRunId"],
     (value, issues) => {
-      const fixtureId = requiredString(
-        value,
-        "fixtureId",
-        FIXTURE_ID_PATTERN,
-        issues,
-      );
-      const creatorId = requiredIdentifier(
-        value,
-        "creatorId",
-        issues,
-      );
-      const channelId = requiredIdentifier(
-        value,
-        "channelId",
-        issues,
-      );
-      const correlationId = optionalIdentifier(
-        value,
-        "correlationId",
-        issues,
-      );
-      const analysisRunId = optionalIdentifier(
-        value,
-        "analysisRunId",
-        issues,
-      );
+      if (source !== undefined && source !== "fixture") {
+        issues.push(issue("$.source", "INVALID_VALUE", "source must be connected-youtube or fixture."));
+      }
+      const fixtureId = requiredString(value, "fixtureId", FIXTURE_ID_PATTERN, issues);
+      const creatorId = requiredIdentifier(value, "creatorId", issues);
+      const channelId = requiredIdentifier(value, "channelId", issues);
+      const correlationId = optionalIdentifier(value, "correlationId", issues);
+      const analysisRunId = optionalIdentifier(value, "analysisRunId", issues);
       return fixtureId && creatorId && channelId
         ? {
+            ...(source === "fixture" ? { source: "fixture" as const } : {}),
             fixtureId,
             creatorId,
             channelId,
@@ -88,47 +79,48 @@ export async function parseRunAnalysisRequest(
     },
   );
 }
-
 export async function parseReplayAnalysisRequest(
   request: Request,
 ): Promise<ValidationResult<ReplayAnalysisRequest>> {
   const body = await parseJsonObject(request);
-  if (body.status === "invalid") {
-    return body;
+  if (body.status === "invalid") return body;
+  const source = body.value.source;
+  if (source === "connected-youtube") {
+    return validateStrictObject(
+      body.value,
+      ["source", "correlationId", "newAnalysisRunId"],
+      (value, issues) => {
+        const correlationId = optionalIdentifier(value, "correlationId", issues);
+        const newAnalysisRunId = optionalIdentifier(value, "newAnalysisRunId", issues);
+        return {
+          source: "connected-youtube" as const,
+          ...(correlationId ? { correlationId } : {}),
+          ...(newAnalysisRunId ? { newAnalysisRunId } : {}),
+        };
+      },
+    );
   }
   return validateStrictObject(
     body.value,
-    ["fixtureId", "correlationId", "newAnalysisRunId"],
+    ["source", "fixtureId", "correlationId", "newAnalysisRunId"],
     (value, issues) => {
-      const fixtureId = requiredString(
-        value,
-        "fixtureId",
-        FIXTURE_ID_PATTERN,
-        issues,
-      );
-      const correlationId = optionalIdentifier(
-        value,
-        "correlationId",
-        issues,
-      );
-      const newAnalysisRunId = optionalIdentifier(
-        value,
-        "newAnalysisRunId",
-        issues,
-      );
+      if (source !== undefined && source !== "fixture") {
+        issues.push(issue("$.source", "INVALID_VALUE", "source must be connected-youtube or fixture."));
+      }
+      const fixtureId = requiredString(value, "fixtureId", FIXTURE_ID_PATTERN, issues);
+      const correlationId = optionalIdentifier(value, "correlationId", issues);
+      const newAnalysisRunId = optionalIdentifier(value, "newAnalysisRunId", issues);
       return fixtureId
         ? {
+            ...(source === "fixture" ? { source: "fixture" as const } : {}),
             fixtureId,
             ...(correlationId ? { correlationId } : {}),
-            ...(newAnalysisRunId
-              ? { newAnalysisRunId }
-              : {}),
+            ...(newAnalysisRunId ? { newAnalysisRunId } : {}),
           }
         : undefined;
     },
   );
 }
-
 export function parseAnalysisRunId(
   value: string,
 ): ValidationResult<string> {
@@ -149,6 +141,7 @@ export function parseListAnalysisQuery(
 ): ValidationResult<ListAnalysisRunsQuery> {
   const searchParams = new URL(request.url).searchParams;
   const allowed = [
+    "source",
     "creatorId",
     "channelId",
     "status",
@@ -160,10 +153,11 @@ export function parseListAnalysisQuery(
     "limit",
   ] as const;
   const issues = validateSearchParams(searchParams, allowed);
+  const connectedSource = searchParams.get("source") === "connected-youtube";
   const channelId = queryIdentifier(
     searchParams,
     "channelId",
-    true,
+    !connectedSource,
     issues,
   );
   const creatorId = queryIdentifier(
@@ -220,11 +214,11 @@ export function parseListAnalysisQuery(
       ),
     );
   }
-  if (!channelId || issues.length > 0) {
+  if ((!channelId && !connectedSource) || issues.length > 0) {
     return invalid("INVALID_REQUEST", issues);
   }
   const filters: AnalysisQueryFilters = {
-    channelId,
+    channelId: channelId ?? "__connected_youtube__",
     ...(creatorId ? { creatorId } : {}),
     ...(analysisId ? { analysisId } : {}),
     ...(status ? { status } : {}),

@@ -14,6 +14,7 @@ import {
   useRunAnalysis,
   useStatusSummary,
 } from "../analysis-integration";
+import { YouTubeApiClient, useYouTubeConnection } from "../youtube-connection";
 import { safeErrorMessage } from "./formatters";
 import {
   missionControlDemo,
@@ -30,14 +31,21 @@ type MissionControlAnalysisExperienceProps = {
   content: MissionControlContent;
   locale: Locale;
   client?: AnalysisApiClient;
+  youtubeClient?: YouTubeApiClient;
+  mode?: "real" | "demo";
 };
 
 export function MissionControlAnalysisExperience({
   content,
   locale,
   client,
+  youtubeClient,
+  mode = "demo",
 }: MissionControlAnalysisExperienceProps) {
   const [apiClient] = useState(() => client ?? new AnalysisApiClient());
+  const [channelClient] = useState(() => youtubeClient ?? new YouTubeApiClient());
+  const channelContext = useYouTubeConnection(channelClient);
+  const realMode = mode === "real";
   const [selectedAnalysisRunId, setSelectedAnalysisRunId] = useState<string | null>(null);
   const [inspectorView, setInspectorView] = useState<InspectorView>("details");
   const [cursor, setCursor] = useState<string | undefined>();
@@ -46,11 +54,13 @@ export function MissionControlAnalysisExperience({
   const operationLock = useRef(false);
   const activeOperation = useRef<"run" | "replay" | "delete" | null>(null);
 
-  const summary = useStatusSummary(apiClient, {
-    channelId: missionControlDemo.channelId,
-  });
+  const summary = useStatusSummary(apiClient, realMode
+    ? { source: "connected-youtube" }
+    : { source: "fixture", channelId: missionControlDemo.channelId });
   const analysisList = useAnalysisList(apiClient, {
-    channelId: missionControlDemo.channelId,
+    ...(realMode
+      ? { source: "connected-youtube" as const }
+      : { source: "fixture" as const, channelId: missionControlDemo.channelId }),
     limit: 10,
     ...(cursor ? { cursor } : {}),
   });
@@ -81,7 +91,11 @@ export function MissionControlAnalysisExperience({
     activeOperation.current = "run";
     setNotice(null);
     try {
-      const result = await runAnalysis.execute(missionControlDemo);
+      const result = await runAnalysis.execute(
+        realMode
+          ? { source: "connected-youtube" }
+          : { source: "fixture", ...missionControlDemo },
+      );
       if (result) {
         activeOperation.current = null;
         setSelectedAnalysisRunId(result.analysisRunId);
@@ -92,7 +106,7 @@ export function MissionControlAnalysisExperience({
     } finally {
       operationLock.current = false;
     }
-  }, [content, refreshCollections, runAnalysis]);
+  }, [content, realMode, refreshCollections, runAnalysis]);
 
   const handleReplay = useCallback(async (analysisRunId: string) => {
     if (operationLock.current || !globalThis.confirm(content.confirmations.replay)) {
@@ -104,7 +118,9 @@ export function MissionControlAnalysisExperience({
     try {
       const result = await replay.execute({
         analysisRunId,
-        request: { fixtureId: missionControlDemo.fixtureId },
+        request: realMode
+          ? { source: "connected-youtube" }
+          : { source: "fixture", fixtureId: missionControlDemo.fixtureId },
       });
       if (result) {
         activeOperation.current = null;
@@ -116,7 +132,7 @@ export function MissionControlAnalysisExperience({
     } finally {
       operationLock.current = false;
     }
-  }, [content, refreshCollections, replay]);
+  }, [content, realMode, refreshCollections, replay]);
 
   const handleDelete = useCallback(async (analysisRunId: string) => {
     if (operationLock.current || !globalThis.confirm(content.confirmations.delete)) {
@@ -207,6 +223,8 @@ export function MissionControlAnalysisExperience({
     <main className={styles.missionControl} lang={locale}>
       <MissionControlHeader
         content={content}
+        mode={mode}
+        channelTitle={channelContext.channel?.title}
         onRun={() => void handleRun()}
         running={runAnalysis.status === "loading" || runAnalysis.status === "retry"}
       />

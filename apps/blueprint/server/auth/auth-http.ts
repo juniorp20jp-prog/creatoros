@@ -1,5 +1,5 @@
 import type { ExternalIdentityAuthenticationService, IdGenerator, SessionService, UserLocale, Clock } from "../../core";
-import { AUTH_STATE_COOKIE, type AuthResult } from "./contracts";
+import { AUTH_STATE_COOKIE, type AuthenticatedPrincipal, type AuthResult } from "./contracts";
 import { InMemoryAuthorizationStateStore, safeReturnTo } from "./authorization-state";
 import { authorizationStateCookie, clearAuthorizationStateCookie, clearSessionCookie, readCookie, sessionCookie } from "./cookies";
 import { CurrentSessionResolver } from "./current-session";
@@ -68,9 +68,9 @@ export class AuthHttpHandlers {
     return response;
   }
 
-  async protect(request: Request, action: () => Promise<Response>): Promise<Response> {
+  async protect(request: Request, action: (principal: AuthenticatedPrincipal) => Promise<Response>): Promise<Response> {
     const current = await this.dependencies.currentSession.resolveCurrentSession(request);
-    return current.status === "authenticated" ? action() : authError("session-invalid", 401);
+    return current.status === "authenticated" ? action(current.principal) : authError("session-invalid", 401);
   }
 
   private callbackFailure(stage: string, code: string, cause: string): Response {

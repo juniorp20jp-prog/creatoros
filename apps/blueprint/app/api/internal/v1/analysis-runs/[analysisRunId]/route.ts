@@ -13,7 +13,7 @@ export async function GET(
 ): Promise<Response> {
   const { analysisRunId } = await context.params;
   const runtime = getInternalAnalysisApiRuntime();
-  return runtime.auth.protect(request, () => runtime.api.getAnalysis(analysisRunId));
+  return runtime.auth.protect(request, (principal) => runtime.api.getAnalysis(analysisRunId, principal));
 }
 
 export async function DELETE(
@@ -22,5 +22,5 @@ export async function DELETE(
 ): Promise<Response> {
   const { analysisRunId } = await context.params;
   const runtime = getInternalAnalysisApiRuntime();
-  return runtime.auth.protect(request, () => runtime.api.deleteAnalysis(request, analysisRunId));
+  return runtime.auth.protect(request, (principal) => runtime.api.deleteAnalysis(request, analysisRunId, principal));
 }

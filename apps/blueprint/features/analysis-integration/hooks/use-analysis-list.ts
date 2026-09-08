@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-
 import type {
   AnalysisSummary,
   ListAnalysisRunsRequest,
@@ -15,57 +14,23 @@ export function useAnalysisList(
   client: AnalysisApiClient,
   query?: ListAnalysisRunsRequest,
 ): AnalysisQueryHookResult<PaginationResult<AnalysisSummary>> {
-  const analysisId = query?.analysisId;
-  const attempt = query?.attempt;
-  const channelId = query?.channelId;
-  const creatorId = query?.creatorId;
-  const cursor = query?.cursor;
-  const from = query?.from;
-  const limit = query?.limit;
-  const status = query?.status;
-  const to = query?.to;
+  const serialized = query ? JSON.stringify(query) : undefined;
   const stableQuery = useMemo(
-    () =>
-      channelId !== undefined
-        ? {
-            channelId,
-            ...(creatorId ? { creatorId } : {}),
-            ...(status ? { status } : {}),
-            ...(from ? { from } : {}),
-            ...(to ? { to } : {}),
-            ...(attempt !== undefined ? { attempt } : {}),
-            ...(analysisId ? { analysisId } : {}),
-            ...(cursor ? { cursor } : {}),
-            ...(limit !== undefined ? { limit } : {}),
-          }
-        : undefined,
-    [
-      analysisId,
-      attempt,
-      channelId,
-      creatorId,
-      cursor,
-      from,
-      limit,
-      status,
-      to,
-    ],
+    () => serialized ? JSON.parse(serialized) as ListAnalysisRunsRequest : undefined,
+    [serialized],
   );
   const load = useCallback(
     (signal: AbortSignal) => {
-      if (!stableQuery) {
-        throw new Error("Analysis list query is unavailable.");
-      }
+      if (!stableQuery) throw new Error("Analysis list query is unavailable.");
       return client.listAnalysisRuns(stableQuery, { signal });
     },
     [client, stableQuery],
   );
   const options = useMemo(
     () => ({
-      enabled: Boolean(stableQuery?.channelId.trim()),
+      enabled: stableQuery !== undefined,
       load,
-      isEmpty: (data: PaginationResult<AnalysisSummary>) =>
-        data.items.length === 0,
+      isEmpty: (data: PaginationResult<AnalysisSummary>) => data.items.length === 0,
     }),
     [load, stableQuery],
   );

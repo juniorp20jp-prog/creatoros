@@ -35,3 +35,6 @@ export {
 export type {
   ChannelDataAnalysisIntegrationResult,
 } from "./integration";
+
+export { PersistedYouTubeChannelDataAdapter, PERSISTED_YOUTUBE_SOURCE_SCHEMA_VERSION } from "./persisted-youtube-channel-data-adapter";
+export type { PersistedYouTubeChannelData } from "./persisted-youtube-channel-data-adapter";

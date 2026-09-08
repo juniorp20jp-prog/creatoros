@@ -7,14 +7,19 @@ import styles from "../mission-control-analysis.module.css";
 type MissionControlHeaderProps = {
   content: MissionControlContent;
   running: boolean;
+  mode: "real" | "demo";
+  channelTitle?: string;
   onRun(): void;
 };
 
 export function MissionControlHeader({
   content,
   running,
+  mode,
+  channelTitle,
   onRun,
 }: MissionControlHeaderProps) {
+  const realMode = mode === "real";
   return (
     <header className={styles.hero}>
       <div className={styles.heroCopy}>
@@ -24,8 +29,11 @@ export function MissionControlHeader({
           {content.header.description}
         </p>
         <span className={styles.demoBadge}>
-          {content.header.demoMode}
+          {realMode ? content.header.realMode : content.header.demoMode}
         </span>
+        {realMode && channelTitle ? (
+          <p className={styles.heroDescription}>{channelTitle}</p>
+        ) : null}
       </div>
       <Button
         isLoading={running}
