@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { Button, Card } from "@repo/ui";
 
 import type {
@@ -28,6 +29,7 @@ type AnalysisInspectorProps = {
   details: AnalysisQueryHookResult<AnalysisDetails>;
   history: AnalysisQueryHookResult<AnalysisHistory>;
   actionBusy: boolean;
+  mode: "real" | "demo";
   onViewChange(view: InspectorView): void;
   onReplay(analysisRunId: string): void;
   onDelete(analysisRunId: string): void;
@@ -41,6 +43,7 @@ export function AnalysisInspector({
   details,
   history,
   actionBusy,
+  mode,
   onViewChange,
   onReplay,
   onDelete,
@@ -117,6 +120,12 @@ export function AnalysisInspector({
             </div>
           )}
           <div className={styles.inspectorActions}>
+            {mode === "real" && details.data?.analysisResult?.strategicProjection ? (
+              <>
+                <Link className={styles.inspectorLink} href={`/${locale}/creator-intelligence?analysisRunId=${encodeURIComponent(selectedAnalysisRunId)}`}>{content.navigation.creatorIntelligence}</Link>
+                <Link className={styles.inspectorLink} href={`/${locale}/decisions?analysisRunId=${encodeURIComponent(selectedAnalysisRunId)}`}>{content.navigation.decisions}</Link>
+              </>
+            ) : null}
             <Button
               disabled={actionBusy}
               variant="secondary"

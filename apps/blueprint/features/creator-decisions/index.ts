@@ -1,3 +1,4 @@
+export { RealCreatorDecisionExperience } from "./real-creator-decision-experience";
 export { CreatorDecisionCenter } from "./creator-decision-center";
 export {
   creatorDecisionScenarioIds,

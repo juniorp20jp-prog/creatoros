@@ -72,8 +72,10 @@ function normalizeVideos(
       throw new Error(`${field}.publishedAt cannot be in the future.`);
     }
 
+    const title = optionalText(video.title);
     return {
       videoId,
+      ...(title ? { title } : {}),
       publishedAt,
       views: nonNegative(video.views, `${field}.views`),
       likes: optionalNonNegative(video.likes, `${field}.likes`),

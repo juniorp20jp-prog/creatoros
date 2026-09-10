@@ -13,6 +13,7 @@ import { JSDOM } from "jsdom";
 
 import en from "../../../messages/en.json";
 import { AnalysisApiClient } from "../../analysis-integration";
+import { YouTubeApiClient } from "../../youtube-connection";
 import { MissionControlAnalysisExperience } from "../MissionControlAnalysisExperience";
 import {
   errorResponse,
@@ -245,9 +246,17 @@ test("uses opaque cursor pagination and respects cancelled confirmations", async
     assert.ok(requests.some((url) => url.includes("cursor=opaque-next")));
   });
   fireEvent.click(view.getByRole("button", { name: "Previous" }));
-  await view.findByRole("table");
-  fireEvent.click(view.getAllByRole("button", { name: "Replay" })[0]!);
-  fireEvent.click(view.getAllByRole("button", { name: "Delete" })[0]!);
+  await waitFor(() => {
+    const firstPageRequests = requests.filter((url) =>
+      url.includes("analysis-runs?") && !url.includes("cursor="),
+    );
+    assert.ok(firstPageRequests.length >= 2);
+  });
+  await act(async () => {
+    fireEvent.click(view.getAllByRole("button", { name: "Replay" })[0]!);
+    fireEvent.click(view.getAllByRole("button", { name: "Delete" })[0]!);
+    await Promise.resolve();
+  });
   assert.equal(requests.filter((url) => url.endsWith("/replay")).length, 0);
   globalThis.confirm = () => true;
   view.unmount();
@@ -262,11 +271,15 @@ function createMissionFetch(requests: string[]): typeof globalThis.fetch {
 }
 
 function renderMissionControl(client: AnalysisApiClient) {
+  const youtubeClient = new YouTubeApiClient({
+    fetch: async () => Response.json({ data: { connected: false, scopes: [] } }),
+  });
   return render(
     createElement(MissionControlAnalysisExperience, {
       client,
       content: en.blueprint.missionControl,
       locale: "en",
+      youtubeClient,
     }),
   );
 }

@@ -23,6 +23,7 @@ export type {
   ChannelMetrics,
   ChannelMetricsCalculator,
   ChannelProfile,
+  CreatorAnalysisPipeline,
   CreatorAnalysisPipelineContext,
   CreatorAnalysisPipelineResult,
   CreatorProfile,

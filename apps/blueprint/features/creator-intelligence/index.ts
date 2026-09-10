@@ -1,3 +1,4 @@
+export { RealCreatorIntelligenceExperience } from "./real-creator-intelligence-experience";
 export { CreatorIntelligenceWorkspace } from "./creator-intelligence-workspace";
 export {
   formatIntelligenceDate,

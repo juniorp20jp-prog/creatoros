@@ -1,3 +1,5 @@
+import type { StrategicAnalysisProjection } from "../../intelligence/strategic-projection";
+
 export type CreatorProfile = {
   id: string;
   displayName?: string;
@@ -15,6 +17,7 @@ export type ChannelProfile = {
 
 export type VideoMetrics = {
   videoId: string;
+  title?: string;
   publishedAt: string;
   views: number;
   likes?: number;
@@ -100,6 +103,7 @@ export type AnalysisResult = {
   opportunities: ReadonlyArray<GrowthOpportunity>;
   recommendations: ReadonlyArray<Recommendation>;
   limitations: ReadonlyArray<string>;
+  strategicProjection?: StrategicAnalysisProjection;
 };
 
 export type RawCreatorProfile = {
@@ -122,6 +126,7 @@ export type RawChannelProfile = {
 
 export type RawVideoMetrics = {
   id: string;
+  title?: string | null;
   publishedAt: string;
   views: number;
   likes?: number | null;

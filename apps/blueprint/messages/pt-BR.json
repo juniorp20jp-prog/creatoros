@@ -108,6 +108,7 @@
     },
     "missionControl": {
       "metadata": { "title": "Mission Control | CreatorOS Blueprint", "description": "Execute e inspecione fluxos certificados de análise do CreatorOS." },
+      "navigation": {"creatorIntelligence":"Abrir Creator Intelligence","decisions":"Abrir Decision Center"},
       "realAnalyzer": {
     "eyebrow": "Inteligência real",
     "title": "Análise dos seus vídeos sincronizados",
@@ -185,6 +186,7 @@
     },
     "creatorDecisions": {
       "metadata": { "title": "Decisões | CreatorOS Blueprint", "description": "Ações priorizadas, mensuráveis e sustentadas por evidências geradas pelo CreatorOS." },
+      "realMode": {"badge":"Decisões de AnalysisRun real","loading":"Carregando decisões reais…","loadingDescription":"O CreatorOS está lendo o snapshot de decisões salvo com a execução selecionada.","emptyTitle":"Ainda não há uma análise real","emptyDescription":"Execute uma análise no Mission Control antes de abrir o Decision Center.","errorTitle":"Não foi possível carregar o Decision Center","errorDescription":"O snapshot persistido de decisões não pôde ser lido com segurança.","reanalysisTitle":"Reanálise necessária","reanalysisDescription":"Esta execução histórica não contém um snapshot estratégico de decisões. Reanalise-a sem alterar o original.","retry":"Tentar novamente"},
       "realAnalyzer": {
     "eyebrow": "Inteligência real",
     "title": "Análise dos seus vídeos sincronizados",
@@ -718,6 +720,7 @@
     },
     "creatorIntelligence": {
       "metadata": { "title": "Inteligência do criador", "description": "Interpretação executiva determinística da análise de canal do CreatorOS." },
+      "realMode": {"badge":"AnalysisRun real","sourceLabel":"Fonte persistida do YouTube conectado","runLabel":"Execução da análise","loading":"Carregando inteligência real do criador…","loadingDescription":"O CreatorOS está lendo a projeção estratégica persistida mais recente.","emptyTitle":"Ainda não há uma análise real","emptyDescription":"Execute uma análise no Mission Control para criar uma projeção estratégica.","errorTitle":"Não foi possível carregar o Creator Intelligence","errorDescription":"A análise persistida não pôde ser lida com segurança.","reanalysisTitle":"Reanálise necessária","reanalysisDescription":"Esta execução histórica é anterior às projeções estratégicas. Reanalise-a no Mission Control; o original permanecerá intacto.","retry":"Tentar novamente","openDecisions":"Abrir Decision Center"},
       "realAnalyzer": {
     "eyebrow": "Inteligência real",
     "title": "Análise dos seus vídeos sincronizados",

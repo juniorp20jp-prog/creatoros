@@ -10,6 +10,7 @@ export {
 export type {
   ChannelDataNormalizer,
   ChannelMetricsCalculator,
+  CreatorAnalysisPipeline,
   CreatorAnalysisPipelineContext,
   CreatorAnalysisPipelineResult,
   OpportunityEngine,

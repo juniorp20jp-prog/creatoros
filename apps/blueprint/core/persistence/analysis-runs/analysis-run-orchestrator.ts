@@ -3,8 +3,8 @@ import type {
   ChannelDataAdapterResult,
 } from "../../adapters";
 import {
-  CREATOR_ANALYSIS_PIPELINE_VERSION,
   CreatorIntelligenceAnalysisPipeline,
+  type CreatorAnalysisPipeline,
 } from "../../engines";
 import {
   SystemClock,
@@ -57,7 +57,7 @@ export class AnalysisRunOrchestrator<TSource> {
   constructor(
     private readonly adapter: ChannelDataAdapter<TSource>,
     private readonly repository: AnalysisRunRepository,
-    private readonly pipeline =
+    private readonly pipeline: CreatorAnalysisPipeline =
       new CreatorIntelligenceAnalysisPipeline(),
     private readonly clock: Clock = new SystemClock(),
     private readonly idGenerator: IdGenerator =
@@ -83,7 +83,7 @@ export class AnalysisRunOrchestrator<TSource> {
           ? { sourceReference: input.sourceReference }
           : {}),
       },
-      pipelineVersion: CREATOR_ANALYSIS_PIPELINE_VERSION,
+      pipelineVersion: this.pipeline.version,
       ...(input.correlationId
         ? { correlationId: input.correlationId }
         : {}),
@@ -163,13 +163,19 @@ export class AnalysisRunOrchestrator<TSource> {
 
     let analysis;
     try {
-      analysis = this.pipeline.run(
+      analysis = (await this.pipeline.run(
         adapterResult.rawChannelData,
         {
           analysisId: `analysis_${analysisRunId}`,
           analyzedAt: this.clock.now(),
+          ...(input.correlationId
+            ? { correlationId: input.correlationId }
+            : {}),
+          ...(input.sourceReference
+            ? { sourceReference: input.sourceReference }
+            : {}),
         },
-      ).analysis;
+      )).analysis;
     } catch {
       return this.persistFailure(
         analysisRunId,

@@ -108,6 +108,7 @@
     },
     "missionControl": {
       "metadata": { "title": "Mission Control | CreatorOS Blueprint", "description": "Exécutez et inspectez les flux d’analyse certifiés de CreatorOS." },
+      "navigation": {"creatorIntelligence":"Ouvrir Creator Intelligence","decisions":"Ouvrir Decision Center"},
       "realAnalyzer": {
     "eyebrow": "Intelligence réelle",
     "title": "Analyse de vos vidéos synchronisées",
@@ -185,6 +186,7 @@
     },
     "creatorDecisions": {
       "metadata": { "title": "Décisions | CreatorOS Blueprint", "description": "Actions prioritaires, mesurables et étayées par des preuves générées par CreatorOS." },
+      "realMode": {"badge":"Décisions AnalysisRun réelles","loading":"Chargement des décisions réelles…","loadingDescription":"CreatorOS lit instantané de décisions conservé avec exécution sélectionnée.","emptyTitle":"Aucune analyse réelle encore disponible","emptyDescription":"Lancez une analyse depuis Mission Control avant ouvrir Decision Center.","errorTitle":"Impossible de charger Decision Center","errorDescription":"Instantané persistant des décisions non lisible en toute sécurité.","reanalysisTitle":"Nouvelle analyse requise","reanalysisDescription":"Cette exécution historique ne contient aucun instantané stratégique des décisions. Relancez-la sans modifier original.","retry":"Réessayer"},
       "realAnalyzer": {
     "eyebrow": "Intelligence réelle",
     "title": "Analyse de vos vidéos synchronisées",
@@ -718,6 +720,7 @@
     },
     "creatorIntelligence": {
       "metadata": { "title": "Intelligence du créateur", "description": "Interprétation exécutive déterministe de l’analyse de chaîne CreatorOS." },
+      "realMode": {"badge":"AnalysisRun réel","sourceLabel":"Source YouTube connectée persistée","runLabel":"Exécution analyse","loading":"Chargement intelligence réelle du créateur…","loadingDescription":"CreatorOS lit la dernière projection stratégique persistée.","emptyTitle":"Aucune analyse réelle encore disponible","emptyDescription":"Lancez une analyse depuis Mission Control pour créer une projection stratégique.","errorTitle":"Impossible de charger Creator Intelligence","errorDescription":"Analyse persistée non lisible en toute sécurité.","reanalysisTitle":"Nouvelle analyse requise","reanalysisDescription":"Cette exécution historique précède les projections stratégiques. Relancez-la depuis Mission Control ; original restera intact.","retry":"Réessayer","openDecisions":"Ouvrir Decision Center"},
       "realAnalyzer": {
     "eyebrow": "Intelligence réelle",
     "title": "Analyse de vos vidéos synchronisées",

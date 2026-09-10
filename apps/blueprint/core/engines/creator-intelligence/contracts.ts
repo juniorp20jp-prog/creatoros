@@ -11,12 +11,22 @@ import type {
 export type CreatorAnalysisPipelineContext = {
   analysisId: string;
   analyzedAt: string;
+  correlationId?: string;
+  sourceReference?: string;
 };
 
 export type CreatorAnalysisPipelineResult = {
   analysis: AnalysisResult;
   completedStepIds: ReadonlyArray<string>;
 };
+
+export interface CreatorAnalysisPipeline {
+  readonly version: string;
+  run(
+    input: RawChannelData,
+    context: CreatorAnalysisPipelineContext,
+  ): CreatorAnalysisPipelineResult | Promise<CreatorAnalysisPipelineResult>;
+}
 
 export interface ChannelDataNormalizer {
   normalize(

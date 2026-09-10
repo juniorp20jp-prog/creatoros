@@ -34,6 +34,7 @@ export type CreateDecisionCenterViewModelInput = {
   result: DecisionGenerationResult;
   scenarioId: CreatorDecisionScenarioId;
   source: DecisionSourceContext;
+  mode?: "real" | "demo";
 };
 
 export type DecisionEvidenceViewModel = {
@@ -95,7 +96,7 @@ export type DecisionSourceViewModel = {
   period: string;
   sampleSize: string;
   qualityLabel: string;
-  demo: true;
+  demo: boolean;
 };
 
 export type DecisionFilterOption<TValue extends string> = {

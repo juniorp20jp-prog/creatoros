@@ -112,7 +112,7 @@ function mapSource(
         ? content.common.notAvailable
         : new Intl.NumberFormat(locale).format(source.sampleSize),
     qualityLabel: content.quality[source.quality],
-    demo: true,
+    demo: input.mode !== "real",
   };
 }
 

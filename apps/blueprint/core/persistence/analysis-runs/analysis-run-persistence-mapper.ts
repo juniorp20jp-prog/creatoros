@@ -1,4 +1,5 @@
 import type { AnalysisResult } from "../../engines";
+import { validateStrategicAnalysisProjection } from "../../intelligence";
 import type { AnalysisRun } from "./analysis-run-model";
 import { ANALYSIS_RUN_SCHEMA_VERSION } from "./analysis-run-model";
 import type {
@@ -526,6 +527,7 @@ function validateVideoMetrics(
     value,
     [
       "videoId",
+      "title",
       "publishedAt",
       "views",
       "likes",
@@ -537,6 +539,7 @@ function validateVideoMetrics(
   );
   let valid =
     validateRequiredString(value, "videoId", path, issues) &&
+    validateOptionalString(value, "title", path, issues) &&
     validateTimestamp(value.publishedAt, `${path}.publishedAt`, issues) &&
     validateRequiredNumber(value, "views", path, issues);
   for (const key of ["likes", "comments", "durationSeconds"]) {
@@ -639,6 +642,7 @@ function validateAnalysisResult(
       "opportunities",
       "recommendations",
       "limitations",
+      "strategicProjection",
     ],
     path,
     issues,
@@ -904,6 +908,17 @@ function validateAnalysisResult(
       `${path}.limitations`,
       issues,
     ) && valid;
+  if (value.strategicProjection !== undefined) {
+    const projectionIssues = validateStrategicAnalysisProjection(value.strategicProjection);
+    for (const projectionIssue of projectionIssues) {
+      issues.push(issue(
+        `${path}.strategicProjection${projectionIssue.path.slice("projection".length)}`,
+        projectionIssue.code,
+        projectionIssue.message,
+      ));
+    }
+    valid = projectionIssues.length === 0 && valid;
+  }
   return valid;
 }
 

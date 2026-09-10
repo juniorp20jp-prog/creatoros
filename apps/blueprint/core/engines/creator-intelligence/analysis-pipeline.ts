@@ -28,6 +28,8 @@ export const CREATOR_ANALYSIS_PIPELINE_STEPS = [
 export const CREATOR_ANALYSIS_PIPELINE_VERSION = "1.0.0" as const;
 
 export class CreatorIntelligenceAnalysisPipeline {
+  readonly version = CREATOR_ANALYSIS_PIPELINE_VERSION;
+
   constructor(
     private readonly normalizer: ChannelDataNormalizer =
       new DefaultChannelDataNormalizer(),

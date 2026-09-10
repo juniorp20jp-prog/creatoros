@@ -3,7 +3,7 @@ import {
   AnalysisService,
   AuthenticationService,
   createAnalysisCoreComposition,
-  CreatorIntelligenceAnalysisPipeline,
+  ConnectedYouTubeStrategicPipeline,
   ExternalIdentityAuthenticationService,
   FixtureChannelDataAdapter,
   PersistedYouTubeChannelDataAdapter,
@@ -67,7 +67,7 @@ export function getInternalAnalysisApiRuntime(): InternalAnalysisApiRuntime {
   const connectedOrchestrator = new AnalysisRunOrchestrator(
     new PersistedYouTubeChannelDataAdapter(clock),
     composition.repository,
-    new CreatorIntelligenceAnalysisPipeline(),
+    new ConnectedYouTubeStrategicPipeline(),
     clock,
     ids,
   );

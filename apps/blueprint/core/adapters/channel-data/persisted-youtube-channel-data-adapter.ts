@@ -153,6 +153,7 @@ function mapVideo(
   }
   return [{
     id: video.videoId,
+    title: video.title,
     publishedAt: video.publishedAt,
     views,
     likes: optionalCounter(video.likeCount, `${path}.likeCount`, warnings),

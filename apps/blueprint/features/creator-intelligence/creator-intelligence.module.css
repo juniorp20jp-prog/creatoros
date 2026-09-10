@@ -68,6 +68,14 @@
 .evidenceLink:hover {
   color: var(--color-text-primary);
 }
+.backLink:focus-visible,
+.technicalLink:focus-visible,
+.evidenceLink:focus-visible,
+.retryButton:focus-visible,
+.scenarioControl select:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
 
 .headerCopy h2 {
   max-width: 48rem;

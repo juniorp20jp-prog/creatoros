@@ -266,6 +266,7 @@ export function MissionControlAnalysisExperience({
         details={details}
         history={history}
         locale={locale}
+        mode={mode}
         onDelete={(analysisRunId) => void handleDelete(analysisRunId)}
         onReplay={(analysisRunId) => void handleReplay(analysisRunId)}
         onViewChange={setInspectorView}
