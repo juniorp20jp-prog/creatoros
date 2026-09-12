@@ -5,6 +5,7 @@ import type {
   VideoSynchronizationStatus,
   YouTubeVideo,
   YouTubeVideoPage,
+  YouTubeVideoSnapshot,
 } from "../../youtube-video-sync";
 import type { AnalysisRunPrismaClient } from "./prisma-client";
 import { mapVideoSyncRow, mapYouTubeVideoRow } from "./youtube-video-row-mappers";
@@ -131,6 +132,7 @@ export class PrismaVideoSynchronizationRepository
     input: Readonly<{
       created: ReadonlyArray<YouTubeVideo>;
       updated: ReadonlyArray<YouTubeVideo>;
+      observed?: ReadonlyArray<YouTubeVideoSnapshot>;
       synchronization: VideoSynchronization;
     }>,
   ): Promise<VideoRepositoryResult<VideoSynchronization>> {
@@ -145,9 +147,55 @@ export class PrismaVideoSynchronizationRepository
             data: videoData(video),
           });
         }
-        return transaction.videoSyncRow.create({
+        const syncRow = await transaction.videoSyncRow.create({
           data: synchronizationData(input.synchronization),
         });
+        const channel = await transaction.youTubeChannelRow.findUnique({
+          where: { userId: input.synchronization.userId },
+        });
+        if (!channel) throw new Error("Synchronized channel was not found.");
+        const batchId = `metrics_video_${input.synchronization.syncId}`;
+        await transaction.metricObservationBatchRow.create({
+          data: {
+            batchId,
+            userId: input.synchronization.userId,
+            channelId: input.synchronization.channelId,
+            sourceSyncId: input.synchronization.syncId,
+            sourceType: "youtube-video-sync",
+            provider: "youtube",
+            observedAt: new Date(input.synchronization.completedAt),
+            collectionOutcome: input.synchronization.outcome,
+            availability: input.synchronization.outcome === "partial" ? "partial" : "available",
+            coverageCount: input.synchronization.coverageCount,
+            coverageLimit: input.synchronization.coverageLimit,
+            truncated: input.synchronization.truncated,
+            schemaVersion: 1,
+            provenance: "provider-sync",
+            createdAt: new Date(input.synchronization.completedAt),
+            channelObservation: { create: {
+              subscriberCount: channel.subscriberCount,
+              viewCount: channel.viewCount,
+              videoCount: channel.videoCount,
+              hiddenSubscriberCount: channel.hiddenSubscriberCount,
+              sourceEtag: channel.sourceEtag,
+              availableFields: ["viewCount", "videoCount", "hiddenSubscriberCount", ...(channel.subscriberCount === null ? [] : ["subscriberCount"])],
+            } },
+            videoObservations: { create: (input.observed ?? [...input.created, ...input.updated]).map((video) => ({
+              videoId: video.videoId,
+              viewCount: video.viewCount ?? null,
+              likeCount: video.likeCount ?? null,
+              commentCount: video.commentCount ?? null,
+              sourceEtag: video.sourceEtag ?? null,
+              availabilityStatus: video.availabilityStatus,
+              availableFields: [
+                ...(video.viewCount === undefined ? [] : ["viewCount"]),
+                ...(video.likeCount === undefined ? [] : ["likeCount"]),
+                ...(video.commentCount === undefined ? [] : ["commentCount"]),
+              ],
+            })) },
+          },
+        });
+        return syncRow;
       });
       return mapSync(row);
     } catch {

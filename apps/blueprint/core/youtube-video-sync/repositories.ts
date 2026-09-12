@@ -3,6 +3,7 @@ import type {
   VideoSynchronizationStatus,
   YouTubeVideo,
   YouTubeVideoPage,
+  YouTubeVideoSnapshot,
 } from "./models";
 
 export type VideoRepositoryErrorCode =
@@ -46,6 +47,7 @@ export interface VideoSynchronizationRepository
   complete(input: Readonly<{
     created: ReadonlyArray<YouTubeVideo>;
     updated: ReadonlyArray<YouTubeVideo>;
+    observed?: ReadonlyArray<YouTubeVideoSnapshot>;
     synchronization: VideoSynchronization;
   }>): Promise<VideoRepositoryResult<VideoSynchronization>>;
   recordFailure(

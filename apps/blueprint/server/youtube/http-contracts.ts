@@ -144,3 +144,35 @@ export function toRealYouTubeIntelligenceReadModel(
       : null,
   };
 }
+
+export type HistoricalObservationReadModel = Readonly<{
+  sourceType: import("../../core").MetricObservationSource;
+  provider: "youtube";
+  observedAt: string;
+  collectionOutcome: import("../../core").MetricCollectionOutcome;
+  availability: import("../../core").MetricAvailability;
+  coverageCount: number;
+  coverageLimit?: number;
+  truncated: boolean;
+  schemaVersion: 1;
+  provenance: import("../../core").MetricObservationProvenance;
+}>;
+export type ChannelHistoryReadModel = Readonly<{
+  observations: ReadonlyArray<Readonly<{
+    observation: HistoricalObservationReadModel;
+    metrics: Omit<import("../../core").ChannelMetricObservation, "batchId" | "sourceEtag">;
+  }>>;
+  nextCursor?: string;
+}>;
+export type VideoHistoryReadModel = Readonly<{
+  observations: ReadonlyArray<Readonly<{
+    observation: HistoricalObservationReadModel;
+    metrics: Omit<import("../../core").VideoMetricObservation, "batchId" | "sourceEtag">;
+  }>>;
+  nextCursor?: string;
+}>;
+export type ChannelTrendsReadModel = Readonly<{
+  period: import("../../core").HistoricalPeriod;
+  freshness: import("../../core").DataFreshness;
+  trends: ReadonlyArray<import("../../core").MetricTrend>;
+}>;

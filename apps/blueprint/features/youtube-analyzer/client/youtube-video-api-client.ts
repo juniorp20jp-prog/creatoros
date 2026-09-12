@@ -1,6 +1,8 @@
 import type {
   RealYouTubeIntelligenceReadModel,
   YouTubeApiDataEnvelope,
+  ChannelHistoryReadModel,
+  ChannelTrendsReadModel,
   YouTubeApiErrorEnvelope,
   YouTubeVideoPageReadModel,
   YouTubeVideoSynchronizationResultReadModel,
@@ -57,6 +59,13 @@ export class YouTubeVideoApiClient {
     );
   }
 
+  history(signal?: AbortSignal): Promise<ChannelHistoryReadModel> {
+    return this.request("/api/youtube/metrics/channel/history?limit=100", { method: "GET", signal }, isChannelHistory);
+  }
+
+  trends(period: "7d" | "30d" | "90d" = "30d", signal?: AbortSignal): Promise<ChannelTrendsReadModel> {
+    return this.request(`/api/youtube/metrics/trends?period=${period}`, { method: "GET", signal }, isChannelTrends);
+  }
   private async request<TValue>(
     path: string,
     init: RequestInit,
@@ -163,7 +172,12 @@ function isSynchronization(value: unknown): boolean {
     typeof value.startedAt === "string" &&
     typeof value.completedAt === "string";
 }
-function isRecord(value: unknown): value is Record<string, unknown> {
+function isChannelHistory(value: unknown): value is ChannelHistoryReadModel {
+  return isRecord(value) && Array.isArray(value.observations) && value.observations.every((item) => isRecord(item) && isRecord(item.observation) && typeof item.observation.observedAt === "string" && isRecord(item.metrics)) && (value.nextCursor === undefined || typeof value.nextCursor === "string");
+}
+function isChannelTrends(value: unknown): value is ChannelTrendsReadModel {
+  return isRecord(value) && ["7d", "30d", "90d"].includes(String(value.period)) && isRecord(value.freshness) && typeof value.freshness.state === "string" && Array.isArray(value.trends) && value.trends.every((trend) => isRecord(trend) && typeof trend.metric === "string" && typeof trend.state === "string");
+}function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 

@@ -36,21 +36,22 @@ model AnalysisRunRow {
 }
 
 model UserRow {
-  userId          String              @id @map("user_id") @db.VarChar(255)
-  email           String              @unique(map: "users_email_key") @db.VarChar(320)
-  displayName     String              @map("display_name") @db.VarChar(255)
-  locale          String              @db.VarChar(8)
-  timezone        String?             @db.VarChar(100)
-  status          String              @db.VarChar(16)
-  createdAt       DateTime            @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime            @map("updated_at") @db.Timestamptz(3)
-  identities      IdentityRow[]
-  sessions        SessionRow[]
-  youtubeIdentity YouTubeIdentityRow?
-  youtubeChannel  YouTubeChannelRow?
-  channelSyncs    ChannelSyncRow[]
-  youtubeVideos   YouTubeVideoRow[]
-  videoSyncs      VideoSyncRow[]
+  userId                   String                      @id @map("user_id") @db.VarChar(255)
+  email                    String                      @unique(map: "users_email_key") @db.VarChar(320)
+  displayName              String                      @map("display_name") @db.VarChar(255)
+  locale                   String                      @db.VarChar(8)
+  timezone                 String?                     @db.VarChar(100)
+  status                   String                      @db.VarChar(16)
+  createdAt                DateTime                    @map("created_at") @db.Timestamptz(3)
+  updatedAt                DateTime                    @map("updated_at") @db.Timestamptz(3)
+  identities               IdentityRow[]
+  sessions                 SessionRow[]
+  youtubeIdentity          YouTubeIdentityRow?
+  youtubeChannel           YouTubeChannelRow?
+  channelSyncs             ChannelSyncRow[]
+  youtubeVideos            YouTubeVideoRow[]
+  videoSyncs               VideoSyncRow[]
+  metricObservationBatches MetricObservationBatchRow[]
 
   @@map("users")
 }
@@ -78,34 +79,35 @@ model YouTubeIdentityRow {
 }
 
 model YouTubeChannelRow {
-  channelId             String             @id @map("channel_id") @db.VarChar(255)
-  userId                String             @unique(map: "youtube_channels_user_key") @map("user_id") @db.VarChar(255)
-  youtubeIdentityId     String             @unique(map: "youtube_channels_identity_key") @map("youtube_identity_id") @db.VarChar(255)
-  title                 String             @db.VarChar(255)
-  handle                String?            @db.VarChar(255)
-  description           String             @db.Text
-  publishedAt           DateTime           @map("published_at") @db.Timestamptz(3)
-  country               String?            @db.VarChar(8)
-  customUrl             String?            @map("custom_url") @db.VarChar(255)
-  thumbnailUrl          String?            @map("thumbnail_url") @db.Text
-  bannerUrl             String?            @map("banner_url") @db.Text
-  subscriberCount       Decimal?           @map("subscriber_count") @db.Decimal(20, 0)
-  viewCount             Decimal            @map("view_count") @db.Decimal(20, 0)
-  videoCount            Decimal            @map("video_count") @db.Decimal(20, 0)
-  hiddenSubscriberCount Boolean            @map("hidden_subscriber_count")
-  defaultLanguage       String?            @map("default_language") @db.VarChar(32)
-  keywords              String[]
-  brandingSettings      Json               @map("branding_settings")
-  privacyStatus         String             @map("privacy_status") @db.VarChar(16)
-  sourceEtag            String?            @map("source_etag") @db.VarChar(255)
-  lastSyncedAt          DateTime           @map("last_synced_at") @db.Timestamptz(3)
-  syncStatus            String             @map("sync_status") @db.VarChar(16)
-  createdAt             DateTime           @map("created_at") @db.Timestamptz(3)
-  updatedAt             DateTime           @map("updated_at") @db.Timestamptz(3)
-  user                  UserRow            @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  youtubeIdentity       YouTubeIdentityRow @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
-  videos                YouTubeVideoRow[]
-  videoSyncs            VideoSyncRow[]
+  channelId                String                      @id @map("channel_id") @db.VarChar(255)
+  userId                   String                      @unique(map: "youtube_channels_user_key") @map("user_id") @db.VarChar(255)
+  youtubeIdentityId        String                      @unique(map: "youtube_channels_identity_key") @map("youtube_identity_id") @db.VarChar(255)
+  title                    String                      @db.VarChar(255)
+  handle                   String?                     @db.VarChar(255)
+  description              String                      @db.Text
+  publishedAt              DateTime                    @map("published_at") @db.Timestamptz(3)
+  country                  String?                     @db.VarChar(8)
+  customUrl                String?                     @map("custom_url") @db.VarChar(255)
+  thumbnailUrl             String?                     @map("thumbnail_url") @db.Text
+  bannerUrl                String?                     @map("banner_url") @db.Text
+  subscriberCount          Decimal?                    @map("subscriber_count") @db.Decimal(20, 0)
+  viewCount                Decimal                     @map("view_count") @db.Decimal(20, 0)
+  videoCount               Decimal                     @map("video_count") @db.Decimal(20, 0)
+  hiddenSubscriberCount    Boolean                     @map("hidden_subscriber_count")
+  defaultLanguage          String?                     @map("default_language") @db.VarChar(32)
+  keywords                 String[]
+  brandingSettings         Json                        @map("branding_settings")
+  privacyStatus            String                      @map("privacy_status") @db.VarChar(16)
+  sourceEtag               String?                     @map("source_etag") @db.VarChar(255)
+  lastSyncedAt             DateTime                    @map("last_synced_at") @db.Timestamptz(3)
+  syncStatus               String                      @map("sync_status") @db.VarChar(16)
+  createdAt                DateTime                    @map("created_at") @db.Timestamptz(3)
+  updatedAt                DateTime                    @map("updated_at") @db.Timestamptz(3)
+  user                     UserRow                     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  youtubeIdentity          YouTubeIdentityRow          @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
+  videos                   YouTubeVideoRow[]
+  videoSyncs               VideoSyncRow[]
+  metricObservationBatches MetricObservationBatchRow[]
 
   @@map("youtube_channels")
 }
@@ -225,4 +227,59 @@ model VideoSyncRow {
 
   @@index([userId, startedAt(sort: Desc), syncId(sort: Asc)], map: "video_syncs_user_history_idx")
   @@map("youtube_video_syncs")
+}
+
+model MetricObservationBatchRow {
+  batchId            String                       @id @map("batch_id") @db.VarChar(255)
+  userId             String                       @map("user_id") @db.VarChar(255)
+  channelId          String                       @map("channel_id") @db.VarChar(255)
+  sourceSyncId       String                       @map("source_sync_id") @db.VarChar(255)
+  sourceType         String                       @map("source_type") @db.VarChar(32)
+  provider           String                       @db.VarChar(32)
+  observedAt         DateTime                     @map("observed_at") @db.Timestamptz(3)
+  collectionOutcome  String                       @map("collection_outcome") @db.VarChar(16)
+  availability       String                       @db.VarChar(32)
+  coverageCount      Int                          @map("coverage_count")
+  coverageLimit      Int?                         @map("coverage_limit")
+  truncated          Boolean
+  schemaVersion      Int                          @map("schema_version")
+  provenance         String                       @db.VarChar(64)
+  createdAt          DateTime                     @map("created_at") @db.Timestamptz(3)
+  user               UserRow                      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  channel            YouTubeChannelRow            @relation(fields: [channelId], references: [channelId], onDelete: Cascade)
+  channelObservation ChannelMetricObservationRow?
+  videoObservations  VideoMetricObservationRow[]
+
+  @@unique([sourceType, sourceSyncId], map: "metric_observation_batches_source_sync_key")
+  @@index([userId, channelId, observedAt(sort: Desc), batchId(sort: Asc)], map: "metric_observation_batches_channel_history_idx")
+  @@map("metric_observation_batches")
+}
+
+model ChannelMetricObservationRow {
+  batchId               String                    @id @map("batch_id") @db.VarChar(255)
+  subscriberCount       Decimal?                  @map("subscriber_count") @db.Decimal(20, 0)
+  viewCount             Decimal?                  @map("view_count") @db.Decimal(20, 0)
+  videoCount            Decimal?                  @map("video_count") @db.Decimal(20, 0)
+  hiddenSubscriberCount Boolean?                  @map("hidden_subscriber_count")
+  sourceEtag            String?                   @map("source_etag") @db.VarChar(255)
+  availableFields       String[]                  @map("available_fields")
+  batch                 MetricObservationBatchRow @relation(fields: [batchId], references: [batchId], onDelete: Cascade)
+
+  @@map("channel_metric_observations")
+}
+
+model VideoMetricObservationRow {
+  batchId            String                    @map("batch_id") @db.VarChar(255)
+  videoId            String                    @map("video_id") @db.VarChar(255)
+  viewCount          Decimal?                  @map("view_count") @db.Decimal(20, 0)
+  likeCount          Decimal?                  @map("like_count") @db.Decimal(20, 0)
+  commentCount       Decimal?                  @map("comment_count") @db.Decimal(20, 0)
+  sourceEtag         String?                   @map("source_etag") @db.VarChar(255)
+  availabilityStatus String                    @map("availability_status") @db.VarChar(32)
+  availableFields    String[]                  @map("available_fields")
+  batch              MetricObservationBatchRow @relation(fields: [batchId], references: [batchId], onDelete: Cascade)
+
+  @@id([batchId, videoId])
+  @@index([videoId, batchId], map: "video_metric_observations_video_idx")
+  @@map("video_metric_observations")
 }

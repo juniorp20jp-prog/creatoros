@@ -11,6 +11,7 @@ import { useRealYouTubeAnalyzer } from "../hooks";
 import { createRealYouTubeAnalyzerViewModel } from "../model";
 import { AnalysisOverview } from "./AnalysisOverview";
 import { DataQualityPanel } from "./DataQualityPanel";
+import { HistoricalMetricsPanel } from "./HistoricalMetricsPanel";
 import { PublishingInsights } from "./PublishingInsights";
 import { SignalsPanel } from "./SignalsPanel";
 import { VideoPerformanceTable } from "./VideoPerformanceTable";
@@ -119,6 +120,10 @@ export function RealYouTubeAnalyzerExperience({
             <p className={styles.realError} role="alert">
               {real.errors[controller.error] ?? real.errors.generic}
             </p>
+          ) : null}
+
+          {controller.history && controller.trends ? (
+            <HistoricalMetricsPanel content={real.history} history={controller.history} locale={locale} trends={controller.trends} />
           ) : null}
 
           <AnalysisOverview content={content} locale={locale} metrics={viewModel.metrics} />

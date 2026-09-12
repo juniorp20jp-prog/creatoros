@@ -8,6 +8,7 @@ export * from "./engines";
 export * from "./interfaces";
 export * from "./intelligence";
 export * from "./identity";
+export * from "./historical-metrics";
 export * from "./pipeline";
 export * from "./persistence";
 export * from "./providers";

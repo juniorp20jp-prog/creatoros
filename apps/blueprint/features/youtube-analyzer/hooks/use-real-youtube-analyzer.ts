@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type {
+  ChannelHistoryReadModel,
+  ChannelTrendsReadModel,
   RealYouTubeIntelligenceReadModel,
   YouTubeVideoSynchronizationReadModel,
 } from "../../../server/youtube/http-contracts";
@@ -17,6 +19,8 @@ export type RealAnalyzerState = Readonly<{
   operation: "idle" | "synchronizing";
   intelligence: RealYouTubeIntelligenceReadModel | null;
   synchronization: YouTubeVideoSynchronizationReadModel | null;
+  history: ChannelHistoryReadModel | null;
+  trends: ChannelTrendsReadModel | null;
   error: YouTubeClientErrorKind | null;
   outcome: "completed" | "no-change" | "partial" | null;
 }>;
@@ -26,6 +30,8 @@ const initialState: RealAnalyzerState = {
   operation: "idle",
   intelligence: null,
   synchronization: null,
+  history: null,
+  trends: null,
   error: null,
   outcome: null,
 };
@@ -41,15 +47,19 @@ export function useRealYouTubeAnalyzer(client: YouTubeVideoApiClient) {
     loadController.current = controller;
     setState((current) => ({ ...current, phase: "loading", error: null }));
     try {
-      const [page, status] = await Promise.all([
+      const [page, status, history, trends] = await Promise.all([
         client.list({ limit: 50 }, controller.signal),
         client.status(controller.signal),
+        loadHistory(client, controller.signal),
+        loadTrends(client, controller.signal),
       ]);
       if (page.videos.length === 0) {
         setState({
           ...initialState,
           phase: "empty",
           synchronization: status.lastSync,
+          history,
+          trends,
         });
         return;
       }
@@ -59,6 +69,8 @@ export function useRealYouTubeAnalyzer(client: YouTubeVideoApiClient) {
         operation: "idle",
         intelligence,
         synchronization: status.lastSync,
+        history,
+        trends,
         error: null,
         outcome: null,
       });
@@ -86,16 +98,23 @@ export function useRealYouTubeAnalyzer(client: YouTubeVideoApiClient) {
       }));
       try {
         const synchronized = await client.synchronize();
-        const intelligence = await client.analyze();
+        const [intelligence, history, trends] = await Promise.all([
+          client.analyze(),
+          loadHistory(client),
+          loadTrends(client),
+        ]);
         setState({
           phase: "success",
           operation: "idle",
           intelligence,
           synchronization: synchronized.synchronization,
+          history,
+          trends,
           error: null,
-          outcome: synchronized.synchronization.outcome === "failed"
-            ? null
-            : synchronized.synchronization.outcome,
+          outcome:
+            synchronized.synchronization.outcome === "failed"
+              ? null
+              : synchronized.synchronization.outcome,
         });
       } catch (error) {
         const normalized = normalizeError(error);
@@ -132,4 +151,28 @@ function normalizeError(error: unknown): YouTubeApiClientError {
   return error instanceof YouTubeApiClientError
     ? error
     : new YouTubeApiClientError("server", true);
+}
+
+function loadHistory(
+  client: YouTubeVideoApiClient,
+  signal?: AbortSignal,
+): Promise<ChannelHistoryReadModel> {
+  const candidate = client as Partial<Pick<YouTubeVideoApiClient, "history">>;
+  return candidate.history
+    ? candidate.history(signal)
+    : Promise.resolve({ observations: [] });
+}
+
+function loadTrends(
+  client: YouTubeVideoApiClient,
+  signal?: AbortSignal,
+): Promise<ChannelTrendsReadModel> {
+  const candidate = client as Partial<Pick<YouTubeVideoApiClient, "trends">>;
+  return candidate.trends
+    ? candidate.trends("30d", signal)
+    : Promise.resolve({
+        period: "30d",
+        freshness: { state: "unavailable", partialCoverage: false },
+        trends: [],
+      });
 }

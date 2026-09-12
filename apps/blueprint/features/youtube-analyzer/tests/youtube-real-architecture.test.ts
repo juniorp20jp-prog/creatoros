@@ -5,6 +5,9 @@ import { join } from "node:path";
 
 const root = process.cwd();
 const component = read("features/youtube-analyzer/components/RealYouTubeAnalyzerExperience.tsx");
+const historicalComponent = read(
+  "features/youtube-analyzer/components/HistoricalMetricsPanel.tsx",
+);
 const page = read("app/[locale]/youtube-analyzer/page.tsx");
 const css = read("features/youtube-analyzer/youtube-analyzer.module.css");
 
@@ -45,6 +48,17 @@ test("real analyzer exposes semantic live states, buttons, responsive and reduce
   );
 });
 
+test("historical metrics UI exposes freshness, partial and insufficient-history states", () => {
+  assert.ok(component.includes("<HistoricalMetricsPanel"));
+  assert.ok(historicalComponent.includes("history.observations.length < 2"));
+  assert.ok(historicalComponent.includes("trends.freshness.partialCoverage"));
+  assert.ok(historicalComponent.includes('data-state={trends.freshness.state}'));
+  assert.ok(historicalComponent.includes("content.nonCausal"));
+  assert.ok(historicalComponent.includes("<dl"));
+  assert.ok(css.includes(".historyPanel"));
+  assert.ok(css.includes(".historySummary"));
+});
+
 test("all four locale dictionaries contain the real analyzer contract", () => {
   for (const locale of ["es", "en", "fr", "pt-BR"]) {
     const parsed: unknown = JSON.parse(
@@ -69,6 +83,24 @@ test("all four locale dictionaries contain the real analyzer contract", () => {
       "coverageTruncated",
       "realDataNotice",
     ]) assert.equal(typeof real[key], "string");
+    assert.ok(isRecord(real.history));
+    for (const key of [
+      "eyebrow",
+      "title",
+      "lastObservation",
+      "coverage",
+      "observationCount",
+      "subscribers",
+      "views",
+      "unavailable",
+      "insufficient",
+      "partial",
+      "nonCausal",
+    ]) assert.equal(typeof real.history[key], "string");
+    assert.ok(isRecord(real.history.freshness));
+    for (const key of ["current", "stale", "unavailable"]) {
+      assert.equal(typeof real.history.freshness[key], "string");
+    }
   }
 });
 

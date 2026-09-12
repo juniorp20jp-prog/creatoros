@@ -16,3 +16,5 @@ export { PrismaChannelSynchronizationRepository } from "./prisma-channel-synchro
 export { mapYouTubeChannelRow, mapChannelSyncRow } from "./youtube-channel-row-mappers";
 export { PrismaVideoSynchronizationRepository } from "./prisma-video-synchronization-repository";
 export { mapYouTubeVideoRow, mapVideoSyncRow } from "./youtube-video-row-mappers";
+
+export { PrismaHistoricalMetricsRepository } from "./prisma-historical-metrics-repository";

@@ -1,6 +1,7 @@
 import { SessionTokenService, CurrentSessionResolver } from "../auth";
 import {
   ChannelSynchronizationService,
+  HistoricalMetricsQueryService,
   executeYouTubeIntelligence,
   RealYouTubeIntelligenceService,
   SystemClock,
@@ -11,6 +12,7 @@ import {
 import {
   createAnalysisRunPrismaClient,
   PrismaChannelSynchronizationRepository,
+  PrismaHistoricalMetricsRepository,
   PrismaSessionRepository,
   PrismaUserRepository,
   PrismaVideoSynchronizationRepository,
@@ -29,11 +31,13 @@ import { ChannelSyncHttpHandlers } from "./channel-sync-http";
 import { VideoSyncHttpHandlers } from "./video-sync-http";
 import { GoogleYouTubeApiAdapter } from "./youtube-api-adapter";
 import { GoogleYouTubeVideoApiAdapter } from "./youtube-video-api-adapter";
+import { HistoricalMetricsHttpHandlers } from "./historical-metrics-http";
 
 type YouTubeRuntime = Readonly<{
   handlers: YouTubeHttpHandlers;
   channelHandlers: ChannelSyncHttpHandlers;
   videoHandlers: VideoSyncHttpHandlers;
+  historicalHandlers: HistoricalMetricsHttpHandlers;
   disconnect(): Promise<void>;
 }>;
 let activeRuntime: YouTubeRuntime | undefined;
@@ -48,6 +52,7 @@ export function getYouTubeAuthorizationRuntime(): YouTubeRuntime {
     owned.client,
   );
   const videoRepository = new PrismaVideoSynchronizationRepository(owned.client);
+  const historicalRepository = new PrismaHistoricalMetricsRepository(owned.client);
   const currentSession = new CurrentSessionResolver(
     new PrismaSessionRepository(owned.client),
     new PrismaUserRepository(owned.client),
@@ -99,6 +104,11 @@ export function getYouTubeAuthorizationRuntime(): YouTubeRuntime {
     videoHandlers: new VideoSyncHttpHandlers(
       currentSession,
       videoServicesFactory,
+    ),
+    historicalHandlers: new HistoricalMetricsHttpHandlers(
+      currentSession,
+      new HistoricalMetricsQueryService(historicalRepository),
+      clock,
     ),
     disconnect: owned.disconnect,
   };

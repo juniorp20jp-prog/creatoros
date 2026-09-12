@@ -161,7 +161,7 @@ export class VideoSynchronizationService {
       startedAt,
       completedAt,
     };
-    const persisted = await this.videos.complete({ created, updated, synchronization });
+    const persisted = await this.videos.complete({ created, updated, observed: snapshots, synchronization });
     if (persisted.status === "failure") {
       return failure("persistence-failure", persisted.error.message);
     }

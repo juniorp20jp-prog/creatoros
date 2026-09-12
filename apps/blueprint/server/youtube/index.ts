@@ -11,3 +11,5 @@ export * from "./youtube-diagnostics";
 export * from "./http-contracts";
 export * from "./video-sync-http";
 export * from "./youtube-video-api-adapter";
+
+export * from "./historical-metrics-http";

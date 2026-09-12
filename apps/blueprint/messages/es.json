@@ -498,6 +498,7 @@
     "coverageTruncated": "Análisis basado en los {count} videos accesibles más recientes de un límite V1 de {limit}.",
     "excluded": "{count} videos persistidos no pudieron incluirse por métricas públicas ausentes o inseguras.",
     "realDataNotice": "Datos reales del canal conectado",
+    "history": { "eyebrow": "Datos históricos", "title": "Métricas a través del tiempo", "lastObservation": "Última observación", "coverage": "Cobertura histórica", "observationCount": "{count} observaciones", "subscribers": "Cambio de suscriptores", "views": "Cambio de visualizaciones", "unavailable": "No disponible", "insufficient": "Aún no hay suficientes observaciones históricas.", "partial": "Este historial incluye cobertura parcial.", "nonCausal": "Los cambios muestran correlación temporal, no atribución causal.", "freshness": { "current": "Actual", "stale": "Desactualizado", "unavailable": "No disponible" } },
     "errors": {
       "unauthenticated": "Tu sesión de CreatorOS ya no es válida.",
       "not-connected": "Conecta YouTube antes de sincronizar videos.",

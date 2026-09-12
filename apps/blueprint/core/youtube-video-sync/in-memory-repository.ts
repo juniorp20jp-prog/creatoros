@@ -107,6 +107,7 @@ export class InMemoryVideoSynchronizationRepository
     input: Readonly<{
       created: ReadonlyArray<YouTubeVideo>;
       updated: ReadonlyArray<YouTubeVideo>;
+      observed?: ReadonlyArray<import("./models").YouTubeVideoSnapshot>;
       synchronization: VideoSynchronization;
     }>,
   ): Promise<VideoRepositoryResult<VideoSynchronization>> {
