@@ -1,6 +1,9 @@
 import type { Clock } from "../../core";
 
-export type YouTubeAuthorizationTransaction = Readonly<{ userId: string; state: string; nonce: string; codeVerifier: string; returnTo: string; createdAt: string; expiresAt: string }>;
+export type YouTubeAuthorizationPurpose =
+  | "initial-youtube-connection"
+  | "analytics-scope-upgrade";
+export type YouTubeAuthorizationTransaction = Readonly<{ userId: string; purpose: YouTubeAuthorizationPurpose; state: string; nonce: string; codeVerifier: string; returnTo: string; createdAt: string; expiresAt: string }>;
 export type YouTubeAuthorizationStateResult =
   | Readonly<{ status: "success"; value: YouTubeAuthorizationTransaction }>
   | Readonly<{ status: "failure"; error: Readonly<{ code: "authorization-state-missing" | "authorization-state-expired" | "authorization-state-consumed"; message: string }> }>;

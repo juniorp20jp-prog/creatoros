@@ -2,7 +2,8 @@ import * as oidc from "openid-client";
 
 import type { Clock, RefreshedYouTubeGrant, VerifiedYouTubeGrant, YouTubeAuthorizationProvider, YouTubeProviderResult } from "../../core";
 import { YOUTUBE_READONLY_SCOPE } from "../../core";
-import type { YouTubeAuthorizationTransaction } from "./authorization-state";
+import { YOUTUBE_ANALYTICS_READONLY_SCOPE } from "../../core";
+import type { YouTubeAuthorizationPurpose, YouTubeAuthorizationTransaction } from "./authorization-state";
 import { classifyYouTubeTokenExchangeCode, readSafeYouTubeOAuthCode, reportYouTubeDiagnostic, type YouTubeAuthorizationStage } from "./youtube-diagnostics";
 
 export type YouTubeAuthorizationRequest = Readonly<{ authorizationUrl: URL; state: string; nonce: string; codeVerifier: string }>;
@@ -25,7 +26,7 @@ type YouTubeChannelLookupResult =
   | Readonly<{ status: "failure"; providerCode: string }>;
 
 export interface YouTubeOAuthProtocol extends YouTubeAuthorizationProvider {
-  begin(): Promise<YouTubeAuthorizationRequest>;
+  begin(purpose?: YouTubeAuthorizationPurpose): Promise<YouTubeAuthorizationRequest>;
   complete(callbackUrl: URL, transaction: YouTubeAuthorizationTransaction): Promise<YouTubeProtocolResult<VerifiedYouTubeGrant>>;
 }
 
@@ -37,12 +38,13 @@ export class OpenIdClientYouTubeProtocol implements YouTubeOAuthProtocol {
     return new OpenIdClientYouTubeProtocol(configuration, input.redirectUri, input.clock);
   }
 
-  async begin(): Promise<YouTubeAuthorizationRequest> {
+  async begin(purpose: YouTubeAuthorizationPurpose = "initial-youtube-connection"): Promise<YouTubeAuthorizationRequest> {
     const state = oidc.randomState();
     const nonce = oidc.randomNonce();
     const codeVerifier = oidc.randomPKCECodeVerifier();
     const codeChallenge = await oidc.calculatePKCECodeChallenge(codeVerifier);
-    const authorizationUrl = oidc.buildAuthorizationUrl(this.configuration, { redirect_uri: this.redirectUri, scope: `openid email profile ${YOUTUBE_READONLY_SCOPE}`, response_type: "code", access_type: "offline", prompt: "consent", include_granted_scopes: "true", code_challenge: codeChallenge, code_challenge_method: "S256", state, nonce });
+    const scopes = ["openid", "email", "profile", YOUTUBE_READONLY_SCOPE, ...(purpose === "analytics-scope-upgrade" ? [YOUTUBE_ANALYTICS_READONLY_SCOPE] : [])];
+    const authorizationUrl = oidc.buildAuthorizationUrl(this.configuration, { redirect_uri: this.redirectUri, scope: scopes.join(" "), response_type: "code", access_type: "offline", prompt: "consent", include_granted_scopes: "true", code_challenge: codeChallenge, code_challenge_method: "S256", state, nonce });
     return { authorizationUrl, state, nonce, codeVerifier };
   }
 
@@ -76,7 +78,7 @@ export class OpenIdClientYouTubeProtocol implements YouTubeOAuthProtocol {
     if (channel.status === "failure") return protocolFailure("provider-error", "YouTube authorization provider failed.", "channel-lookup", channel.providerCode);
     if (channel.status === "unavailable") return protocolFailure("channel-unavailable", "No YouTube channel is available for this account.", "channel-lookup", "channel-unavailable");
     const scopes = (tokens.scope ?? "").split(/\s+/u).filter(Boolean);
-    if (!scopes.includes(YOUTUBE_READONLY_SCOPE)) return protocolFailure("callback-invalid", "Required YouTube scope was not granted.", "scopes", "insufficient_scope");
+    if (!scopes.includes(YOUTUBE_READONLY_SCOPE) || (transaction.purpose === "analytics-scope-upgrade" && !scopes.includes(YOUTUBE_ANALYTICS_READONLY_SCOPE))) return protocolFailure("callback-invalid", "Required YouTube scope was not granted.", "scopes", "insufficient_scope");
     return { status: "success", value: { providerUserId: claims.sub, channelId: channel.value.id, channelTitle: channel.value.title, scopes, ...(tokens.refresh_token ? { refreshToken: tokens.refresh_token } : {}), accessToken: tokens.access_token, ...(tokens.expires_in ? { accessTokenExpiresAt: new Date(Date.parse(this.clock.now()) + tokens.expires_in * 1000).toISOString() } : {}) } };
   }
 

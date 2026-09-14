@@ -7,6 +7,10 @@ import type {
   YouTubeVideoPageReadModel,
   YouTubeVideoSynchronizationResultReadModel,
   YouTubeVideoSynchronizationStatusReadModel,
+  YouTubeAnalyticsStatusReadModel,
+  YouTubeAnalyticsCollectionReadModel,
+  YouTubeAnalyticsChannelReadModel,
+  YouTubeAnalyticsVideosReadModel,
 } from "../../../server/youtube/http-contracts";
 import {
   YouTubeApiClientError,
@@ -66,6 +70,10 @@ export class YouTubeVideoApiClient {
   trends(period: "7d" | "30d" | "90d" = "30d", signal?: AbortSignal): Promise<ChannelTrendsReadModel> {
     return this.request(`/api/youtube/metrics/trends?period=${period}`, { method: "GET", signal }, isChannelTrends);
   }
+  analyticsStatus(signal?: AbortSignal): Promise<YouTubeAnalyticsStatusReadModel> { return this.request("/api/youtube/analytics/status", { method: "GET", signal }, isAnalyticsStatus); }
+  synchronizeAnalytics(period: "7d" | "30d" | "90d" = "30d", signal?: AbortSignal): Promise<YouTubeAnalyticsCollectionReadModel> { return this.request(`/api/youtube/analytics/sync?period=${period}`, { method: "POST", signal }, isAnalyticsBatch); }
+  channelAnalytics(period: "7d" | "30d" | "90d" = "30d", signal?: AbortSignal): Promise<YouTubeAnalyticsChannelReadModel> { return this.request(`/api/youtube/analytics/channel?period=${period}`, { method: "GET", signal }, isChannelAnalytics); }
+  videoAnalytics(period: "7d" | "30d" | "90d" = "30d", signal?: AbortSignal): Promise<YouTubeAnalyticsVideosReadModel> { return this.request(`/api/youtube/analytics/videos?period=${period}`, { method: "GET", signal }, isVideoAnalytics); }
   private async request<TValue>(
     path: string,
     init: RequestInit,
@@ -177,7 +185,12 @@ function isChannelHistory(value: unknown): value is ChannelHistoryReadModel {
 }
 function isChannelTrends(value: unknown): value is ChannelTrendsReadModel {
   return isRecord(value) && ["7d", "30d", "90d"].includes(String(value.period)) && isRecord(value.freshness) && typeof value.freshness.state === "string" && Array.isArray(value.trends) && value.trends.every((trend) => isRecord(trend) && typeof trend.metric === "string" && typeof trend.state === "string");
-}function isRecord(value: unknown): value is Record<string, unknown> {
+}
+function isAnalyticsStatus(value: unknown): value is YouTubeAnalyticsStatusReadModel { return isRecord(value) && ["not-authorized", "authorized", "declined", "revoked", "temporarily-unavailable"].includes(String(value.state)) && typeof value.updatedAt === "string"; }
+function isAnalyticsBatch(value: unknown): value is YouTubeAnalyticsCollectionReadModel { return isRecord(value) && typeof value.batchId === "string" && typeof value.channelId === "string" && ["completed", "partial", "no-data"].includes(String(value.outcome)) && typeof value.channelRowCount === "number" && typeof value.videoRowCount === "number"; }
+function isChannelAnalytics(value: unknown): value is YouTubeAnalyticsChannelReadModel { return isRecord(value) && ["7d", "30d", "90d"].includes(String(value.period)) && isRecord(value.values) && Array.isArray(value.availableFields) && Array.isArray(value.missingFields) && typeof value.channelDays === "number"; }
+function isVideoAnalytics(value: unknown): value is YouTubeAnalyticsVideosReadModel { return isRecord(value) && ["7d", "30d", "90d"].includes(String(value.period)) && Array.isArray(value.videos) && value.videos.every((video) => isRecord(video) && typeof video.videoId === "string" && isRecord(video.values) && Array.isArray(video.availableFields)); }
+function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 

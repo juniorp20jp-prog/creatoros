@@ -7,7 +7,7 @@ import { clearYouTubeStateCookie, YOUTUBE_AUTH_STATE_COOKIE, youtubeStateCookie 
 import { safeYouTubeReturnTo, type YouTubeAuthorizationStateStore } from "./authorization-state";
 import { reportYouTubeDiagnostic } from "./youtube-diagnostics";
 
-export type YouTubeComposition = Readonly<{ service: YouTubeAuthorizationService; protocol: YouTubeOAuthProtocol; channelSynchronization?: import("../../core").ChannelSynchronizationService; videoSynchronization?: import("../../core").VideoSynchronizationService; realIntelligence?: import("../../core").RealYouTubeIntelligenceService }>;
+export type YouTubeComposition = Readonly<{ service: YouTubeAuthorizationService; protocol: YouTubeOAuthProtocol; analytics?: import("../../core").YouTubeAnalyticsCollectionService; channelSynchronization?: import("../../core").ChannelSynchronizationService; videoSynchronization?: import("../../core").VideoSynchronizationService; realIntelligence?: import("../../core").RealYouTubeIntelligenceService }>;
 export type YouTubeCompositionResult = Readonly<{ status: "success"; value: YouTubeComposition }> | Readonly<{ status: "failure"; error: Readonly<{ code: string; message: string }> }>;
 
 export class YouTubeHttpHandlers {
@@ -20,14 +20,14 @@ export class YouTubeHttpHandlers {
     production: boolean;
   }>) {}
 
-  async connect(request: Request): Promise<Response> {
+  async connect(request: Request, purpose: import("./authorization-state").YouTubeAuthorizationPurpose = "initial-youtube-connection"): Promise<Response> {
     return this.withPrincipal(request, async (principal) => {
       const composition = await this.dependencies.compositionFactory();
       if (composition.status === "failure") return errorResponse("YOUTUBE_UNAVAILABLE", "YouTube authorization is unavailable.", 503);
-      const authorization = await composition.value.protocol.begin();
+      const authorization = await composition.value.protocol.begin(purpose);
       const createdAt = this.dependencies.clock.now();
       const handle = this.dependencies.ids.create("youtube_state");
-      this.dependencies.authorizationStates.save(handle, { userId: principal.userId, state: authorization.state, nonce: authorization.nonce, codeVerifier: authorization.codeVerifier, returnTo: safeYouTubeReturnTo(new URL(request.url).searchParams.get("returnTo")), createdAt, expiresAt: new Date(Date.parse(createdAt) + 10 * 60 * 1000).toISOString() });
+      this.dependencies.authorizationStates.save(handle, { userId: principal.userId, purpose, state: authorization.state, nonce: authorization.nonce, codeVerifier: authorization.codeVerifier, returnTo: safeYouTubeReturnTo(new URL(request.url).searchParams.get("returnTo")), createdAt, expiresAt: new Date(Date.parse(createdAt) + 10 * 60 * 1000).toISOString() });
       return new Response(null, { status: 302, headers: { location: authorization.authorizationUrl.toString(), "set-cookie": youtubeStateCookie(handle, this.dependencies.production) } });
     });
   }
@@ -56,6 +56,14 @@ export class YouTubeHttpHandlers {
     }
     const verified = await composition.value.protocol.complete(new URL(request.url), transaction);
     if (verified.status === "failure") {
+      if (transaction.purpose === "analytics-scope-upgrade" && verified.error.providerCode === "access_denied" && composition.value.analytics) {
+        await composition.value.analytics.recordCapability(current.principal.userId, "declined");
+        const declined = new URL(transaction.returnTo, request.url);
+        declined.searchParams.set("analytics", "declined");
+        const response = new Response(null, { status: 302, headers: { location: declined.toString() } });
+        response.headers.append("set-cookie", clearYouTubeStateCookie(this.dependencies.production));
+        return response;
+      }
       if (!verified.error.diagnosticReported) {
         reportYouTubeDiagnostic({ stage: verified.error.stage, code: verified.error.providerCode ?? verified.error.code, cause: verified.error.message });
       }
@@ -65,6 +73,10 @@ export class YouTubeHttpHandlers {
     if (connected.status === "failure") {
       reportYouTubeDiagnostic({ stage: connected.error.code === "token-protection-failed" ? "token-encryption" : "persistence", code: connected.error.code, cause: connected.error.message });
       return callbackError(connected.error.code === "channel-conflict" ? "YOUTUBE_CHANNEL_CONFLICT" : "YOUTUBE_AUTHORIZATION_FAILED", connected.error.code === "channel-conflict" ? "This YouTube channel is already connected." : "YouTube authorization could not be completed.", this.dependencies.production, connected.error.code === "channel-conflict" ? 409 : 500);
+    }
+    if (transaction.purpose === "analytics-scope-upgrade" && composition.value.analytics) {
+      const capability = await composition.value.analytics.recordCapability(current.principal.userId, "authorized");
+      if (capability.status === "failure") return callbackError("YOUTUBE_ANALYTICS_PERSISTENCE_FAILED", "YouTube Analytics authorization could not be completed.", this.dependencies.production, 500);
     }
     const response = new Response(null, { status: 302, headers: { location: new URL(transaction.returnTo, request.url).toString() } });
     response.headers.append("set-cookie", clearYouTubeStateCookie(this.dependencies.production));

@@ -12,9 +12,17 @@ export class YouTubeAuthorizationService {
 
   async connect(userId: string, grant: VerifiedYouTubeGrant): Promise<YouTubeAuthorizationResult<YouTubeConnectionStatus>> {
     const normalizedUserId = userId.trim();
-    const scopes = normalizeYouTubeScopes(grant.scopes);
-    if (!normalizedUserId || !grant.providerUserId.trim() || !grant.channelId.trim() || !grant.channelTitle.trim() || !scopes.includes(YOUTUBE_READONLY_SCOPE)) return failure("invalid-grant", "YouTube authorization grant is invalid.");
     const current = await this.repository.getByUserId(normalizedUserId);
+    const scopes = normalizeYouTubeScopes([
+      ...(current.status === "success" ? current.value.scopes : []),
+      ...grant.scopes,
+    ]);
+    if (!normalizedUserId || !grant.providerUserId.trim() || !grant.channelId.trim() || !grant.channelTitle.trim() || !scopes.includes(YOUTUBE_READONLY_SCOPE)) return failure("invalid-grant", "YouTube authorization grant is invalid.");
+    if (
+      current.status === "success" &&
+      (current.value.providerUserId !== grant.providerUserId.trim() ||
+        current.value.channelId !== grant.channelId.trim())
+    ) return failure("channel-conflict", "The Analytics grant does not match the connected YouTube identity.");
     const currentToken = current.status === "success" ? await this.repository.getByYouTubeIdentityId(current.value.youtubeIdentityId) : undefined;
     const refreshToken = grant.refreshToken?.trim();
     let encryptedRefreshToken: string;

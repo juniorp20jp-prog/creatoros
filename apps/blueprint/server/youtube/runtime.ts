@@ -7,6 +7,7 @@ import {
   SystemClock,
   UuidGenerator,
   VideoSynchronizationService,
+  YouTubeAnalyticsCollectionService,
   YouTubeAuthorizationService,
 } from "../../core";
 import {
@@ -17,6 +18,7 @@ import {
   PrismaUserRepository,
   PrismaVideoSynchronizationRepository,
   PrismaYouTubeAuthorizationRepository,
+  PrismaYouTubeAnalyticsRepository,
   requireDatabaseUrl,
 } from "../../core/persistence/prisma";
 import { AesGcmYouTubeTokenProtector } from "./aes-gcm-token-protector";
@@ -32,12 +34,15 @@ import { VideoSyncHttpHandlers } from "./video-sync-http";
 import { GoogleYouTubeApiAdapter } from "./youtube-api-adapter";
 import { GoogleYouTubeVideoApiAdapter } from "./youtube-video-api-adapter";
 import { HistoricalMetricsHttpHandlers } from "./historical-metrics-http";
+import { GoogleYouTubeAnalyticsApiAdapter } from "./youtube-analytics-api-adapter";
+import { YouTubeAnalyticsHttpHandlers } from "./youtube-analytics-http";
 
 type YouTubeRuntime = Readonly<{
   handlers: YouTubeHttpHandlers;
   channelHandlers: ChannelSyncHttpHandlers;
   videoHandlers: VideoSyncHttpHandlers;
   historicalHandlers: HistoricalMetricsHttpHandlers;
+  analyticsHandlers: YouTubeAnalyticsHttpHandlers;
   disconnect(): Promise<void>;
 }>;
 let activeRuntime: YouTubeRuntime | undefined;
@@ -53,6 +58,7 @@ export function getYouTubeAuthorizationRuntime(): YouTubeRuntime {
   );
   const videoRepository = new PrismaVideoSynchronizationRepository(owned.client);
   const historicalRepository = new PrismaHistoricalMetricsRepository(owned.client);
+  const analyticsRepository = new PrismaYouTubeAnalyticsRepository(owned.client);
   const currentSession = new CurrentSessionResolver(
     new PrismaSessionRepository(owned.client),
     new PrismaUserRepository(owned.client),
@@ -65,10 +71,15 @@ export function getYouTubeAuthorizationRuntime(): YouTubeRuntime {
       repository,
       channelRepository,
       videoRepository,
+      analyticsRepository,
       clock,
       ids,
     );
     return compositionPromise;
+  };
+  const analyticsServiceFactory = async () => {
+    const composition = await compositionFactory();
+    return composition.status === "success" ? composition.value.analytics : undefined;
   };
   const channelServiceFactory = async () => {
     const composition = await compositionFactory();
@@ -110,6 +121,7 @@ export function getYouTubeAuthorizationRuntime(): YouTubeRuntime {
       new HistoricalMetricsQueryService(historicalRepository),
       clock,
     ),
+    analyticsHandlers: new YouTubeAnalyticsHttpHandlers(currentSession, analyticsServiceFactory),
     disconnect: owned.disconnect,
   };
   return activeRuntime;
@@ -119,6 +131,7 @@ async function createComposition(
   repository: PrismaYouTubeAuthorizationRepository,
   channelRepository: PrismaChannelSynchronizationRepository,
   videoRepository: PrismaVideoSynchronizationRepository,
+  analyticsRepository: PrismaYouTubeAnalyticsRepository,
   clock: SystemClock,
   ids: UuidGenerator,
 ): Promise<YouTubeCompositionResult> {
@@ -169,6 +182,16 @@ async function createComposition(
       videoRepository,
       executeYouTubeIntelligence,
       clock,
+      analyticsRepository,
+    );
+    const analytics = new YouTubeAnalyticsCollectionService(
+      service,
+      channelRepository,
+      videoRepository,
+      analyticsRepository,
+      new GoogleYouTubeAnalyticsApiAdapter(),
+      clock,
+      ids,
     );
     return {
       status: "success",
@@ -178,6 +201,7 @@ async function createComposition(
         channelSynchronization,
         videoSynchronization,
         realIntelligence,
+        analytics,
       },
     };
   } catch {

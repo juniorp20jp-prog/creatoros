@@ -132,6 +132,9 @@ export type RawVideoMetrics = {
   likes?: number | null;
   comments?: number | null;
   durationSeconds?: number | null;
+  averageViewDurationSeconds?: number | null;
+  averagePercentageViewed?: number | null;
+  subscribersGained?: number | null;
 };
 
 export type RawChannelData = {

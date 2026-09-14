@@ -52,6 +52,7 @@ model UserRow {
   youtubeVideos            YouTubeVideoRow[]
   videoSyncs               VideoSyncRow[]
   metricObservationBatches MetricObservationBatchRow[]
+  youtubeAnalyticsCapability YouTubeAnalyticsCapabilityRow?
 
   @@map("users")
 }
@@ -73,6 +74,7 @@ model YouTubeIdentityRow {
   channel           YouTubeChannelRow?
   channelSyncs      ChannelSyncRow[]
   videoSyncs        VideoSyncRow[]
+  analyticsCapability YouTubeAnalyticsCapabilityRow?
 
   @@index([providerUserId], map: "youtube_identities_provider_user_idx")
   @@map("youtube_identities")
@@ -245,14 +247,76 @@ model MetricObservationBatchRow {
   schemaVersion      Int                          @map("schema_version")
   provenance         String                       @db.VarChar(64)
   createdAt          DateTime                     @map("created_at") @db.Timestamptz(3)
+  requestedStartDate DateTime?                    @map("requested_start_date") @db.Date
+  requestedEndDate   DateTime?                    @map("requested_end_date") @db.Date
+  effectiveDataThrough DateTime?                  @map("effective_data_through") @db.Date
+  availableFields    String[]                     @default([]) @map("available_fields")
+  missingFields      String[]                     @default([]) @map("missing_fields")
   user               UserRow                      @relation(fields: [userId], references: [userId], onDelete: Cascade)
   channel            YouTubeChannelRow            @relation(fields: [channelId], references: [channelId], onDelete: Cascade)
   channelObservation ChannelMetricObservationRow?
   videoObservations  VideoMetricObservationRow[]
+  channelDailyAnalytics ChannelDailyAnalyticsObservationRow[]
+  videoDailyAnalytics VideoDailyAnalyticsObservationRow[]
 
   @@unique([sourceType, sourceSyncId], map: "metric_observation_batches_source_sync_key")
   @@index([userId, channelId, observedAt(sort: Desc), batchId(sort: Asc)], map: "metric_observation_batches_channel_history_idx")
   @@map("metric_observation_batches")
+}
+
+model YouTubeAnalyticsCapabilityRow {
+  userId               String             @id @map("user_id") @db.VarChar(255)
+  youtubeIdentityId    String             @unique(map: "youtube_analytics_capabilities_identity_key") @map("youtube_identity_id") @db.VarChar(255)
+  state                String             @db.VarChar(32)
+  authorizedAt         DateTime?          @map("authorized_at") @db.Timestamptz(3)
+  lastCollectionAt     DateTime?          @map("last_collection_at") @db.Timestamptz(3)
+  effectiveDataThrough DateTime?          @map("effective_data_through") @db.Date
+  updatedAt            DateTime           @map("updated_at") @db.Timestamptz(3)
+  user                 UserRow            @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  youtubeIdentity      YouTubeIdentityRow @relation(fields: [youtubeIdentityId], references: [youtubeIdentityId], onDelete: Cascade)
+
+  @@map("youtube_analytics_capabilities")
+}
+
+model ChannelDailyAnalyticsObservationRow {
+  batchId                 String                    @map("batch_id") @db.VarChar(255)
+  metricDate              DateTime                  @map("metric_date") @db.Date
+  views                   Decimal?                  @db.Decimal(30, 6)
+  estimatedMinutesWatched Decimal?                  @map("estimated_minutes_watched") @db.Decimal(30, 6)
+  averageViewDuration     Decimal?                  @map("average_view_duration") @db.Decimal(30, 6)
+  averageViewPercentage   Decimal?                  @map("average_view_percentage") @db.Decimal(30, 6)
+  subscribersGained       Decimal?                  @map("subscribers_gained") @db.Decimal(30, 6)
+  subscribersLost         Decimal?                  @map("subscribers_lost") @db.Decimal(30, 6)
+  likes                   Decimal?                  @db.Decimal(30, 6)
+  comments                Decimal?                  @db.Decimal(30, 6)
+  shares                  Decimal?                  @db.Decimal(30, 6)
+  availableFields         String[]                  @map("available_fields")
+  batch                   MetricObservationBatchRow @relation(fields: [batchId], references: [batchId], onDelete: Cascade)
+
+  @@id([batchId, metricDate])
+  @@index([metricDate, batchId], map: "channel_daily_analytics_date_idx")
+  @@map("channel_daily_analytics_observations")
+}
+
+model VideoDailyAnalyticsObservationRow {
+  batchId                 String                    @map("batch_id") @db.VarChar(255)
+  videoId                 String                    @map("video_id") @db.VarChar(255)
+  metricDate              DateTime                  @map("metric_date") @db.Date
+  views                   Decimal?                  @db.Decimal(30, 6)
+  estimatedMinutesWatched Decimal?                  @map("estimated_minutes_watched") @db.Decimal(30, 6)
+  averageViewDuration     Decimal?                  @map("average_view_duration") @db.Decimal(30, 6)
+  averageViewPercentage   Decimal?                  @map("average_view_percentage") @db.Decimal(30, 6)
+  subscribersGained       Decimal?                  @map("subscribers_gained") @db.Decimal(30, 6)
+  subscribersLost         Decimal?                  @map("subscribers_lost") @db.Decimal(30, 6)
+  likes                   Decimal?                  @db.Decimal(30, 6)
+  comments                Decimal?                  @db.Decimal(30, 6)
+  shares                  Decimal?                  @db.Decimal(30, 6)
+  availableFields         String[]                  @map("available_fields")
+  batch                   MetricObservationBatchRow @relation(fields: [batchId], references: [batchId], onDelete: Cascade)
+
+  @@id([batchId, videoId, metricDate])
+  @@index([videoId, metricDate, batchId], map: "video_daily_analytics_video_date_idx")
+  @@map("video_daily_analytics_observations")
 }
 
 model ChannelMetricObservationRow {

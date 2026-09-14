@@ -23,11 +23,13 @@ test("YouTube configuration requires a dedicated encryption key and exact callba
 
 test("YouTube authorization state is expiring and single-use", () => {
   const store = new YouTubeAuthorizationStateStore(new TestClock(NOW));
-  store.save("handle", { userId: "user", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
+  store.save("handle", { userId: "user", purpose: "initial-youtube-connection", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
   assert.equal(store.consume("handle")?.userId, "user");
+  store.save("analytics", { userId: "user", purpose: "analytics-scope-upgrade", state: "state-2", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
+  assert.equal(store.consume("analytics")?.purpose, "analytics-scope-upgrade");
   assert.equal(store.consume("handle"), undefined);
   const expired = new YouTubeAuthorizationStateStore(new TestClock("2026-08-02T12:11:00.000Z"));
-  expired.save("expired", { userId: "user", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
+  expired.save("expired", { userId: "user", purpose: "initial-youtube-connection", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
   assert.equal(expired.consume("expired"), undefined);
 });
 
@@ -36,13 +38,13 @@ test("YouTube authorization state distinguishes missing, expired, and consumed t
   const missing = current.consumeResult("missing");
   assert.equal(missing.status, "failure");
   if (missing.status === "failure") assert.equal(missing.error.code, "authorization-state-missing");
-  current.save("consumed", { userId: "user", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
+  current.save("consumed", { userId: "user", purpose: "initial-youtube-connection", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
   assert.equal(current.consumeResult("consumed").status, "success");
   const consumed = current.consumeResult("consumed");
   assert.equal(consumed.status, "failure");
   if (consumed.status === "failure") assert.equal(consumed.error.code, "authorization-state-consumed");
   const later = new YouTubeAuthorizationStateStore(new TestClock("2026-08-02T12:11:00.000Z"));
-  later.save("expired", { userId: "user", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
+  later.save("expired", { userId: "user", purpose: "initial-youtube-connection", state: "state", nonce: "nonce", codeVerifier: "verifier", returnTo: "/es/youtube-analyzer", createdAt: NOW, expiresAt: "2026-08-02T12:10:00.000Z" });
   const expired = later.consumeResult("expired");
   assert.equal(expired.status, "failure");
   if (expired.status === "failure") assert.equal(expired.error.code, "authorization-state-expired");

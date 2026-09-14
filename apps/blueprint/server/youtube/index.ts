@@ -6,6 +6,8 @@ export * from "./openid-client-youtube-protocol";
 export * from "./runtime";
 export * from "./youtube-http";
 export * from "./youtube-api-adapter";
+export * from "./youtube-analytics-api-adapter";
+export * from "./youtube-analytics-http";
 export * from "./channel-sync-http";
 export * from "./youtube-diagnostics";
 export * from "./http-contracts";

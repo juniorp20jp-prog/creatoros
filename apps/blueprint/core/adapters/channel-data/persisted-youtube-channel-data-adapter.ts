@@ -1,5 +1,6 @@
 import type { YouTubeChannel } from "../../youtube-channel-sync";
 import type { YouTubeVideo } from "../../youtube-video-sync";
+import type { VideoAnalyticsProjection } from "../../youtube-analytics";
 import type { RawVideoMetrics } from "../../engines/creator-intelligence";
 import { SystemClock, type Clock } from "../../services";
 import type {
@@ -19,6 +20,7 @@ export type PersistedYouTubeChannelData = Readonly<{
   videos: ReadonlyArray<YouTubeVideo>;
   collectedAt: string;
   synchronizationReference?: string;
+  analytics?: ReadonlyArray<VideoAnalyticsProjection>;
 }>;
 
 const definition = {
@@ -163,8 +165,22 @@ function mapVideo(
       warnings,
     ),
     durationSeconds: video.durationSeconds,
+    ...analyticsMetrics(source.analytics?.find((item) => item.videoId === video.videoId)),
   }];
 }
+
+function analyticsMetrics(value: VideoAnalyticsProjection | undefined) {
+  if (!value) return {};
+  return {
+    ...(safeDecimal(value.values.averageViewDuration) === undefined ? {} : { averageViewDurationSeconds: safeDecimal(value.values.averageViewDuration) }),
+    ...(safePercentage(value.values.averageViewPercentage) === undefined ? {} : { averagePercentageViewed: safePercentage(value.values.averageViewPercentage) }),
+    ...(safeCounter(value.values.subscribersGained) === undefined ? {} : { subscribersGained: safeCounter(value.values.subscribersGained) }),
+  };
+}
+
+function safeDecimal(value: string | undefined): number | undefined { if (value === undefined) return undefined; const parsed = Number(value); return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined; }
+function safePercentage(value: string | undefined): number | undefined { const parsed = safeDecimal(value); return parsed !== undefined && parsed <= 100 ? parsed : undefined; }
+function safeCounter(value: string | undefined): number | undefined { const parsed = safeDecimal(value); return parsed !== undefined && Number.isSafeInteger(parsed) ? parsed : undefined; }
 
 function requiredCounter(
   value: string | undefined,

@@ -12,6 +12,7 @@ import { createRealYouTubeAnalyzerViewModel } from "../model";
 import { AnalysisOverview } from "./AnalysisOverview";
 import { DataQualityPanel } from "./DataQualityPanel";
 import { HistoricalMetricsPanel } from "./HistoricalMetricsPanel";
+import { YouTubeAnalyticsPanel } from "./YouTubeAnalyticsPanel";
 import { PublishingInsights } from "./PublishingInsights";
 import { SignalsPanel } from "./SignalsPanel";
 import { VideoPerformanceTable } from "./VideoPerformanceTable";
@@ -125,6 +126,18 @@ export function RealYouTubeAnalyzerExperience({
           {controller.history && controller.trends ? (
             <HistoricalMetricsPanel content={real.history} history={controller.history} locale={locale} trends={controller.trends} />
           ) : null}
+
+          <YouTubeAnalyticsPanel
+            analytics={controller.analytics}
+            content={real.analytics}
+            error={controller.analyticsError !== null}
+            locale={locale}
+            onPeriodChange={(period) => void controller.setAnalyticsPeriod(period)}
+            onSynchronize={() => void controller.synchronizeAnalytics()}
+            period={controller.analyticsPeriod}
+            status={controller.analyticsStatus}
+            synchronizing={controller.analyticsOperation === "synchronizing"}
+          />
 
           <AnalysisOverview content={content} locale={locale} metrics={viewModel.metrics} />
           <PublishingInsights content={content} locale={locale} publishing={viewModel.publishing} />

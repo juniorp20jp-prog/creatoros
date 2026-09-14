@@ -18,6 +18,7 @@ import {
   PrismaSessionRepository,
   PrismaUserRepository,
   PrismaVideoSynchronizationRepository,
+  PrismaYouTubeAnalyticsRepository,
   requireDatabaseUrl,
 } from "../../core/persistence/prisma";
 import { InternalAnalysisFixtureCatalog } from "./fixture-catalog";
@@ -58,6 +59,7 @@ export function getInternalAnalysisApiRuntime(): InternalAnalysisApiRuntime {
   const sessions = new PrismaSessionRepository(composition.prismaClient);
   const channels = new PrismaChannelSynchronizationRepository(composition.prismaClient);
   const videos = new PrismaVideoSynchronizationRepository(composition.prismaClient);
+  const analytics = new PrismaYouTubeAnalyticsRepository(composition.prismaClient);
   const sessionService = new SessionService(sessions, clock);
   const tokens = new SessionTokenService(process.env.AUTH_COOKIE_SECRET);
   const externalAuthentication = new ExternalIdentityAuthenticationService(
@@ -80,6 +82,7 @@ export function getInternalAnalysisApiRuntime(): InternalAnalysisApiRuntime {
     videos,
     videos,
     clock,
+    analytics,
   );
 
   let adapterPromise: Promise<AuthResult<GoogleOidcIdentityAdapter>> | undefined;

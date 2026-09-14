@@ -18,3 +18,4 @@ export { PrismaVideoSynchronizationRepository } from "./prisma-video-synchroniza
 export { mapYouTubeVideoRow, mapVideoSyncRow } from "./youtube-video-row-mappers";
 
 export { PrismaHistoricalMetricsRepository } from "./prisma-historical-metrics-repository";
+export { PrismaYouTubeAnalyticsRepository } from "./prisma-youtube-analytics-repository";

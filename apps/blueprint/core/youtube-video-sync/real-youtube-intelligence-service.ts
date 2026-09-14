@@ -8,6 +8,7 @@ import type { ChannelRepository } from "../youtube-channel-sync";
 import { mapPersistedYouTubeDataToIntelligenceInput } from "./intelligence-input";
 import type { VideoSynchronizationRepository } from "./repositories";
 import type { VideoSynchronization } from "./models";
+import type { YouTubeAnalyticsRepository } from "../youtube-analytics";
 
 export type RealYouTubeIntelligenceResult =
   | Readonly<{
@@ -41,6 +42,7 @@ export class RealYouTubeIntelligenceService {
     private readonly videos: VideoSynchronizationRepository,
     private readonly execute: YouTubeIntelligenceExecutor,
     private readonly clock: Clock,
+    private readonly analytics?: YouTubeAnalyticsRepository,
   ) {}
 
   async analyze(userId: string): Promise<RealYouTubeIntelligenceResult> {
@@ -62,10 +64,12 @@ export class RealYouTubeIntelligenceService {
     if (page.status === "failure") {
       return failure("persistence-failure", "YouTube video data could not be loaded.");
     }
+    const analytics = await this.analytics?.getVideoProjection(userId, "90d", this.clock.now());
     const mapped = mapPersistedYouTubeDataToIntelligenceInput(
       channel.value,
       page.value.videos,
       this.clock.now(),
+      analytics?.status === "success" ? analytics.value : [],
     );
     if (mapped.status === "failure") {
       return failure("insufficient-data", mapped.error.message);

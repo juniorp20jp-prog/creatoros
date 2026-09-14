@@ -4,6 +4,7 @@ import type {
   YouTubeVideoInput,
 } from "../engines/youtube-intelligence";
 import type { YouTubeVideo } from "./models";
+import type { VideoAnalyticsProjection } from "../youtube-analytics";
 
 export type RealYouTubeIntelligenceMapping =
   | Readonly<{
@@ -25,6 +26,7 @@ export function mapPersistedYouTubeDataToIntelligenceInput(
   channel: YouTubeChannel,
   videos: ReadonlyArray<YouTubeVideo>,
   analysisDate: string,
+  analytics: ReadonlyArray<VideoAnalyticsProjection> = [],
 ): RealYouTubeIntelligenceMapping {
   const subscribers = safeInteger(channel.subscriberCount);
   if (subscribers === undefined) {
@@ -47,6 +49,7 @@ export function mapPersistedYouTubeDataToIntelligenceInput(
     ) continue;
     const likes = safeInteger(video.likeCount);
     const comments = safeInteger(video.commentCount);
+    const privateMetrics = analytics.find((item) => item.videoId === video.videoId)?.values;
     mappedVideos.push({
       id: video.videoId,
       title: video.title,
@@ -57,6 +60,9 @@ export function mapPersistedYouTubeDataToIntelligenceInput(
       ...(video.commentCount !== undefined && comments !== undefined
         ? { comments }
         : {}),
+      ...(safeDecimal(privateMetrics?.averageViewDuration) === undefined ? {} : { averageViewDurationSeconds: safeDecimal(privateMetrics?.averageViewDuration) }),
+      ...(safePercentage(privateMetrics?.averageViewPercentage) === undefined ? {} : { averagePercentageViewed: safePercentage(privateMetrics?.averageViewPercentage) }),
+      ...(safeInteger(privateMetrics?.subscribersGained) === undefined ? {} : { subscribersGained: safeInteger(privateMetrics?.subscribersGained) }),
     });
   }
 
@@ -104,6 +110,9 @@ export function mapPersistedYouTubeDataToIntelligenceInput(
     },
   };
 }
+
+function safeDecimal(value: string | undefined): number | undefined { if (value === undefined) return undefined; const parsed = Number(value); return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined; }
+function safePercentage(value: string | undefined): number | undefined { const parsed = safeDecimal(value); return parsed !== undefined && parsed <= 100 ? parsed : undefined; }
 
 function safeInteger(value: string | undefined): number | undefined {
   if (value === undefined || !/^(0|[1-9]\d*)$/u.test(value)) return undefined;

@@ -176,3 +176,7 @@ export type ChannelTrendsReadModel = Readonly<{
   freshness: import("../../core").DataFreshness;
   trends: ReadonlyArray<import("../../core").MetricTrend>;
 }>;
+export type YouTubeAnalyticsStatusReadModel = Omit<import("../../core").YouTubeAnalyticsCapability, "userId">;
+export type YouTubeAnalyticsCollectionReadModel = Omit<import("../../core").YouTubeAnalyticsBatch, "userId">;
+export type YouTubeAnalyticsChannelReadModel = import("../../core").YouTubeAnalyticsProjection;
+export type YouTubeAnalyticsVideosReadModel = Readonly<{ period: import("../../core").YouTubeAnalyticsPeriod; videos: ReadonlyArray<import("../../core").VideoAnalyticsProjection> }>;

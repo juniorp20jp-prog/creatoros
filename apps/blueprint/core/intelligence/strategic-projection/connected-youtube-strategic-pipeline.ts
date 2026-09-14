@@ -120,6 +120,9 @@ export class ConnectedYouTubeStrategicPipeline implements CreatorAnalysisPipelin
         views: video.views,
         ...(video.likes == null ? {} : { likes: video.likes }),
         ...(video.comments == null ? {} : { comments: video.comments }),
+        ...(video.averageViewDurationSeconds == null ? {} : { averageViewDurationSeconds: video.averageViewDurationSeconds }),
+        ...(video.averagePercentageViewed == null ? {} : { averagePercentageViewed: video.averagePercentageViewed }),
+        ...(video.subscribersGained == null ? {} : { subscribersGained: video.subscribersGained }),
       })),
       context: {
         analysisDate: context.analyzedAt,

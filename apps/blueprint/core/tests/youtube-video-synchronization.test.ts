@@ -275,17 +275,22 @@ test("real intelligence mapper excludes unsafe counters without truncation", asy
     channel,
     result.value.videos,
     NOW,
+    [{ videoId: "video-2", values: { averageViewDuration: "45.5", averageViewPercentage: "62.5", subscribersGained: "3", subscribersLost: "1", estimatedMinutesWatched: "90" }, availableFields: ["averageViewDuration", "averageViewPercentage", "subscribersGained", "subscribersLost", "estimatedMinutesWatched"], observedDays: 7 }],
   );
   assert.equal(mapped.status, "success");
   if (mapped.status === "success") {
     assert.equal(mapped.value.excludedVideoCount, 1);
     assert.equal(mapped.value.input.videos.length, 1);
+    assert.equal(mapped.value.input.videos[0]?.averageViewDurationSeconds, 45.5);
+    assert.equal(mapped.value.input.videos[0]?.averagePercentageViewed, 62.5);
+    assert.equal(mapped.value.input.videos[0]?.subscribersGained, 3);
     const execution = await executeYouTubeIntelligence(mapped.value.input);
     assert.equal(execution.status, "completed");
     if (execution.status === "completed") {
       assert.equal(execution.output.summary.analyzedVideoCount, 1);
       assert.equal(execution.output.videos[0]?.metrics.impressions, undefined);
       assert.equal(execution.output.videos[0]?.metrics.ctr, undefined);
+      assert.equal(execution.output.videos[0]?.metrics.averagePercentageViewed, 62.5);
     }
   }
 });

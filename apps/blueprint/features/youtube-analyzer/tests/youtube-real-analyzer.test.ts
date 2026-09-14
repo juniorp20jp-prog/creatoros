@@ -137,6 +137,39 @@ test("real analyzer hook loads persisted intelligence successfully", async () =>
   hook.unmount();
 });
 
+test("real analyzer keeps public intelligence available when Analytics is not authorized", async () => {
+  const output = await intelligence();
+  const client = {
+    list: async () => ({ videos: [{ videoId: "video" }] }),
+    status: async () => ({ videoCount: 1, lastSync: sync }),
+    analyze: async () => output,
+    analyticsStatus: async () => ({ state: "not-authorized", updatedAt: "2026-09-12T00:00:00.000Z" }),
+    channelAnalytics: async () => { throw new Error("must not be called"); },
+  } as unknown as YouTubeVideoApiClient;
+  const hook = renderHook(() => useRealYouTubeAnalyzer(client));
+  await waitFor(() => assert.equal(hook.result.current.phase, "success"));
+  assert.equal(hook.result.current.analyticsStatus?.state, "not-authorized");
+  assert.equal(hook.result.current.intelligence?.output.summary.channel.name, output.output.summary.channel.name);
+  hook.unmount();
+});
+
+test("real analyzer loads authorized Analytics and changes bounded periods", async () => {
+  const output = await intelligence();
+  const periods: string[] = [];
+  const client = {
+    list: async () => ({ videos: [{ videoId: "video" }] }),
+    status: async () => ({ videoCount: 1, lastSync: sync }),
+    analyze: async () => output,
+    analyticsStatus: async () => ({ state: "authorized", updatedAt: "2026-09-12T00:00:00.000Z" }),
+    channelAnalytics: async (period: string) => { periods.push(period); return { period, requestedStartDate: "2026-09-01", requestedEndDate: "2026-09-12", availability: "available", freshness: "processing", values: { averageViewDuration: "30" }, availableFields: ["averageViewDuration"], missingFields: [], channelDays: 1, videoCount: 1 }; },
+  } as unknown as YouTubeVideoApiClient;
+  const hook = renderHook(() => useRealYouTubeAnalyzer(client));
+  await waitFor(() => assert.equal(hook.result.current.analytics?.values.averageViewDuration, "30"));
+  await act(async () => hook.result.current.setAnalyticsPeriod("7d"));
+  assert.deepEqual(periods, ["30d", "7d"]);
+  hook.unmount();
+});
+
 test("synchronize-and-analyze prevents double submission and reports no-change", async () => {
   const output = await intelligence();
   let synchronizationCount = 0;

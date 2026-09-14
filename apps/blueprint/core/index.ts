@@ -17,6 +17,7 @@ export * from "./session";
 export * from "./types";
 export * from "./utilities";
 export * from "./youtube-authorization";
+export * from "./youtube-analytics";
 export * from "./youtube-channel-sync";
 export * from "./youtube-video-sync";
 export {

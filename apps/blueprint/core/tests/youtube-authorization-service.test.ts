@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { InMemoryYouTubeAuthorizationRepository, YouTubeAuthorizationService, YOUTUBE_READONLY_SCOPE, type Clock, type IdGenerator, type RefreshedYouTubeGrant, type TokenProtectionResult, type YouTubeAuthorizationProvider, type YouTubeProviderResult, type YouTubeTokenProtector } from "../index";
+import { InMemoryYouTubeAuthorizationRepository, YouTubeAuthorizationService, YOUTUBE_ANALYTICS_READONLY_SCOPE, YOUTUBE_READONLY_SCOPE, type Clock, type IdGenerator, type RefreshedYouTubeGrant, type TokenProtectionResult, type YouTubeAuthorizationProvider, type YouTubeProviderResult, type YouTubeTokenProtector } from "../index";
 
 const NOW = "2026-08-02T12:00:00.000Z";
 const LATER = "2026-08-02T12:30:00.000Z";
@@ -56,6 +56,30 @@ test("reconnect reuses the stored refresh token when Google does not return anot
   if (identity.status !== "success") return;
   const token = await repository.getByYouTubeIdentityId(identity.value.youtubeIdentityId);
   if (token.status === "success") assert.equal(token.value.encryptedRefreshToken, "encrypted:refresh-secret");
+});
+
+test("incremental authorization unions scopes and preserves the encrypted refresh token", async () => {
+  const { repository, service } = harness();
+  await service.connect("user_1", grant);
+  const upgraded = await service.connect("user_1", { ...grant, scopes: [YOUTUBE_ANALYTICS_READONLY_SCOPE], refreshToken: undefined, accessToken: "analytics-access" });
+  assert.equal(upgraded.status, "success");
+  if (upgraded.status === "success") assert.deepEqual(upgraded.value.scopes, [YOUTUBE_READONLY_SCOPE, YOUTUBE_ANALYTICS_READONLY_SCOPE]);
+  const identity = await repository.getByUserId("user_1");
+  assert.equal(identity.status, "success");
+  if (identity.status !== "success") return;
+  const token = await repository.getByYouTubeIdentityId(identity.value.youtubeIdentityId);
+  assert.equal(token.status, "success");
+  if (token.status === "success") assert.equal(token.value.encryptedRefreshToken, "encrypted:refresh-secret");
+});
+
+test("incremental authorization rejects a different provider identity without changing the connection", async () => {
+  const { repository, service } = harness();
+  await service.connect("user_1", grant);
+  const upgraded = await service.connect("user_1", { ...grant, providerUserId: "other-subject", scopes: [YOUTUBE_ANALYTICS_READONLY_SCOPE], refreshToken: undefined });
+  assert.equal(upgraded.status, "failure");
+  const identity = await repository.getByUserId("user_1");
+  assert.equal(identity.status, "success");
+  if (identity.status === "success") assert.deepEqual(identity.value.scopes, [YOUTUBE_READONLY_SCOPE]);
 });
 
 test("refresh reveals only the refresh credential and persists rotated provider tokens", async () => {

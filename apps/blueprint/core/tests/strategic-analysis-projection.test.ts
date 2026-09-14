@@ -74,6 +74,34 @@ test("public-only connected data cannot produce Analytics-dependent decisions", 
   assert.equal(metrics.includes("averagePercentageViewed"), false);
 });
 
+test("real retention metrics enable supported relative decisions while CTR remains suppressed", async () => {
+  const withAnalytics: RawChannelData = {
+    ...raw,
+    videos: raw.videos.map((video, index) => ({
+      ...video,
+      averageViewDurationSeconds: 30 + index,
+      averagePercentageViewed: [40, 45, 50, 55, 60, 20][index],
+      subscribersGained: index,
+    })),
+  };
+  const result = await new ConnectedYouTubeStrategicPipeline().run(withAnalytics, {
+    analysisId: "analysis_with_analytics",
+    analyzedAt: ANALYZED_AT,
+    correlationId: "correlation_with_analytics",
+    sourceReference: "youtube-analytics-query:batch",
+  });
+  const projection = result.analysis.strategicProjection;
+  assert.ok(projection);
+  const signals = projection.sourceIntelligence.output.signals.map((signal) => signal.code);
+  assert.ok(signals.includes("relative-low-retention"));
+  assert.equal(signals.includes("relative-low-ctr"), false);
+  if (projection.decisions.status === "completed") {
+    const rules = projection.decisions.decisions.map((decision) => decision.ruleId);
+    assert.ok(rules.includes("decision-rule.strong-reach-weak-retention"));
+    assert.equal(rules.includes("decision-rule.low-click-through"), false);
+  }
+});
+
 test("version resolver marks historic runs without a strategic projection for reanalysis", () => {
   assert.deepEqual(resolveStrategicProjection(undefined), {
     status: "requires-reanalysis",

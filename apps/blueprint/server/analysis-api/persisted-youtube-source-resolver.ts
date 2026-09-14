@@ -3,6 +3,7 @@ import type {
   Clock,
   VideoRepository,
   VideoSyncRepository,
+  YouTubeAnalyticsRepository,
 } from "../../core";
 import type {
   AuthenticatedAnalysisPrincipal,
@@ -18,6 +19,7 @@ export class PersistedYouTubeSourceResolver
     private readonly videos: VideoRepository,
     private readonly videoSyncs: VideoSyncRepository,
     private readonly clock: Clock,
+    private readonly analytics?: YouTubeAnalyticsRepository,
   ) {}
 
   async resolve(
@@ -62,15 +64,17 @@ export class PersistedYouTubeSourceResolver
       };
     }
 
-    const latestSync = await this.videoSyncs.getLatestByUserId(
-      principal.userId,
-    );
+    const [latestSync, analytics] = await Promise.all([
+      this.videoSyncs.getLatestByUserId(principal.userId),
+      this.analytics?.getVideoProjection(principal.userId, "90d", this.clock.now()),
+    ]);
     return {
       status: "success",
       value: {
         creator: principal,
         channel: channel.value,
         videos: videos.value.videos,
+        ...(analytics?.status === "success" ? { analytics: analytics.value } : {}),
         collectedAt:
           latestSync.status === "success"
             ? latestSync.value.completedAt
